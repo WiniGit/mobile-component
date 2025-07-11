@@ -7,6 +7,7 @@ import {
     TextInput,
     TextInputFocusEvent,
     TextStyle,
+    useColorScheme,
     View
 } from 'react-native';
 
@@ -43,6 +44,7 @@ interface TextFieldRef {
 }
 
 export const FTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = {}, helperTextColor = "#E14337", ...props }, ref) => {
+    const colorScheme = useColorScheme();
     const [inputValue, setInputValue] = useState('');
     const [focused, setFocused] = useState(false);
     const { fontVariant, fontSize, fontFamily, fontStyle, fontWeight, color, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius, ...restOfStyle } = style

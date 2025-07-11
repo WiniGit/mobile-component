@@ -1,29 +1,30 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { GestureResponderEvent, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
 import { SvgXml } from "react-native-svg"
 
-function Winicon({
-    src,
-    style,
-    size = 24,
-    color,
-    onClick,
-}) {
+interface WiniconProps {
+    src: string;
+    style?: ViewStyle;
+    size?: number;
+    color?: string;
+    onPress?: (event: GestureResponderEvent) => void
+}
+
+const Winicon = ({ style = {}, size = 24, ...props }: WiniconProps) => {
     const [svgData, setSvgData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const cdnSrc = 'https://cdn.jsdelivr.net/gh/WiniGit/icon-library@latest/';
 
     useEffect(() => {
         // If src is already an SVG string, use it directly
-        if (src && src.startsWith('<svg')) {
-            console.log("??????: ", src)
-            setSvgData(src);
+        if (props.src && props.src.startsWith('<svg')) {
+            setSvgData(props.src);
             return;
         }
 
         const fetchSvg = async () => {
             try {
-                const url = src?.startsWith('http') ? src : `${cdnSrc}${src}.svg`;
+                const url = props.src?.startsWith('http') ? props.src : `${cdnSrc}${props.src}.svg`;
                 if (!url) return;
 
                 // If not in cache, set loading state
@@ -31,9 +32,7 @@ function Winicon({
 
                 // Fetch from network
                 const response = await fetch(url);
-                console.log("response: ", response)
                 let text = await response.text();
-                console.log("text: ", text)
 
                 // Clear loading state
                 setIsLoading(false);
@@ -43,13 +42,6 @@ function Winicon({
                     setSvgData(null);
                     return;
                 }
-
-                // Apply color if needed
-                if (color) {
-                    text = text.replace(/stroke="(?!none")[^"]*"/g, `stroke="${color}"`);
-                    text = text.replace(/fill="(?!none")[^"]*"/g, `fill="${color}"`);
-                }
-
                 // Cache the colored version
                 setSvgData(text);
             } catch (error) {
@@ -74,6 +66,7 @@ function Winicon({
                     xml={svgData}
                     width={size}
                     height={size}
+                    color={}
                 />
             ) : isLoading ? <View style={[styles.placeholder, { width: size, height: size }]} /> : null}
         </TouchableOpacity>

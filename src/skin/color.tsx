@@ -1,0 +1,471 @@
+import {
+    createContext,
+    useContext,
+    useState,
+    ReactNode,
+    useEffect,
+} from 'react';
+import { useColorScheme } from 'react-native';
+import { typography } from './typography';
+
+interface ColorProps {
+    /* primary */
+    "primary-color-bolder": string,
+    "primary-color-main": string,
+    "primary-color-lighter": string,
+    "primary-color-tag": string,
+    "primary-color-border": string,
+    "primary-color-background": string,
+    /* secondary 1 */
+    "secondary-color-bolder": string,
+    "secondary-color-main": string,
+    "secondary-color-lighter": string,
+    "secondary-color-tag": string,
+    "secondary-color-border": string,
+    "secondary-color-background": string,
+    /* secondary 2 */
+    "secondary2-color-bolder": string,
+    "secondary2-color-main": string,
+    "secondary2-color-lighter": string,
+    "secondary2-color-tag": string,
+    "secondary2-color-border": string,
+    "secondary2-color-background": string,
+    /* secondary 3 */
+    "secondary3-color-bolder": string,
+    "secondary3-color-main": string,
+    "secondary3-color-lighter": string,
+    "secondary3-color-tag": string,
+    "secondary3-color-border": string,
+    "secondary3-color-background": string,
+    /* secondary 4 */
+    "secondary4-color-bolder": string,
+    "secondary4-color-main": string,
+    "secondary4-color-lighter": string,
+    "secondary4-color-tag": string,
+    "secondary4-color-border": string,
+    "secondary4-color-background": string,
+    /* secondary 5 */
+    "secondary5-color-bolder": string,
+    "secondary5-color-main": string,
+    "secondary5-color-lighter": string,
+    "secondary5-color-tag": string,
+    "secondary5-color-border": string,
+    "secondary5-color-background": string,
+    /* secondary 6 */
+    "secondary6-color-bolder": string,
+    "secondary6-color-main": string,
+    "secondary6-color-lighter": string,
+    "secondary6-color-tag": string,
+    "secondary6-color-border": string,
+    "secondary6-color-background": string,
+    /* success */
+    "success-color-bolder": string,
+    "success-color-main": string,
+    "success-color-lighter": string,
+    "success-color-tag": string,
+    "success-color-border": string,
+    "success-color-background": string,
+    /* warning */
+    "warning-color-bolder": string,
+    "warning-color-main": string,
+    "warning-color-lighter": string,
+    "warning-color-tag": string,
+    "warning-color-border": string,
+    "warning-color-background": string,
+    /* error */
+    "error-color-bolder": string,
+    "error-color-main": string,
+    "error-color-lighter": string,
+    "error-color-tag": string,
+    "error-color-border": string,
+    "error-color-background": string,
+    /* infor */
+    "infor-color-bolder": string,
+    "infor-color-main": string,
+    "infor-color-lighter": string,
+    "infor-color-tag": string,
+    "infor-color-border": string,
+    "infor-color-background": string,
+    /* neutral-background */
+    "neutral-background-color-bolder": string,
+    "neutral-background-color-absolute": string,
+    "neutral-background-color-main": string,
+    "neutral-background-color-lighter": string,
+    "neutral-background-color-overlay": string,
+    "neutral-background-color-disable": string,
+    "neutral-background-color-selected": string,
+    "neutral-background-color-hover": string,
+    "neutral-background-color-bolder-reverse": string,
+    "neutral-background-color-absolute-reverse": string,
+    "neutral-background-color-main-reverse": string,
+    "neutral-background-color-lighter-reverse": string,
+    "neutral-background-color-disable-reverse": string,
+    /* neutral-text */
+    "neutral-text-color-title": string,
+    "neutral-text-color-subtitle": string,
+    "neutral-text-color-body": string,
+    "neutral-text-color-label": string,
+    "neutral-text-color-placeholder": string,
+    "neutral-text-color-disabled": string,
+    "neutral-text-color-stable": string,
+    "neutral-text-color-title-reverse": string,
+    "neutral-text-color-subtitle-reverse": string,
+    "neutral-text-color-body-reverse": string,
+    "neutral-text-color-label-reverse": string,
+    "neutral-text-color-placeholder-reverse": string,
+    "neutral-text-color-disabled-reverse": string,
+    "neutral-text-color-stable-reverse": string,
+    /* neutral-border */
+    "neutral-border-color-bolder": string,
+    "neutral-border-color-main": string,
+    "neutral-border-color-lighter": string,
+    "neutral-border-color-bolder-reverse": string,
+    "neutral-border-color-main-reverse": string,
+    "neutral-border-color-lighter-reverse": string,
+    /* other */
+    [key: string]: string
+}
+
+const lightThemeColor: ColorProps = {
+    /* primary */
+    "primary-color-bolder": "#0F62D7",
+    "primary-color-main": "#287CF0",
+    "primary-color-lighter": "#5899F3",
+    "primary-color-tag": "#B7D3FA",
+    "primary-color-border": "#B7D3FA",
+    "primary-color-background": "#ECF3FE",
+    /* secondary 1 */
+    "secondary-color-bolder": "#22C3AE",
+    "secondary-color-main": "#3CDDC7",
+    "secondary-color-lighter": "#67E4D4",
+    "secondary-color-tag": "#BEF4EC",
+    "secondary-color-border": "#BEF4EC",
+    "secondary-color-background": "#EEFCFA",
+    /* secondary 2 */
+    "secondary2-color-bolder": "#2D8655",
+    "secondary2-color-main": "#3AAC6D",
+    "secondary2-color-lighter": "#53C586",
+    "secondary2-color-tag": "#C6ECD7",
+    "secondary2-color-border": "#C6ECD7",
+    "secondary2-color-background": "#E8F7EF",
+    /* secondary 3 */
+    "secondary3-color-bolder": "#E19405",
+    "secondary3-color-main": "#FAAD1E",
+    "secondary3-color-lighter": "#FBBF50",
+    "secondary3-color-tag": "#FDE4B4",
+    "secondary3-color-border": "#FDE4B4",
+    "secondary3-color-background": "#FFF8EB",
+    /* secondary 4 */
+    "secondary4-color-bolder": "#E36003",
+    "secondary4-color-main": "#FC7A1C",
+    "secondary4-color-lighter": "#FD974F",
+    "secondary4-color-tag": "#FED3B3",
+    "secondary4-color-border": "#FED3B3",
+    "secondary4-color-background": "#FFF3EB",
+    /* secondary 5 */
+    "secondary5-color-bolder": "#7B22C3",
+    "secondary5-color-main": "#943CDD",
+    "secondary5-color-lighter": "#AC67E4",
+    "secondary5-color-tag": "#DBBEF4",
+    "secondary5-color-border": "#DBBEF4",
+    "secondary5-color-background": "#F6EEFC",
+    /* secondary 6 */
+    "secondary6-color-bolder": "#C8291E",
+    "secondary6-color-main": "#E14337",
+    "secondary6-color-lighter": "#E86D64",
+    "secondary6-color-tag": "#F5C0BC",
+    "secondary6-color-border": "#F5C0BC",
+    "secondary6-color-background": "#FCEEED",
+    /* success */
+    "success-color-bolder": "#2D8655",
+    "success-color-main": "#3AAC6D",
+    "success-color-lighter": "#53C586",
+    "success-color-tag": "#C6ECD7",
+    "success-color-border": "#C6ECD7",
+    "success-color-background": "#E8F7EF",
+    /* warning */
+    "warning-color-bolder": "#E36003",
+    "warning-color-main": "#FC7A1C",
+    "warning-color-lighter": "#FD974F",
+    "warning-color-tag": "#FED3B3",
+    "warning-color-border": "#FED3B3",
+    "warning-color-background": "#FFF3EB",
+    /* error */
+    "error-color-bolder": "#C8291E",
+    "error-color-main": "#E14337",
+    "error-color-lighter": "#E86D64",
+    "error-color-tag": "#F5C0BC",
+    "error-color-border": "#F5C0BC",
+    "error-color-background": "#FCEEED",
+    /* infor */
+    "infor-color-bolder": "#0F62D7",
+    "infor-color-main": "#287CF0",
+    "infor-color-lighter": "#5899F3",
+    "infor-color-tag": "#B7D3FA",
+    "infor-color-border": "#B7D3FA",
+    "infor-color-background": "#ECF3FE",
+    /* neutral-background */
+    "neutral-background-color-bolder": "#EAEAEC",
+    "neutral-background-color-absolute": "#FFFFFF",
+    "neutral-background-color-main": "#EFEFF0",
+    "neutral-background-color-lighter": "#F4F4F5",
+    "neutral-background-color-overlay": "#000000B3",
+    "neutral-background-color-disable": "#F4F4F5",
+    "neutral-background-color-selected": "#18181B14",
+    "neutral-background-color-hover": "#18181B0A",
+    "neutral-background-color-bolder-reverse": "#18181B",
+    "neutral-background-color-absolute-reverse": "#000000",
+    "neutral-background-color-main-reverse": "#242428",
+    "neutral-background-color-lighter-reverse": "#313135",
+    "neutral-background-color-disable-reverse": "#313135",
+    /* neutral-text */
+    "neutral-text-color-title": "#18181B",
+    "neutral-text-color-subtitle": "#61616B",
+    "neutral-text-color-body": "#313135",
+    "neutral-text-color-label": "#313135",
+    "neutral-text-color-placeholder": "#878792",
+    "neutral-text-color-disabled": "#A2A2AA",
+    "neutral-text-color-stable": "#FFFFFF",
+    "neutral-text-color-title-reverse": "#F4F4F5",
+    "neutral-text-color-subtitle-reverse": "#A2A2AA",
+    "neutral-text-color-body-reverse": "#EAEAEC",
+    "neutral-text-color-label-reverse": "#EAEAEC",
+    "neutral-text-color-placeholder-reverse": "#878792",
+    "neutral-text-color-disabled-reverse": "#61616B",
+    "neutral-text-color-stable-reverse": "#000000",
+    /* neutral-border */
+    "neutral-border-color-bolder": "#D7D7DB",
+    "neutral-border-color-main": "#EAEAEC",
+    "neutral-border-color-lighter": "#F4F4F5",
+    "neutral-border-color-bolder-reverse": "#242428",
+    "neutral-border-color-main-reverse": "#313135",
+    "neutral-border-color-lighter-reverse": "#494950",
+}
+
+const darkThemeColor: ColorProps = {
+    /* primary */
+    "primary-color-bolder": "#5899F3",
+    "primary-color-main": "#287CF0",
+    "primary-color-lighter": "#0F62D7",
+    "primary-color-tag": "#5899F3",
+    "primary-color-border": "#072C5F",
+    "primary-color-background": "#031630",
+    /* secondary 1 */
+    "secondary-color-bolder": "#67E4D4",
+    "secondary-color-main": "#3CDDC7",
+    "secondary-color-lighter": "#22C3AE",
+    "secondary-color-tag": "#67E4D4",
+    "secondary-color-border": "#0F574D",
+    "secondary-color-background": "#082B27",
+    /* secondary 2 */
+    "secondary2-color-bolder": "#53C586",
+    "secondary2-color-main": "#3AAC6D",
+    "secondary2-color-lighter": "#2D8655",
+    "secondary2-color-tag": "#53C586",
+    "secondary2-color-border": "#1A4C30",
+    "secondary2-color-background": "#0D2618",
+    /* secondary 3 */
+    "secondary3-color-bolder": "#FBBF50",
+    "secondary3-color-main": "#FAAD1E",
+    "secondary3-color-lighter": "#E19405",
+    "secondary3-color-tag": "#FBBF50",
+    "secondary3-color-border": "#644202",
+    "secondary3-color-background": "#322101",
+    /* secondary 4 */
+    "secondary4-color-bolder": "#FD974F",
+    "secondary4-color-main": "#FC7A1C",
+    "secondary4-color-lighter": "#E36003",
+    "secondary4-color-tag": "#FD974F",
+    "secondary4-color-border": "#652B01",
+    "secondary4-color-background": "#321501",
+    /* secondary 5 */
+    "secondary5-color-bolder": "#AC67E4",
+    "secondary5-color-main": "#943CDD",
+    "secondary5-color-lighter": "#7B22C3",
+    "secondary5-color-tag": "#AC67E4",
+    "secondary5-color-border": "#1F085E",
+    "secondary5-color-background": "#0F042F",
+    /* secondary 6 */
+    "secondary6-color-bolder": "#E86D64",
+    "secondary6-color-main": "#E14337",
+    "secondary6-color-lighter": "#C8291E",
+    "secondary6-color-tag": "#E86D64",
+    "secondary6-color-border": "#59120D",
+    "secondary6-color-background": "#2C0907",
+    /* success */
+    "success-color-bolder": "#53C586",
+    "success-color-main": "#3AAC6D",
+    "success-color-lighter": "#2D8655",
+    "success-color-tag": "#53C586",
+    "success-color-border": "#1A4C30",
+    "success-color-background": "#0D2618",
+    /* warning */
+    "warning-color-bolder": "#FD974F",
+    "warning-color-main": "#FC7A1C",
+    "warning-color-lighter": "#E36003",
+    "warning-color-tag": "#FD974F",
+    "warning-color-border": "#652B01",
+    "warning-color-background": "#321501",
+    /* error */
+    "error-color-bolder": "#E86D64",
+    "error-color-main": "#E14337",
+    "error-color-lighter": "#C8291E",
+    "error-color-tag": "#E86D64",
+    "error-color-border": "#59120D",
+    "error-color-background": "#2C0907",
+    /* infor */
+    "infor-color-bolder": "#5899F3",
+    "infor-color-main": "#287CF0",
+    "infor-color-lighter": "#0F62D7",
+    "infor-color-tag": "#5899F3",
+    "infor-color-border": "#072C5F",
+    "infor-color-background": "#031630",
+    /* neutral-background */
+    "neutral-background-color-bolder": "#242428",
+    "neutral-background-color-absolute": "#14181b",
+    "neutral-background-color-main": "#313135",
+    "neutral-background-color-lighter": "#494950",
+    "neutral-background-color-overlay": "#FFFFFFB3",
+    "neutral-background-color-disable": "#494950",
+    "neutral-background-color-selected": "#FFFFFF14",
+    "neutral-background-color-hover": "#FFFFFF0A",
+    "neutral-background-color-bolder-reverse": "#EAEAEC",
+    "neutral-background-color-absolute-reverse": "#FFFFFF",
+    "neutral-background-color-main-reverse": "#EFEFF0",
+    "neutral-background-color-lighter-reverse": "#F4F4F5",
+    "neutral-background-color-disable-reverse": "#F4F4F5",
+    /* neutral-text */
+    "neutral-text-color-title": "#F4F4F5",
+    "neutral-text-color-subtitle": "#A2A2AA",
+    "neutral-text-color-body": "#EAEAEC",
+    "neutral-text-color-label": "#EAEAEC",
+    "neutral-text-color-placeholder": "#878792",
+    "neutral-text-color-disabled": "#61616B",
+    "neutral-text-color-stable": "#FFFFFF",
+    "neutral-text-color-title-reverse": "#F4F4F5",
+    "neutral-text-color-subtitle-reverse": "#A2A2AA",
+    "neutral-text-color-body-reverse": "#EAEAEC",
+    "neutral-text-color-label-reverse": "#EAEAEC",
+    "neutral-text-color-placeholder-reverse": "#878792",
+    "neutral-text-color-disabled-reverse": "#61616B",
+    "neutral-text-color-stable-reverse": "#000000",
+    /* neutral-border */
+    "neutral-border-color-bolder": "#494950",
+    "neutral-border-color-main": "#313135",
+    "neutral-border-color-lighter": "#242428",
+    "neutral-border-color-bolder-reverse": "#242428",
+    "neutral-border-color-main-reverse": "#313135",
+    "neutral-border-color-lighter-reverse": "#494950",
+}
+
+type ThemeType = 'light' | 'dark';
+
+const ThemeContext = createContext({
+    isDark: false,
+    colors: lightThemeColor,
+    theme: 'light' as ThemeType,
+    setTheme: (theme: ThemeType) => { },
+});
+
+export function ThemeProvider({ children }: { children: ReactNode }) {
+    const systemScheme = useColorScheme();
+    const [theme, setTheme] = useState<ThemeType>('light');
+
+    const appliedScheme = theme === 'light' ? systemScheme : theme;
+    const isDark = appliedScheme === 'dark';
+
+    useEffect(() => {
+        const colors = isDark ? darkThemeColor : lightThemeColor;
+        // regular
+        typography.regular0.color = colors["neutral-text-color-title"];
+        typography.regular1.color = colors["neutral-text-color-title"];
+        typography.regular2.color = colors["neutral-text-color-title"];
+        typography.regular3.color = colors["neutral-text-color-title"];
+        typography.regular4.color = colors["neutral-text-color-title"];
+        typography.regular5.color = colors["neutral-text-color-title"];
+        typography.regular6.color = colors["neutral-text-color-title"];
+        typography.regular7.color = colors["neutral-text-color-title"];
+        typography.regular8.color = colors["neutral-text-color-title"];
+        typography.regular9.color = colors["neutral-text-color-title"];
+        // semibold
+        typography.semibold1.color = colors["neutral-text-color-title"];
+        typography.semibold2.color = colors["neutral-text-color-title"];
+        typography.semibold3.color = colors["neutral-text-color-title"];
+        typography.semibold4.color = colors["neutral-text-color-title"];
+        typography.semibold5.color = colors["neutral-text-color-title"];
+        typography.semibold6.color = colors["neutral-text-color-title"];
+        typography.semibold7.color = colors["neutral-text-color-title"];
+        typography.semibold8.color = colors["neutral-text-color-title"];
+        typography.semibold9.color = colors["neutral-text-color-title"];
+        // medium
+        typography.medium1.color = colors["neutral-text-color-title"];
+        typography.medium2.color = colors["neutral-text-color-title"];
+        typography.medium3.color = colors["neutral-text-color-title"];
+        typography.medium4.color = colors["neutral-text-color-title"];
+        typography.medium5.color = colors["neutral-text-color-title"];
+        typography.medium6.color = colors["neutral-text-color-title"];
+        typography.medium7.color = colors["neutral-text-color-title"];
+        typography.medium8.color = colors["neutral-text-color-title"];
+        typography.medium9.color = colors["neutral-text-color-title"];
+        // heading
+        typography["heading-1"].color = colors["neutral-text-color-title"];
+        typography["heading-2"].color = colors["neutral-text-color-title"];
+        typography["heading-3"].color = colors["neutral-text-color-title"];
+        typography["heading-4"].color = colors["neutral-text-color-title"];
+        typography["heading-5"].color = colors["neutral-text-color-title"];
+        typography["heading-6"].color = colors["neutral-text-color-title"];
+        typography["heading-7"].color = colors["neutral-text-color-title"];
+        typography["heading-8"].color = colors["neutral-text-color-title"];
+        typography["heading-9"].color = colors["neutral-text-color-title"];
+        // label
+        typography["label-1"].color = colors["neutral-text-color-label"];
+        typography["label-2"].color = colors["neutral-text-color-label"];
+        typography["label-3"].color = colors["neutral-text-color-label"];
+        typography["label-4"].color = colors["neutral-text-color-label"];
+        typography["label-5"].color = colors["neutral-text-color-label"];
+        // body
+        typography["body-1"].color = colors["neutral-text-color-body"];
+        typography["body-2"].color = colors["neutral-text-color-body"];
+        typography["body-3"].color = colors["neutral-text-color-body"];
+        // highlight
+        typography["highlight-1"].color = colors["neutral-text-color-title"];
+        typography["highlight-2"].color = colors["neutral-text-color-title"];
+        typography["highlight-3"].color = colors["neutral-text-color-title"];
+        typography["highlight-4"].color = colors["neutral-text-color-title"];
+        typography["highlight-5"].color = colors["neutral-text-color-title"];
+        typography["highlight-6"].color = colors["neutral-text-color-title"];
+        // subtitle
+        typography["subtitle-1"].color = colors["neutral-text-color-subtitle"];
+        typography["subtitle-2"].color = colors["neutral-text-color-subtitle"];
+        typography["subtitle-3"].color = colors["neutral-text-color-subtitle"];
+        typography["subtitle-4"].color = colors["neutral-text-color-subtitle"];
+        typography["subtitle-5"].color = colors["neutral-text-color-subtitle"];
+        // placeholder
+        typography["placeholder-1"].color = colors["neutral-text-color-placeholder"];
+        typography["placeholder-2"].color = colors["neutral-text-color-placeholder"];
+        // button-text
+        typography["button-text-1"].color = colors["primary-color-main"];
+        typography["button-text-2"].color = colors["primary-color-main"];
+        typography["button-text-3"].color = colors["primary-color-main"];
+        typography["button-text-4"].color = colors["primary-color-main"];
+        typography["button-text-5"].color = colors["primary-color-main"];
+        typography["button-text-6"].color = colors["primary-color-main"];
+    }, [isDark])
+
+    return (
+        <ThemeContext.Provider
+            value={{
+                isDark,
+                colors: isDark ? darkThemeColor : lightThemeColor,
+                theme,
+                setTheme: setTheme,
+            }}>
+            {children}
+        </ThemeContext.Provider>
+    );
+}
+
+const useTheme = () => useContext(ThemeContext);
+
+
+export { useTheme, lightThemeColor, darkThemeColor }
