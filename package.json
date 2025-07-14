@@ -3,12 +3,15 @@
   "private": false,
   "version": "0.0.3",
   "description": "A simple ui library for React-native",
-  "main": "dist/index.umd.js",
-  "module": "dist/index.es.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./build/index.js",
+      "import": "./build/index.js",
+      "types": "./build/index.d.ts"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build"
