@@ -42,7 +42,7 @@ export const FRating = ({ style = {}, fillColor = "#faad1e", size = 16, strokeCo
             key={'star-' + i}
             onPress={
               props.onChange
-                ? () => props.onChange(i + 1)
+                ? () => props.onChange!(i + 1)
                 : undefined
             }
           >

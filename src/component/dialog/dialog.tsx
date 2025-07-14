@@ -75,12 +75,16 @@ export default class FDialog extends React.Component<Object, DialogState> {
     switch (this.state.status) {
       case ComponentStatus.WARNING:
         var bgColor = lightThemeColor['warning-color-main'];
+        break;
       case ComponentStatus.ERROR:
         bgColor = lightThemeColor['error-color-main'];
+        break;
       case ComponentStatus.SUCCSESS:
         bgColor = lightThemeColor['success-color-main'];
+        break;
       default: // ComponentStatus.INFOR
         bgColor = lightThemeColor['infor-color-main'];
+        break;
     }
     return (
       <Modal

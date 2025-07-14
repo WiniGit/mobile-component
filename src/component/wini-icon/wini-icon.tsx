@@ -13,7 +13,7 @@ interface WiniconProps {
 }
 
 export const Winicon = ({ style = {}, size = 24, ...props }: WiniconProps) => {
-    const [svgData, setSvgData] = useState(null);
+    const [svgData, setSvgData] = useState<string>();
     const [isLoading, setIsLoading] = useState(false);
     const cdnSrc = 'https://cdn.jsdelivr.net/gh/WiniGit/icon-library@latest/';
 
@@ -49,7 +49,7 @@ export const Winicon = ({ style = {}, size = 24, ...props }: WiniconProps) => {
 
                 if (!text.startsWith('<svg')) {
                     // is image
-                    setSvgData(null);
+                    setSvgData(undefined);
                     return;
                 }
 
@@ -58,7 +58,7 @@ export const Winicon = ({ style = {}, size = 24, ...props }: WiniconProps) => {
                 setSvgData(text);
             } catch (error) {
                 setIsLoading(false);
-                setSvgData(null); // Set fallback data
+                setSvgData(undefined); // Set fallback data
             }
         };
 

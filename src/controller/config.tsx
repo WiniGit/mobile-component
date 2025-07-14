@@ -40,7 +40,7 @@ export class BaseDA {
                 return { status: response.status, message: response.statusText };
             }
         } catch (error) {
-            showSnackbar({ message: error?.toString(), status: ComponentStatus.ERROR })
+            showSnackbar({ message: `${error}`, status: ComponentStatus.ERROR })
             throw error;
         }
     }

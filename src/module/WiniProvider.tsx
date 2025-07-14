@@ -38,10 +38,10 @@ interface Props {
 type ThemeType = 'light' | 'dark';
 
 interface DesignTokenContextType {
-    colors: ColorProps;
-    textStyles: TypoProps;
-    boxShadows: BoxShadowProps;
-    customStyleSheet: { [k: string]: ViewStyle };
+    colors?: ColorProps;
+    textStyles?: TypoProps;
+    boxShadows?: BoxShadowProps;
+    customStyleSheet?: { [k: string]: ViewStyle };
     theme: ThemeType;
     setTheme: (theme: ThemeType) => void
 }
@@ -49,17 +49,17 @@ interface DesignTokenContextType {
 const DesignTokenContext = createContext<DesignTokenContextType | undefined>(undefined);
 
 export const DesignTokenProvider: React.FC<{ children: ReactNode, designTokens: Array<{ [p: string]: any }> }> = ({ children, designTokens = [] }) => {
-    const [colors, setColors] = useState<ColorProps>(null);
-    const [textStyles, setTextStyles] = useState<TypoProps>(null);
-    const [boxShadows, setBoxShadows] = useState<BoxShadowProps>(null);
-    const [customStyleSheet, setCustomStyleSheet] = useState<{ [k: string]: ViewStyle }>(null);
+    const [colors, setColors] = useState<ColorProps>();
+    const [textStyles, setTextStyles] = useState<TypoProps>();
+    const [boxShadows, setBoxShadows] = useState<BoxShadowProps>();
+    const [customStyleSheet, setCustomStyleSheet] = useState<{ [k: string]: ViewStyle }>();
     const systemScheme = useColorScheme();
     const [theme, setTheme] = useState<ThemeType>('light');
     const appliedScheme = theme === 'light' ? systemScheme : theme;
     const isDark = appliedScheme === 'dark';
 
     function convertRemToPxInString(cssString: string) {
-        return filterCssToClassRulesOnly(cssString.replace(/(\d*\.?\d+)rem/g, (match, remValue) => {
+        return filterCssToClassRulesOnly(cssString.replace(/(\d*\.?\d+)rem/g, (_, remValue) => {
             const pxValue = parseFloat(remValue) * 10;
             return `${pxValue}px`;
         }))
