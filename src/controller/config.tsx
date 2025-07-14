@@ -8,49 +8,12 @@ export class ConfigData {
     static url = ""
     static fileUrl = "";
     static imgUrlId = "";
-    static extraPlugins = undefined;
-    static onInvalidToken = () => Util.clearStorage();
-}
-
-let tmpTimeRefresh: number;
-export let globalNavigate = (url: string, options?: { replace?: boolean }) => { }
-
-const getHeaders = async () => {
-    let timeRefresh: any = tmpTimeRefresh ?? (await Util.getStorage("timeRefresh"))
-    if (typeof timeRefresh === "string") timeRefresh = parseInt(timeRefresh)
-    tmpTimeRefresh = timeRefresh
-    const now = Date.now() / 1000;
-    if (timeRefresh && timeRefresh > 0 && timeRefresh <= now) {
-        const res = await fetch(ConfigData.url + 'data/refreshToken', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 'refreshToken': Util.getCookie("refreshToken") }),
-        })
-        if (res.status === 200 || res.status === 201) {
-            const jsonData = await res.json()
-            if (jsonData.code === 200) {
-                tmpTimeRefresh = Date.now() / 1000 + 9 * 60
-                Util.setStorage([
-                    { key: "accessToken", value: jsonData.accessToken },
-                    { key: "timeRefresh", value: tmpTimeRefresh },
-                ])
-                return {
-                    'refreshToken': Util.getCookie("refreshToken"),
-                    'Authorization': `Bearer ${Util.getCookie("accessToken")}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        }
-        ConfigData.onInvalidToken()
-        globalNavigate("/login", { replace: true })
-        window.location.replace("/login")
-    } else if (Util.getCookie("accessToken")) {
-        return {
-            'Authorization': `Bearer ${Util.getCookie("accessToken")}`,
-            'Content-Type': 'application/json'
-        }
+    static onInvalidToken = () => {
+        Util.clearStorage()
+    };
+    static globalHeaders: () => Promise<{ [k: string]: any }> = async () => {
+        return { 'Content-Type': 'application/json' }
     }
-    return { 'Content-Type': 'application/json' }
 }
 
 export const imgFileTypes = [".png", ".svg", ".jpg", "jpeg", ".webp", ".gif"]
@@ -58,7 +21,7 @@ export const imgFileTypes = [".png", ".svg", ".jpg", "jpeg", ".webp", ".gif"]
 export class BaseDA {
     static post = async (url: string, options?: { headers?: { [k: string]: any }, body?: any }) => {
         try {
-            let _headers: { [k: string]: any } = url.startsWith(ConfigData.url) ? (await getHeaders()) : { 'Content-Type': 'application/json' }
+            let _headers: { [k: string]: any } = url.startsWith(ConfigData.url) ? (await ConfigData.globalHeaders()) : { 'Content-Type': 'application/json' }
             if (!_headers) _headers = { 'Content-Type': 'application/json' }
             if (options?.headers) _headers = { ..._headers, ...options.headers }
             const response = await axios.post(url, options?.body, { headers: _headers })
@@ -71,7 +34,7 @@ export class BaseDA {
                 }
             } else if (response.status === 401) {
                 showSnackbar({ message: 'Unauthorized access', status: ComponentStatus.ERROR })
-                window.location.replace('/login')
+                ConfigData.onInvalidToken()
             } else {
                 console.log("error: ??: ", response.statusText)
                 return { status: response.status, message: response.statusText };
@@ -97,7 +60,7 @@ export class BaseDA {
                 }
             } else if (response.status === 401) {
                 showSnackbar({ message: 'Unauthorized access', status: ComponentStatus.ERROR })
-                window.location.replace('/login')
+                ConfigData.onInvalidToken()
             } else {
                 console.log("error: ??: ", response.statusText)
                 return { status: response.status, message: response.statusText };
@@ -110,7 +73,7 @@ export class BaseDA {
 
     static get = async (url: string, options?: { headers?: { [k: string]: any } }) => {
         try {
-            let _headers: { [k: string]: any } = url.startsWith(ConfigData.url) ? (await getHeaders()) : { 'Content-Type': 'application/json' }
+            let _headers: { [k: string]: any } = url.startsWith(ConfigData.url) ? (await ConfigData.globalHeaders()) : { 'Content-Type': 'application/json' }
             if (!_headers) _headers = { 'Content-Type': 'application/json' }
             if (options?.headers) _headers = { ..._headers, ...options.headers }
             const response = await axios.get(url, { headers: _headers })
@@ -123,7 +86,7 @@ export class BaseDA {
                 }
             } else if (response.status === 401) {
                 showSnackbar({ message: 'Unauthorized access', status: ComponentStatus.ERROR })
-                window.location.replace('/login')
+                ConfigData.onInvalidToken()
             } else {
                 console.log("error: ??: ", response.statusText)
                 return { status: response.status, message: response.statusText };

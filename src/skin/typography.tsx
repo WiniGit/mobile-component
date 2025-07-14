@@ -1,6 +1,6 @@
 import { TextStyle } from "react-native"
 
-interface TypoProps {
+export interface TypoProps {
     // regular
     regular0: TextStyle,
     regular1: TextStyle,
