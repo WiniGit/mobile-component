@@ -1,7 +1,6 @@
 // #region export provider 
-import { Stack, WiniProvider, useDesignTokens } from "./module/WiniProvider"
+export { Stack, WiniProvider, useDesignTokens } from "./module/WiniProvider"
 
-export { Stack, WiniProvider, useDesignTokens };
 export { useNavigation, Link, StackActions, useRoute, useNavigationState, useLinkTo, useLinkProps } from "@react-navigation/native";
 
 // #region export i18n
