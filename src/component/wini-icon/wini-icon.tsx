@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GestureResponderEvent, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
 import { SvgXml } from "react-native-svg"
 

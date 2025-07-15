@@ -1,3 +1,4 @@
+import React from 'react';
 import { Text, TouchableOpacity, StyleSheet, TextStyle } from 'react-native';
 import { ReactNode } from 'react';
 

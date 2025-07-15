@@ -9,7 +9,7 @@ export class Util {
 
     static tryParseInt(input: string) {
         if (input != null && input !== undefined && input !== "") {
-            return parseInt(`${input}`.replaceAll(",", ""));
+            return parseInt(`${input}`.replace(/,/g, ""));
         } else {
             return 0;
         }
@@ -17,28 +17,13 @@ export class Util {
 
     static tryParseFloat(input: string) {
         if (input != null && input !== undefined && input !== "") {
-            return parseFloat(`${input}`.replaceAll(",", ""));
+            return parseFloat(`${input}`.replace(/,/g, ""));
         } else {
             return 0;
         }
     }
 
     static dateDefault = new Date('01/01/2021').getTime();
-
-    static set_timeRefreshToken() {
-        const result = new Date(Date.now());
-        result.setDate(result.getDate() + 30);
-        result.setMinutes(result.getMinutes() - 10);
-        localStorage.setItem('time_tokenRefresh', `${result}`);
-    }
-
-    static get_timeRefreshToken() {
-        if (localStorage.getItem('time_tokenRefresh')) {
-            let time = new Date(parseInt(localStorage.getItem('time_tokenRefresh')!)).getTime();
-            return time;
-        }
-        return undefined
-    }
 
     static calculateAge = (birthdate: string) => {
         const parsedBirthdate = parse(birthdate, 'dd/MM/yyyy', new Date());
@@ -57,8 +42,8 @@ export class Util {
 
     static getStringDateNow() {
         const currentDate = new Date();
-        const day = currentDate.getDate().toString().padStart(2, "0");
-        const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+        const day = (currentDate.getDate().toString() as any).padStart(2, "0");
+        const month = ((currentDate.getMonth() + 1).toString() as any).padStart(2, "0");
         const year = currentDate.getFullYear();
 
         return `${day} -${month} -${year} `;
@@ -127,21 +112,6 @@ export class Util {
         return formatedDate;
     }
 
-
-    //stringToDate("17/9/2014", "dd/MM/yyyy", "/");
-    //stringToDate("9/17/2014", "mm/dd/yyyy", "/")
-    //stringToDate("9-17-2014", "mm-dd-yyyy", "-")
-    //stringToDate("9-17-2014 14:20:20", "mm-dd-yyyy HH:mm:ss", "-")
-    //stringToDate("9-17-2014 02:30:30", "mm-dd-yyyy hh:mm:ss", "-")
-    static datetoStringDefault() {
-        const currentDate = new Date();
-        const day = String(currentDate.getDate()).padStart(2, '0');
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-        const year = currentDate.getFullYear();
-
-        const formattedDate = `${day}/${month}/${year}`;
-        return formattedDate;
-    }
 
     /** date: dd/mm/yyyy | yyyy/mm/dd | dd/mm | mm/yyyy
         time: hh:mm:ss | hh:mm */
@@ -247,19 +217,10 @@ export class Util {
         return result;
     }
 
-    static decodeJwtResponse(token: string) {
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
-    };
-
     static percentToHex = (p: number) => {
         // const percent = Math.max(0, Math.min(100, p)); // bound percent from 0 to 100
         const intValue = Math.round(p / 100 * 255); // map percent to nearest integer (0 - 255)
-        const hexValue = intValue.toString(16); // get hexadecimal representation
+        const hexValue = intValue.toString(16) as any; // get hexadecimal representation
         return hexValue.padStart(2, '0').toUpperCase(); // format with leading 0 and upper case characters
     }
 
@@ -287,36 +248,6 @@ export class Util {
             (alpha ? `, ${h & 0x000000ff} ` : '') +
             ')'
         );
-    }
-
-    static rgbToHex(rgba: string) {
-        // Extract the rgb or rgba values from the string using regex
-        const rgbMatch = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*(\d*\.?\d+)?\)/);
-
-        // Ensure the string is valid
-        if (!rgbMatch) {
-            throw new Error("Invalid RGB or RGBA format");
-        }
-
-        // Parse the extracted values
-        const r = parseInt(rgbMatch[1]);
-        const g = parseInt(rgbMatch[2]);
-        const b = parseInt(rgbMatch[3]);
-
-        // If alpha is present, parse it, otherwise default to 1 (fully opaque)
-        const a = rgbMatch[4] !== undefined ? parseFloat(rgbMatch[4]) : 1;
-
-        // Ensure r, g, b values are between 0 and 255
-        const red = Math.max(0, Math.min(255, r)).toString(16).padStart(2, '0');
-        const green = Math.max(0, Math.min(255, g)).toString(16).padStart(2, '0');
-        const blue = Math.max(0, Math.min(255, b)).toString(16).padStart(2, '0');
-
-        // Convert alpha to a value between 0 and 255, then to hex
-        const alpha = Math.max(0, Math.min(1, a)) * 255;
-        const alphaHex = Math.round(alpha).toString(16).padStart(2, '0');
-
-        // Combine the hex values
-        return `#${red}${green}${blue}${alphaHex}`;
     }
 
     static colorNameToHex(color: string) {
@@ -425,7 +356,7 @@ export class Util {
             .replace(/[ó|ò|ỏ|õ|ọ|ô|ơ|ố|ồ|ổ|ỗ|ộ|ớ|ờ|ở|ỡ|ợ]/g, 'o')
             .replace(/\s+/g, ' ')
             .replace(/({|}|\(|\)|<|>)/g, "")
-            .replaceAll(" ", "-");
+            .replace(/ /g, "-");
     }
 
     static convertToKebabCase = (str: string) => {
@@ -433,39 +364,6 @@ export class Util {
             .replace(/([a-z])([A-Z])/g, '$1-$2') // Insert hyphen between lowercase and uppercase letters
             .toLowerCase()                       // Convert entire string to lowercase
             .replace(/[ _]/g, '-');              // Replace spaces or underscores with hyphens
-    };
-
-    static processHTMLContent = (html: string) => {
-        // Tạo một DOMParser để parse chuỗi HTML
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-
-        // Loại bỏ tất cả thẻ <img>
-        const images = doc.getElementsByTagName('img') as any;
-        while (images.length > 0) {
-            images[0].parentNode.removeChild(images[0]);
-        }
-
-        // Lấy toàn bộ nội dung văn bản từ các thẻ HTML
-        let textContent = '';
-        const elements = doc.body.getElementsByTagName('*') as any;
-        for (let element of elements) {
-            // Bỏ qua các thẻ không cần thiết như script, style
-            if (['SCRIPT', 'STYLE'].includes(element.tagName)) continue;
-
-            // Lấy văn bản từ từng phần tử
-            const text = element.innerText.trim();
-            if (text) {
-                textContent += text + ' ';
-            }
-        }
-
-        // Loại bỏ khoảng trắng thừa và gộp thành 1 đoạn văn
-        textContent = textContent.trim();
-        if (!textContent) return '';
-
-        // Tạo thẻ <p> mới chứa toàn bộ nội dung
-        return `<p>${textContent}</p>`;
     };
 
     static timeSince = (dateCreate: number) => {
@@ -679,4 +577,4 @@ export function inputMoneyPattern(ev: any) {
     }
 }
 
-export const randomGID = () => uuidv4().replaceAll('-', '');
+export const randomGID = () => uuidv4().replace(/-/g, '');

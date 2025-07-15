@@ -1,20 +1,25 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "outDir": "./build",
     "module": "commonjs",
-    "outDir": "build",
+    "lib": ["es6"],
+    "target": "es6",
+    "jsx": "react",
+    "moduleResolution": "node",
     "declaration": true,
-    "jsx": "react-jsx",
+    "emitDeclarationOnly": false,
+    "declarationMap": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "types": [],
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
     "baseUrl": "./",
     "paths": {
       "*": ["node_modules/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

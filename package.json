@@ -1,13 +1,12 @@
 {
   "name": "wini-mobile-component",
   "private": false,
-  "version": "0.0.6",
+  "version": "0.0.11",
   "description": "A simple ui library for React-native",
   "main": "build/index.js",
+  "module": "build/index.js",
   "types": "build/index.d.ts",
-  "files": [
-    "build"
-  ],
+  "react-native": "build/index.d.ts",
   "exports": {
     ".": {
       "require": "./build/index.js",
@@ -15,6 +14,9 @@
       "types": "./build/index.d.ts"
     }
   },
+  "files": [
+    "build"
+  ],
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build"
