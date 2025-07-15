@@ -7,6 +7,7 @@ export { useNavigation, Link, StackActions, useRoute, useNavigationState, useLin
 export { i18n } from "./language/i18n";
 
 // #region export controller
+export { BaseDA } from "./controller/config"
 export { DataController, AccountController } from "./controller/data";
 export { Util, randomGID, inputMoneyPattern, formatNumberConvert } from "./controller/utils"
 
