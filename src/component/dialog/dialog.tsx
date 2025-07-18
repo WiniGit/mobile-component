@@ -54,7 +54,7 @@ export const showDialog = ({
   });
 };
 
-export default class FDialog extends React.Component<Object, DialogState> {
+export class FDialog extends React.Component<Object, DialogState> {
   state: Readonly<DialogState> = {
     open: false,
     title: '',

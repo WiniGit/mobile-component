@@ -8,13 +8,15 @@ import { DataController } from "../controller/data"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { NavigationContainer, useNavigation, StackActions } from "@react-navigation/native"
 import { FSnackbar } from "../component/snackbar/snackbar"
-import FDialog from "../component/dialog/dialog"
+import { FDialog } from "../component/dialog/dialog"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { ColorProps, darkThemeColor, lightThemeColor } from "../skin/color"
 import { TextStyle, useColorScheme, ViewStyle } from "react-native"
 import { typography, TypoProps } from "../skin/typography"
 import { BoxShadowProps, initBoxShadows } from "../skin/boxShadow"
 import transform from "css-to-react-native-transform";
+import { SafeAreaProvider } from "react-native-safe-area-context"
+import { i18n } from "../language/i18n"
 
 export const Stack = createNativeStackNavigator();
 
@@ -31,7 +33,7 @@ interface Props {
     imgUrlId: string;
     onInvalidToken?: () => void;
     children?: ReactNode;
-    onProjectLoaded?: (item: ProjectItem) => void;
+    onProjectLoaded?: (item: any) => void;
     globalHeaders?: () => Promise<{ [k: string]: any }>
 }
 
@@ -105,9 +107,12 @@ export const DesignTokenProvider: React.FC<{ children: ReactNode, designTokens: 
             })
             try {
                 customVariables.forEach(e => {
-                    _customStyleSheet = { ..._customStyleSheet, ...transform(convertRemToPxInString(e.Value.lightMode)) }
+                    _customStyleSheet = {
+                        ..._customStyleSheet, ...transform(convertRemToPxInString(e.Value.lightMode).replace(/var\(--([a-zA-Z0-9-_]+)\)/g, (_, variableName) => {
+                            return _colors[variableName] || '#fff';
+                        }))
+                    }
                 })
-                console.log("customStyleSheet: ", _customStyleSheet)
                 setCustomStyleSheet(_customStyleSheet)
             } catch (error) {
                 console.log("parse css error: ", error)
@@ -118,79 +123,79 @@ export const DesignTokenProvider: React.FC<{ children: ReactNode, designTokens: 
         }
         _textStyles = { ...typography, ..._textStyles };
         // regular
-        _textStyles.regular0.color = _colors["neutral-text-color-title"];
-        _textStyles.regular1.color = _colors["neutral-text-color-title"];
-        _textStyles.regular2.color = _colors["neutral-text-color-title"];
-        _textStyles.regular3.color = _colors["neutral-text-color-title"];
-        _textStyles.regular4.color = _colors["neutral-text-color-title"];
-        _textStyles.regular5.color = _colors["neutral-text-color-title"];
-        _textStyles.regular6.color = _colors["neutral-text-color-title"];
-        _textStyles.regular7.color = _colors["neutral-text-color-title"];
-        _textStyles.regular8.color = _colors["neutral-text-color-title"];
-        _textStyles.regular9.color = _colors["neutral-text-color-title"];
+        _textStyles.regular0 = { ..._textStyles.regular0, color: _colors["neutral-text-color-title"] };
+        _textStyles.regular1 = { ..._textStyles.regular1, color: _colors["neutral-text-color-title"] };
+        _textStyles.regular2 = { ..._textStyles.regular2, color: _colors["neutral-text-color-title"] };
+        _textStyles.regular3 = { ..._textStyles.regular3, color: _colors["neutral-text-color-title"] };
+        _textStyles.regular4 = { ..._textStyles.regular4, color: _colors["neutral-text-color-title"] };
+        _textStyles.regular5 = { ..._textStyles.regular5, color: _colors["neutral-text-color-title"] };
+        _textStyles.regular6 = { ..._textStyles.regular6, color: _colors["neutral-text-color-title"] };
+        _textStyles.regular7 = { ..._textStyles.regular7, color: _colors["neutral-text-color-title"] };
+        _textStyles.regular8 = { ..._textStyles.regular8, color: _colors["neutral-text-color-title"] };
+        _textStyles.regular9 = { ..._textStyles.regular9, color: _colors["neutral-text-color-title"] };
         // semibold
-        _textStyles.semibold1.color = _colors["neutral-text-color-title"];
-        _textStyles.semibold2.color = _colors["neutral-text-color-title"];
-        _textStyles.semibold3.color = _colors["neutral-text-color-title"];
-        _textStyles.semibold4.color = _colors["neutral-text-color-title"];
-        _textStyles.semibold5.color = _colors["neutral-text-color-title"];
-        _textStyles.semibold6.color = _colors["neutral-text-color-title"];
-        _textStyles.semibold7.color = _colors["neutral-text-color-title"];
-        _textStyles.semibold8.color = _colors["neutral-text-color-title"];
-        _textStyles.semibold9.color = _colors["neutral-text-color-title"];
+        _textStyles.semibold1 = { ..._textStyles.semibold1, color: _colors["neutral-text-color-title"] };
+        _textStyles.semibold2 = { ..._textStyles.semibold2, color: _colors["neutral-text-color-title"] };
+        _textStyles.semibold3 = { ..._textStyles.semibold3, color: _colors["neutral-text-color-title"] };
+        _textStyles.semibold4 = { ..._textStyles.semibold4, color: _colors["neutral-text-color-title"] };
+        _textStyles.semibold5 = { ..._textStyles.semibold5, color: _colors["neutral-text-color-title"] };
+        _textStyles.semibold6 = { ..._textStyles.semibold6, color: _colors["neutral-text-color-title"] };
+        _textStyles.semibold7 = { ..._textStyles.semibold7, color: _colors["neutral-text-color-title"] };
+        _textStyles.semibold8 = { ..._textStyles.semibold8, color: _colors["neutral-text-color-title"] };
+        _textStyles.semibold9 = { ..._textStyles.semibold9, color: _colors["neutral-text-color-title"] };
         // medium
-        _textStyles.medium1.color = _colors["neutral-text-color-title"];
-        _textStyles.medium2.color = _colors["neutral-text-color-title"];
-        _textStyles.medium3.color = _colors["neutral-text-color-title"];
-        _textStyles.medium4.color = _colors["neutral-text-color-title"];
-        _textStyles.medium5.color = _colors["neutral-text-color-title"];
-        _textStyles.medium6.color = _colors["neutral-text-color-title"];
-        _textStyles.medium7.color = _colors["neutral-text-color-title"];
-        _textStyles.medium8.color = _colors["neutral-text-color-title"];
-        _textStyles.medium9.color = _colors["neutral-text-color-title"];
+        _textStyles.medium1 = { ..._textStyles.medium1, color: _colors["neutral-text-color-title"] };
+        _textStyles.medium2 = { ..._textStyles.medium2, color: _colors["neutral-text-color-title"] };
+        _textStyles.medium3 = { ..._textStyles.medium3, color: _colors["neutral-text-color-title"] };
+        _textStyles.medium4 = { ..._textStyles.medium4, color: _colors["neutral-text-color-title"] };
+        _textStyles.medium5 = { ..._textStyles.medium5, color: _colors["neutral-text-color-title"] };
+        _textStyles.medium6 = { ..._textStyles.medium6, color: _colors["neutral-text-color-title"] };
+        _textStyles.medium7 = { ..._textStyles.medium7, color: _colors["neutral-text-color-title"] };
+        _textStyles.medium8 = { ..._textStyles.medium8, color: _colors["neutral-text-color-title"] };
+        _textStyles.medium9 = { ..._textStyles.medium9, color: _colors["neutral-text-color-title"] };
         // heading
-        _textStyles["heading-1"].color = _colors["neutral-text-color-title"];
-        _textStyles["heading-2"].color = _colors["neutral-text-color-title"];
-        _textStyles["heading-3"].color = _colors["neutral-text-color-title"];
-        _textStyles["heading-4"].color = _colors["neutral-text-color-title"];
-        _textStyles["heading-5"].color = _colors["neutral-text-color-title"];
-        _textStyles["heading-6"].color = _colors["neutral-text-color-title"];
-        _textStyles["heading-7"].color = _colors["neutral-text-color-title"];
-        _textStyles["heading-8"].color = _colors["neutral-text-color-title"];
-        _textStyles["heading-9"].color = _colors["neutral-text-color-title"];
+        _textStyles["heading-1"] = { ..._textStyles["heading-1"], color: _colors["neutral-text-color-title"] };
+        _textStyles["heading-2"] = { ..._textStyles["heading-2"], color: _colors["neutral-text-color-title"] };
+        _textStyles["heading-3"] = { ..._textStyles["heading-3"], color: _colors["neutral-text-color-title"] };
+        _textStyles["heading-4"] = { ..._textStyles["heading-4"], color: _colors["neutral-text-color-title"] };
+        _textStyles["heading-5"] = { ..._textStyles["heading-5"], color: _colors["neutral-text-color-title"] };
+        _textStyles["heading-6"] = { ..._textStyles["heading-6"], color: _colors["neutral-text-color-title"] };
+        _textStyles["heading-7"] = { ..._textStyles["heading-7"], color: _colors["neutral-text-color-title"] };
+        _textStyles["heading-8"] = { ..._textStyles["heading-8"], color: _colors["neutral-text-color-title"] };
+        _textStyles["heading-9"] = { ..._textStyles["heading-9"], color: _colors["neutral-text-color-title"] };
         // label
-        _textStyles["label-1"].color = _colors["neutral-text-color-label"];
-        _textStyles["label-2"].color = _colors["neutral-text-color-label"];
-        _textStyles["label-3"].color = _colors["neutral-text-color-label"];
-        _textStyles["label-4"].color = _colors["neutral-text-color-label"];
-        _textStyles["label-5"].color = _colors["neutral-text-color-label"];
+        _textStyles["label-1"] = { ..._textStyles["label-1"], color: _colors["neutral-text-color-label"] };
+        _textStyles["label-2"] = { ..._textStyles["label-2"], color: _colors["neutral-text-color-label"] };
+        _textStyles["label-3"] = { ..._textStyles["label-3"], color: _colors["neutral-text-color-label"] };
+        _textStyles["label-4"] = { ..._textStyles["label-4"], color: _colors["neutral-text-color-label"] };
+        _textStyles["label-5"] = { ..._textStyles["label-5"], color: _colors["neutral-text-color-label"] };
         // body
-        _textStyles["body-1"].color = _colors["neutral-text-color-body"];
-        _textStyles["body-2"].color = _colors["neutral-text-color-body"];
-        _textStyles["body-3"].color = _colors["neutral-text-color-body"];
+        _textStyles["body-1"] = { ..._textStyles["body-1"], color: _colors["neutral-text-color-body"] };
+        _textStyles["body-2"] = { ..._textStyles["body-2"], color: _colors["neutral-text-color-body"] };
+        _textStyles["body-3"] = { ..._textStyles["body-3"], color: _colors["neutral-text-color-body"] };
         // highlight
-        _textStyles["highlight-1"].color = _colors["neutral-text-color-title"];
-        _textStyles["highlight-2"].color = _colors["neutral-text-color-title"];
-        _textStyles["highlight-3"].color = _colors["neutral-text-color-title"];
-        _textStyles["highlight-4"].color = _colors["neutral-text-color-title"];
-        _textStyles["highlight-5"].color = _colors["neutral-text-color-title"];
-        _textStyles["highlight-6"].color = _colors["neutral-text-color-title"];
+        _textStyles["highlight-1"] = { ..._textStyles["highlight-1"], color: _colors["neutral-text-color-title"] };
+        _textStyles["highlight-2"] = { ..._textStyles["highlight-2"], color: _colors["neutral-text-color-title"] };
+        _textStyles["highlight-3"] = { ..._textStyles["highlight-3"], color: _colors["neutral-text-color-title"] };
+        _textStyles["highlight-4"] = { ..._textStyles["highlight-4"], color: _colors["neutral-text-color-title"] };
+        _textStyles["highlight-5"] = { ..._textStyles["highlight-5"], color: _colors["neutral-text-color-title"] };
+        _textStyles["highlight-6"] = { ..._textStyles["highlight-6"], color: _colors["neutral-text-color-title"] };
         // subtitle
-        _textStyles["subtitle-1"].color = _colors["neutral-text-color-subtitle"];
-        _textStyles["subtitle-2"].color = _colors["neutral-text-color-subtitle"];
-        _textStyles["subtitle-3"].color = _colors["neutral-text-color-subtitle"];
-        _textStyles["subtitle-4"].color = _colors["neutral-text-color-subtitle"];
-        _textStyles["subtitle-5"].color = _colors["neutral-text-color-subtitle"];
+        _textStyles["subtitle-1"] = { ..._textStyles["subtitle-1"], color: _colors["neutral-text-color-subtitle"] };
+        _textStyles["subtitle-2"] = { ..._textStyles["subtitle-2"], color: _colors["neutral-text-color-subtitle"] };
+        _textStyles["subtitle-3"] = { ..._textStyles["subtitle-3"], color: _colors["neutral-text-color-subtitle"] };
+        _textStyles["subtitle-4"] = { ..._textStyles["subtitle-4"], color: _colors["neutral-text-color-subtitle"] };
+        _textStyles["subtitle-5"] = { ..._textStyles["subtitle-5"], color: _colors["neutral-text-color-subtitle"] };
         // placeholder
-        _textStyles["placeholder-1"].color = _colors["neutral-text-color-placeholder"];
-        _textStyles["placeholder-2"].color = _colors["neutral-text-color-placeholder"];
+        _textStyles["placeholder-1"] = { ..._textStyles["placeholder-1"], color: _colors["neutral-text-color-placeholder"] };
+        _textStyles["placeholder-2"] = { ..._textStyles["placeholder-2"], color: _colors["neutral-text-color-placeholder"] };
         // button-text
-        _textStyles["button-text-1"].color = _colors["primary-color-main"];
-        _textStyles["button-text-2"].color = _colors["primary-color-main"];
-        _textStyles["button-text-3"].color = _colors["primary-color-main"];
-        _textStyles["button-text-4"].color = _colors["primary-color-main"];
-        _textStyles["button-text-5"].color = _colors["primary-color-main"];
-        _textStyles["button-text-6"].color = _colors["primary-color-main"];
+        _textStyles["button-text-1"] = { ..._textStyles["button-text-1"], color: _colors["primary-color-main"] };
+        _textStyles["button-text-2"] = { ..._textStyles["button-text-2"], color: _colors["primary-color-main"] };
+        _textStyles["button-text-3"] = { ..._textStyles["button-text-3"], color: _colors["primary-color-main"] };
+        _textStyles["button-text-4"] = { ..._textStyles["button-text-4"], color: _colors["primary-color-main"] };
+        _textStyles["button-text-5"] = { ..._textStyles["button-text-5"], color: _colors["primary-color-main"] };
+        _textStyles["button-text-6"] = { ..._textStyles["button-text-6"], color: _colors["primary-color-main"] };
         setColors(_colors);
         setTextStyles(_textStyles);
         setBoxShadows(_boxShadows);
@@ -230,29 +235,28 @@ function parseFontString(input: string): TextStyle {
 
 export const WiniProvider = (props: Props) => {
     return <GestureHandlerRootView>
-        <NavigationContainer>
-            <RootStack {...props} />
-        </NavigationContainer >
+        <SafeAreaProvider>
+            <NavigationContainer>
+                <RootStack {...props} />
+            </NavigationContainer >
+        </SafeAreaProvider>
     </GestureHandlerRootView>
 }
 
 const RootStack = (props: Props) => {
-    const navigate = useNavigation();
     ConfigData.pid = props.pid;
     ConfigData.url = props.url;
     ConfigData.imgUrlId = props.imgUrlId;
     ConfigData.fileUrl = props.fileUrl;
-    if (props.globalHeaders) ConfigData.globalHeaders = props.globalHeaders;
+    if (props.globalHeaders) ConfigData.globalHeaders = props.globalHeaders as any;
     ConfigData.onInvalidToken = props.onInvalidToken ?? (() => {
         Util.clearStorage()
-        navigate.dispatch(StackActions.popTo("/login"))
+        StackActions.popTo("/login")
     })
-    const { i18n } = useTranslation()
     const [loadedResources, setLoadedResources] = useState(false)
     const [designTokens, setDesignTokens] = useState<Array<{ [p: string]: any }>>([])
 
     useEffect(() => {
-        ConfigData.pid = props.pid
         if (props.pid.length === 32) {
             const _desginTokenController = new TableController("designtoken")
             _desginTokenController.getAll().then(res => {
@@ -261,7 +265,10 @@ const RootStack = (props: Props) => {
             const projectController = new WiniController("Project")
             projectController.getByIds([props.pid]).then(res => {
                 if (res.code === 200 && res.data[0]) {
-                    if (props.onProjectLoaded) props.onProjectLoaded(res.data[0])
+                    if (props.onProjectLoaded) {
+                        props.onProjectLoaded(res.data[0])
+                        ConfigData.fileUrl = res.data[0].FileDomain
+                    }
                 }
             })
             const languageController = new DataController("Language")
