@@ -47,7 +47,8 @@
   },
   "peerDependencies": {
     "react-native-gesture-handler": ">=2.14.0",
-    "react-native-safe-area-context": ">=4.8.0"
+    "react-native-safe-area-context": ">=4.8.0",
+    "react-native-paper": ">=5.13.1"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",

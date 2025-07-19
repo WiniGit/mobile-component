@@ -8,7 +8,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { NavigationContainer, StackActions } from "@react-navigation/native"
 import { FSnackbar } from "../component/snackbar/snackbar"
 import { FDialog } from "../component/dialog/dialog"
-import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { ColorProps, darkThemeColor, lightThemeColor } from "../skin/color"
 import { TextStyle, useColorScheme, ViewStyle } from "react-native"
 import { typography, TypoProps } from "../skin/typography"
@@ -16,6 +15,7 @@ import { BoxShadowProps, initBoxShadows } from "../skin/boxShadow"
 import transform from "css-to-react-native-transform";
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import { i18n } from "../language/i18n"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 export const Stack = createNativeStackNavigator();
 
@@ -290,7 +290,7 @@ const RootStack = (props: Props) => {
 
     return <DesignTokenProvider designTokens={designTokens}>
         <FSnackbar />
-        <FDialog />
+        {/* <FDialog /> */}
         {loadedResources && props.children}
     </DesignTokenProvider>
 }

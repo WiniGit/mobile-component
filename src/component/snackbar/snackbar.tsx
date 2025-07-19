@@ -1,10 +1,10 @@
-import { Snackbar, Text } from 'react-native-paper';
 import React, { type ReactNode, createRef } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { ComponentStatus } from '../component-status';
 import { lightThemeColor } from '../../skin/color';
 import { typography } from '../../skin/typography';
+import { Snackbar } from 'react-native-paper';
 
 interface FSnackbarState {
   visible?: boolean;
