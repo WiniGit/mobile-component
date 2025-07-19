@@ -1,12 +1,11 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from "react"
 import { BaseDA, ConfigData } from "../controller/config"
 import { TableController, WiniController } from "../controller/setting"
-import { DesignTokenType, ProjectItem } from "./da"
+import { DesignTokenType } from "./da"
 import { Util } from "../controller/utils"
-import { useTranslation } from "react-i18next"
 import { DataController } from "../controller/data"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { NavigationContainer, useNavigation, StackActions } from "@react-navigation/native"
+import { NavigationContainer, StackActions } from "@react-navigation/native"
 import { FSnackbar } from "../component/snackbar/snackbar"
 import { FDialog } from "../component/dialog/dialog"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
@@ -234,13 +233,13 @@ function parseFontString(input: string): TextStyle {
 }
 
 export const WiniProvider = (props: Props) => {
-    return <GestureHandlerRootView>
-        <SafeAreaProvider>
+    return <SafeAreaProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
             <NavigationContainer>
                 <RootStack {...props} />
             </NavigationContainer >
-        </SafeAreaProvider>
-    </GestureHandlerRootView>
+        </GestureHandlerRootView>
+    </SafeAreaProvider>
 }
 
 const RootStack = (props: Props) => {
