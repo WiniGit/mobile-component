@@ -16,6 +16,7 @@ import transform from "css-to-react-native-transform";
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import { i18n } from "../language/i18n"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
+import { PaperProvider } from "react-native-paper"
 
 export const Stack = createNativeStackNavigator();
 
@@ -233,13 +234,15 @@ function parseFontString(input: string): TextStyle {
 }
 
 export const WiniProvider = (props: Props) => {
-    return <SafeAreaProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <NavigationContainer>
-                <RootStack {...props} />
-            </NavigationContainer >
-        </GestureHandlerRootView>
-    </SafeAreaProvider>
+    return <PaperProvider>
+        <SafeAreaProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+                <NavigationContainer>
+                    <RootStack {...props} />
+                </NavigationContainer >
+            </GestureHandlerRootView>
+        </SafeAreaProvider>
+    </PaperProvider>
 }
 
 const RootStack = (props: Props) => {
