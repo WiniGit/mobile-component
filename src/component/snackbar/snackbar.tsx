@@ -4,7 +4,7 @@ import { SvgXml } from 'react-native-svg';
 import { ComponentStatus } from '../component-status';
 import { lightThemeColor } from '../../skin/color';
 import { typography } from '../../skin/typography';
-import { Snackbar } from 'react-native-paper';
+import { Snackbar } from 'react-native-paper'; 
 
 interface FSnackbarState {
   visible?: boolean;
