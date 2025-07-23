@@ -14,6 +14,7 @@ import { typography, TypoProps } from "../skin/typography"
 import { BoxShadowProps, initBoxShadows } from "../skin/boxShadow"
 import transform from "css-to-react-native-transform";
 import { SafeAreaProvider } from "react-native-safe-area-context"
+import { I18nextProvider } from 'react-i18next';
 import { i18n } from "../language/i18n"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { PaperProvider } from "react-native-paper"
@@ -234,15 +235,17 @@ function parseFontString(input: string): TextStyle {
 }
 
 export const WiniProvider = (props: Props) => {
-    return <PaperProvider>
+    return <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-                <NavigationContainer>
-                    <RootStack {...props} />
-                </NavigationContainer >
-            </GestureHandlerRootView>
+            <NavigationContainer>
+                <PaperProvider>
+                    <I18nextProvider i18n={i18n}>
+                        <RootStack {...props} />
+                    </I18nextProvider>
+                </PaperProvider>
+            </NavigationContainer>
         </SafeAreaProvider>
-    </PaperProvider>
+    </GestureHandlerRootView>
 }
 
 const RootStack = (props: Props) => {

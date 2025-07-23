@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import RNLanguageDetector from '@os-team/i18next-react-native-language-detector';
 
 // Translation resources
 const resources = {
@@ -220,14 +221,14 @@ const resources = {
 }
 
 // Initialize i18n
-i18n.use(initReactI18next).init({
+i18n.use(RNLanguageDetector).use(initReactI18next).init({
     resources,
     lng: 'en', // Default language
     fallbackLng: 'en', // Fallback language
-    // backend: {loadPath: "somevariables"},
-    interpolation: {
-        escapeValue: false, // React already escapes values
-    },
+    detection: {
+        order: ['asyncStorage', 'device'],
+        caches: ['asyncStorage'],
+    }
 })
 
 export { i18n }
