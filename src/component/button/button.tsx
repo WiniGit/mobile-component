@@ -48,24 +48,20 @@ export const WButton = forwardRef<ButtonRef, ButtonProps>(({ style = initStyle, 
         switch (e) {
           case WButtonVariant.dahsed:
           case WButtonVariant.ghost:
-            if (tmp.some(s => s === WButtonVariant.success)) {
-              value.borderColor = colors?.['success-color-main']
-              value.color = colors?.['success-color-main']
-              delete value.backgroundColor
-            } else if (tmp.some(s => s === WButtonVariant.error)) {
-              value.borderColor = colors?.['error-color-main']
-              value.color = colors?.['error-color-main']
-            } else if (tmp.some(s => s === WButtonVariant.warning)) {
-              value.borderColor = colors?.['warning-color-main']
-              value.color = colors?.['warning-color-main']
-            } else if (tmp.some(s => s === WButtonVariant.infor)) {
-              value.borderColor = colors?.['infor-color-main']
-              value.color = colors?.['infor-color-main']
-            } else {
+            if (!tmp.some(s => s === WButtonVariant.success || s === WButtonVariant.error || s === WButtonVariant.warning || s === WButtonVariant.infor)) {
               value.borderColor = colors?.['neutral-border-color-bolder']
               value.color = colors?.['neutral-text-color-subtitle']
             }
             break;
+          case WButtonVariant.success:
+          case WButtonVariant.error:
+          case WButtonVariant.warning:
+          case WButtonVariant.infor:
+            if (tmp.some(s => s === WButtonVariant.dahsed || s === WButtonVariant.ghost)) {
+              value.borderColor = colors?.[`${e}-color-main`]
+              value.color = colors?.[`${e}-color-main`]
+              delete value.backgroundColor
+            }
           default:
             break;
         }
@@ -102,7 +98,6 @@ export const WButton = forwardRef<ButtonRef, ButtonProps>(({ style = initStyle, 
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
