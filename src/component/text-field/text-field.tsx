@@ -1,15 +1,13 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react';
-import {
-    KeyboardTypeOptions,
-    ReturnKeyTypeOptions,
-    StyleSheet,
-    Text,
-    TextInput,
-    TextInputFocusEvent,
-    TextStyle,
-    useColorScheme,
-    View
-} from 'react-native';
+import { KeyboardTypeOptions, ReturnKeyTypeOptions, StyleSheet, Text, TextInput, TextInputFocusEvent, TextStyle, View, ViewStyle } from 'react-native';
+import { useDesignTokens } from '../../module/WiniProvider';
+
+export enum WTextFieldVariant {
+    size24 = "size24",
+    size32 = "size32",
+    size40 = "size40",
+    size48 = "size48",
+}
 
 interface TextFieldProps {
     value?: string;
@@ -32,7 +30,7 @@ interface TextFieldProps {
     prefix?: React.ReactNode;
     helperText?: string;
     helperTextColor?: string;
-    style?: TextStyle;
+    style?: Array<ViewStyle | TextStyle | WTextFieldVariant> | ViewStyle | TextStyle | WTextFieldVariant
     autoFocus?: boolean;
     secureTextEntry?: boolean;
     type?: KeyboardTypeOptions;
@@ -43,11 +41,25 @@ interface TextFieldRef {
     isFocused: boolean;
 }
 
-export const FTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = {}, helperTextColor = "#E14337", ...props }, ref) => {
-    const colorScheme = useColorScheme();
+export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = {}, helperTextColor = "#E14337", ...props }, ref) => {
+    const { colors } = useDesignTokens();
     const [inputValue, setInputValue] = useState('');
     const [focused, setFocused] = useState(false);
-    const { fontVariant, fontSize, fontFamily, fontStyle, fontWeight, color, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius, ...restOfStyle } = style
+    const convertStyle: TextStyle = useMemo(() => {
+        const tmp = Array.isArray(style) ? style : [style]
+        let value: any = { ...styles.container }
+        tmp.forEach((e => {
+            if (typeof e === "string") {
+                value = { ...value, ...(styles as any)[e] }
+            } else value = { ...value, ...e }
+        }))
+        if (focused) value.borderColor = "#287CF0"
+        if (props.helperText?.length) value.borderColor = helperTextColor
+        if (props.multiline) value.height = undefined
+        if (props.disabled) value.backgroundColor = props.disabledBg ?? colors?.['neutral-background-color-disable']
+        return value
+    }, [focused, props.disabled, props.helperText, colors?.['neutral-background-color-disable']])
+    const { fontVariant, fontSize, fontFamily, fontStyle, fontWeight, color, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius, ...restOfStyle } = convertStyle
 
     useEffect(() => {
         if (props.value !== inputValue) setInputValue(props.value ?? "")
@@ -58,16 +70,7 @@ export const FTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = {}
         isFocused: focused
     }), [focused, inputValue])
 
-    const finalStyle = useMemo(() => {
-        const tmp: any = { ...textFieldStyle.container, ...restOfStyle }
-        if (focused) tmp.borderColor = "#287CF0"
-        if (props.helperText?.length) tmp.borderColor = helperTextColor
-        if (props.multiline) tmp.height = undefined
-        if (props.disabled) tmp.backgroundColor = props.disabledBg ?? "#F4F4F5"
-        return tmp
-    }, [focused, props.disabled, props.helperText])
-
-    return <View style={finalStyle}>
+    return <View style={restOfStyle}>
         {props.prefix}
         <TextInput
             style={{
@@ -75,7 +78,7 @@ export const FTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = {}
                 flex: 1,
                 padding: 0,
                 height: '100%',
-                color: props.disabled ? "#61616B" : color,
+                color: props.disabled ? colors?.['neutral-text-color-disabled'] : color,
                 fontVariant, fontSize, fontFamily, fontStyle, fontWeight, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius,
             }}
             placeholder={props.placeholder}
@@ -111,16 +114,15 @@ export const FTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = {}
         {props.helperText?.length ? (
             <Text
                 numberOfLines={1}
-                style={[
-                    // TextStyleSkin.subtitle4,
-                    {
-                        color: helperTextColor,
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 2,
-                        transform: [{ translateY: 22 }],
-                    },
-                ]}
+                style={{
+                    lineHeight: 1.33,
+                    fontSize: 12,
+                    color: helperTextColor,
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 2,
+                    transform: [{ translateY: 22 }],
+                }}
             >
                 {props.helperText}
             </Text>
@@ -128,7 +130,7 @@ export const FTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = {}
     </View>
 })
 
-const textFieldStyle = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         overflow: 'visible',
         position: 'relative',
@@ -139,8 +141,26 @@ const textFieldStyle = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 8,
-        columnGap: 12,
         width: '100%',
-        borderColor: '#00358014',
     },
+    size24: {
+        height: 24,
+        paddingHorizontal: 8,
+        columnGap: 8
+    },
+    size32: {
+        height: 32,
+        paddingHorizontal: 12,
+        columnGap: 12,
+    },
+    size40: {
+        height: 40,
+        paddingHorizontal: 16,
+        columnGap: 12,
+    },
+    size48: {
+        height: 48,
+        paddingHorizontal: 16,
+        columnGap: 12,
+    }
 });

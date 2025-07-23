@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { GestureResponderEvent, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
 import { SvgXml } from "react-native-svg"
+import { useDesignTokens } from "../../module/WiniProvider";
 
 const svgCache: Record<string, string> = {};
 
@@ -13,6 +14,7 @@ interface WiniconProps {
 }
 
 export const Winicon = ({ style = {}, size = 24, ...props }: WiniconProps) => {
+    const { colors } = useDesignTokens()
     const [svgData, setSvgData] = useState<string>();
     const [isLoading, setIsLoading] = useState(false);
     const cdnSrc = 'https://cdn.jsdelivr.net/gh/WiniGit/icon-library@latest/';
@@ -77,7 +79,7 @@ export const Winicon = ({ style = {}, size = 24, ...props }: WiniconProps) => {
                     xml={svgData}
                     width={size}
                     height={size}
-                    color={(props.src.startsWith("fill") || props.src.startsWith("outline")) ? props.color : undefined}
+                    color={(props.src.startsWith("fill") || props.src.startsWith("outline")) ? (props.color ?? colors?.["neutral-text-color-subtitle"]) : undefined}
                 />
             ) : isLoading ? <View style={[styles.placeholder, { width: size, height: size }]} /> : null}
         </TouchableOpacity>
@@ -88,6 +90,7 @@ const styles = StyleSheet.create({
     icon: {
         justifyContent: 'center',
         alignItems: 'center',
+        padding: 2
     },
     placeholder: {
         backgroundColor: '#e0e0e0', // Skeleton loading placeholder

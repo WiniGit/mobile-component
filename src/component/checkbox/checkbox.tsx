@@ -1,15 +1,8 @@
-import React, { useState, useEffect, type ReactNode } from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from 'react-native';
+import React, { useState, useEffect, type ReactNode, forwardRef, useImperativeHandle } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { lightThemeColor } from '../../skin/color';
 import { SvgXml } from 'react-native-svg';
-import { typography } from '../../skin/typography';
+import { useDesignTokens } from '../../module/WiniProvider';
 
 interface CheckboxProps {
   onChange?: (value: boolean) => void,
@@ -21,7 +14,13 @@ interface CheckboxProps {
   size?: number,
 }
 
-export function FCheckbox({ size = 20, checkColor = "#fff", style = {}, ...props }: CheckboxProps) {
+interface CheckboxRef {
+  checked?: boolean | null,
+  disabled?: boolean,
+  change?: () => void
+}
+
+export const WCheckbox = forwardRef<CheckboxRef, CheckboxProps>(({ size = 20, checkColor = "#fff", style = {}, ...props }, ref) => {
   const [checked, setChecked] = useState(props.value);
 
   useEffect(() => {
@@ -34,8 +33,14 @@ export function FCheckbox({ size = 20, checkColor = "#fff", style = {}, ...props
     props.onChange?.(newValue);
   }
 
+  useImperativeHandle(ref, () => ({
+    checked,
+    disabled: props.disabled,
+    change: handleChangeValue
+  }), [checked, props.disabled])
+
   return (
-    <TouchableOpacity style={{ padding: 4 }} onPress={props.disabled ? undefined : handleChangeValue}>
+    <TouchableOpacity style={{ padding: 4 }} disabled={props.disabled} onPress={handleChangeValue}>
       <View style={[styles.container, { width: size, height: size }, checked ? styles.activeStyle : styles.inactiveStyle, style]}>
         <SvgXml width={"100%"} height={"100%"}
           xml={`<svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -46,7 +51,7 @@ export function FCheckbox({ size = 20, checkColor = "#fff", style = {}, ...props
       </View>
     </TouchableOpacity>
   );
-}
+})
 
 const styles = StyleSheet.create({
   container: {
@@ -64,24 +69,19 @@ const styles = StyleSheet.create({
   },
 });
 
-export function FMultiCheckbox({
-  data = [],
-  selected,
-  onSelect,
-  size = 20,
-  disable = false,
-  checkboxStyle = {},
-}: {
+export function FMultiCheckbox({ data = [], selected, onSelect, ...props }: {
   size?: number;
   borderRadius?: number;
-  disable?: boolean;
+  disabled?: boolean;
   data: Array<{ id: string | number; name: string | ReactNode }>;
   selected?: Array<string> | Array<number>;
   onSelect: (item: { id: string | number; name: string | ReactNode }) => void;
   checkboxStyle?: ViewStyle;
 }) {
+  const { colors } = useDesignTokens()
+
   return (
-    <View pointerEvents={disable ? 'none' : 'auto'}>
+    <View pointerEvents={props.disabled ? 'none' : 'auto'}>
       <FlatList
         horizontal={true}
         data={data}
@@ -92,20 +92,13 @@ export function FMultiCheckbox({
             }}
             style={{ padding: 4, flexDirection: 'row', gap: 8 }}
           >
-            <Text
-              style={[
-                typography.regular2,
-                { color: disable ? '#667994' : '#00204D' },
-              ]}
-            >
+            <Text style={{ lineHeight: 22, fontSize: 14, fontWeight: "500", color: props.disabled ? colors?.['neutral-text-color-disabled'] : colors?.['neutral-text-color-label'] }}>
               {item.name}
             </Text>
-            <FCheckbox
-              size={size}
-              value={selected?.some((e) => e == item.id) ?? false}
+            <WCheckbox
+              value={selected?.some((e) => e == item.id)}
               onChange={() => onSelect(item)}
-              disabled={disable}
-              style={checkboxStyle}
+              {...props}
             />
           </TouchableOpacity>
         )}

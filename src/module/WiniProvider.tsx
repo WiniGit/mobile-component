@@ -7,7 +7,7 @@ import { DataController } from "../controller/data"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { NavigationContainer, StackActions } from "@react-navigation/native"
 import { FSnackbar } from "../component/snackbar/snackbar"
-import { FDialog } from "../component/dialog/dialog"
+import { WDialog } from "../component/dialog/dialog"
 import { ColorProps, darkThemeColor, lightThemeColor } from "../skin/color"
 import { TextStyle, useColorScheme, ViewStyle } from "react-native"
 import { typography, TypoProps } from "../skin/typography"
@@ -293,7 +293,7 @@ const RootStack = (props: Props) => {
 
     return <DesignTokenProvider designTokens={designTokens}>
         <FSnackbar />
-        {/* <FDialog /> */}
+        <WDialog />
         {loadedResources && props.children}
     </DesignTokenProvider>
 }

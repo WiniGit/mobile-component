@@ -8,7 +8,7 @@ interface SwitchProps {
   size?: number;
 }
 
-export const FSwitch = ({ onChange, value = false, color = '#287CF0', size = 1 }: SwitchProps) => {
+export const WSwitch = ({ onChange, value = false, color = '#287CF0', size = 1 }: SwitchProps) => {
   return (
     <Switch
       trackColor={{ false: '#EFEFF0', true: color }}

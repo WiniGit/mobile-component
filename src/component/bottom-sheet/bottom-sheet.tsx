@@ -1,153 +1,92 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Modal,
-  Pressable,
-  Animated,
-  PanResponder,
-  Dimensions,
-  KeyboardAvoidingView,
-  Platform,
-  DimensionValue,
-  TouchableWithoutFeedback,
-} from 'react-native';
-import React, { useRef } from 'react';
-import { typography } from '../../skin/typography';
+import { View, Text, StyleSheet, Modal, Pressable, Animated, PanResponder, Dimensions, KeyboardAvoidingView, Platform, DimensionValue, TouchableWithoutFeedback, } from 'react-native';
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { useDesignTokens } from '../../module/WiniProvider';
 
 interface BottomSheetState {
-  isVisible: boolean;
   enableDismiss?: boolean;
   dismiss?: () => void;
-  title?: React.ReactNode;
+  title?: string;
   prefixAction?: React.ReactNode;
   suffixAction?: React.ReactNode;
-  children: React.ReactNode;
-  height?: DimensionValue | undefined;
+  children?: React.ReactNode;
+  height?: DimensionValue;
 }
 
-export class FBottomSheet extends React.Component<
-  any,
-  BottomSheetState
-> {
-  state: Readonly<BottomSheetState> = {
-    isVisible: false,
-    children: <View />,
-  };
+interface BottomSheetRef {
+  showBottomSheet: (props: BottomSheetState) => void;
+  hideBottomSheet: () => void;
+}
 
-  showBottomSheet({
-    enableDismiss,
-    title,
-    dismiss,
-    prefixAction,
-    suffixAction,
-    children,
-    height,
-  }: {
-    enableDismiss?: boolean;
-    dismiss?: () => void;
-    titleText?: string;
-    title?: React.ReactNode;
-    prefixAction?: React.ReactNode;
-    suffixAction?: React.ReactNode;
-    children: React.ReactNode;
-    height?: DimensionValue | undefined;
-  }) {
-    this.setState({
-      isVisible: true,
-      enableDismiss: enableDismiss,
-      title: title,
-      dismiss: dismiss,
-      prefixAction: prefixAction,
-      suffixAction: suffixAction,
-      children: children,
-      height: height,
-    });
+export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
+  const { textStyles, colors } = useDesignTokens()
+  const [isVisible, setIsVisible] = useState(false);
+  const [btmSheetState, setBtmSheetState] = useState<BottomSheetState>({});
+
+  const showBottomSheet = (props: BottomSheetState) => {
+    setIsVisible(true);
+    setBtmSheetState(props);
   }
 
-  hideBottomSheet() {
-    this.setState({ isVisible: false });
+  const hideBottomSheet = () => {
+    setIsVisible(false);
+    setBtmSheetState({});
   }
 
-  render(): React.ReactNode {
-    return (
-      <Modal
-        visible={this.state.isVisible ?? false}
-        transparent
-        animationType="slide"
-        // Thêm thuộc tính này để ngăn modal cha nhận sự kiện khi modal con hiển thị
-        statusBarTranslucent={true}
-      >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={{ flex: 1 }}
-        >
-          <TouchableWithoutFeedback>
-            <Container
-              onDismiss={
-                this.state.enableDismiss
-                  ? () => {
-                    this.hideBottomSheet();
-                    if (this.state.dismiss) this.state.dismiss();
-                  }
-                  : undefined
-              }
-            >
+  useImperativeHandle(ref, () => ({
+    showBottomSheet,
+    hideBottomSheet
+  }), [])
+
+  const onDismiss = () => {
+    hideBottomSheet();
+    btmSheetState.dismiss?.();
+  }
+
+  return (
+    // Thêm statusBarTranslucent để ngăn modal cha nhận sự kiện khi modal con hiển thị
+    <Modal transparent visible={isVisible} animationType="slide" statusBarTranslucent={true}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+        <TouchableWithoutFeedback>
+          <Container onDismiss={btmSheetState.enableDismiss ? onDismiss : undefined}>
+            <View style={[styles.container, { height: btmSheetState.height, backgroundColor: colors?.['neutral-background-color-absolute'] }]} pointerEvents="box-none">
               <View
-                style={[styles.container, { height: this.state.height }]}
-                pointerEvents="box-none"
-              >
-                <View
-                  style={{
-                    width: 56,
-                    marginTop: 8,
-                    height: 6,
-                    borderRadius: 10,
-                    backgroundColor: '#EAEAEA',
-                  }}
-                />
-                <Pressable style={{ width: '100%' }}>
-                  {this.state.title ? (
-                    <View style={styles.header}>
-                      {this.state.prefixAction}
-                      <Text
-                        style={[
-                          typography['label-3'],
-                          {
-                            position: 'absolute',
-                            left: '12%',
-                            right: '12%',
-                            textAlign: 'center',
-                            top: 12,
-                          },
-                        ]}
-                      >
-                        {this.state.title ?? '-'}
-                      </Text>
-                      {this.state.suffixAction}
-                    </View>
-                  ) : (
-                    this.state.title
-                  )}
-                </Pressable>
-                {this.state.children}
-              </View>
-            </Container>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-      </Modal>
-    );
-  }
-}
+                style={{
+                  width: 56,
+                  marginTop: 8,
+                  height: 6,
+                  borderRadius: 10,
+                  backgroundColor: colors?.['neutral-background-color-bolder'],
+                }}
+              />
+              <Pressable style={{ width: '100%' }}>
+                {!!btmSheetState.title?.length && <View style={styles.header}>
+                  {btmSheetState.prefixAction}
+                  <Text
+                    style={{
+                      position: 'absolute',
+                      left: '12%',
+                      right: '12%',
+                      textAlign: 'center',
+                      top: 12,
+                      ...(textStyles?.['label-3'] ?? {})
+                    }}
+                  >
+                    {btmSheetState.title}
+                  </Text>
+                  {btmSheetState.suffixAction}
+                </View>}
+              </Pressable>
+              {btmSheetState.children}
+            </View>
+          </Container>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </Modal>
+  )
+})
 
 const scrSize = Dimensions.get('window');
-const Container = ({
-  children,
-  onDismiss,
-}: {
-  children: React.ReactNode;
-  onDismiss?: () => void;
-}) => {
+const Container = (props: { children: React.ReactNode; onDismiss?: () => void; }) => {
   const pan = useRef(new Animated.ValueXY()).current;
 
   const panResponder = useRef(
@@ -179,9 +118,7 @@ const Container = ({
             toValue: scrSize.height,
             duration: 300,
             useNativeDriver: false,
-          }).start(() => {
-            if (onDismiss) onDismiss();
-          });
+          }).start(props.onDismiss);
         } else {
           // Nếu kéo không vượt ngưỡng, trả BottomSheet về vị trí ban đầu
           Animated.spring(pan.y, {
@@ -193,7 +130,7 @@ const Container = ({
     })
   ).current;
 
-  return onDismiss ? (
+  return props.onDismiss ? (
     <Animated.View
       style={{
         ...styles.overlay,
@@ -205,7 +142,7 @@ const Container = ({
       }}
       {...panResponder.panHandlers}
     >
-      <Pressable style={styles.dismissOverlay} onPress={onDismiss} />
+      <Pressable style={styles.dismissOverlay} onPress={props.onDismiss} />
       <Animated.View
         style={{
           alignItems: 'center',
@@ -222,13 +159,13 @@ const Container = ({
           ],
         }}
       >
-        {children}
+        {props.children}
       </Animated.View>
     </Animated.View>
   ) : (
     <View style={{ ...styles.overlay, backgroundColor: '#00000080' }}>
       <View style={{ alignItems: 'center', gap: 8, width: '100%' }}>
-        {children}
+        {props.children}
       </View>
     </View>
   );
@@ -256,7 +193,6 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '100%',
-    backgroundColor: '#fff',
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
     alignItems: 'center',
@@ -273,38 +209,18 @@ const styles = StyleSheet.create({
   },
 });
 
-export const showBottomSheet = ({
-  ref,
-  enableDismiss,
-  titleText,
-  title,
-  dismiss,
-  prefixAction,
-  suffixAction,
-  children,
-  // height,
-}: {
-  ref: React.MutableRefObject<FBottomSheet>;
+export const showBottomSheet = ({ ref, ...props }: {
+  ref: BottomSheetRef;
   enableDismiss?: boolean;
   dismiss?: () => void;
-  titleText?: string;
-  title?: React.ReactNode;
+  title?: string;
   prefixAction?: React.ReactNode;
   suffixAction?: React.ReactNode;
   children: React.ReactNode;
-  // height?: DimensionValue | undefined;
 }) => {
-  ref.current.showBottomSheet({
-    dismiss: dismiss,
-    enableDismiss: enableDismiss,
-    prefixAction: prefixAction,
-    suffixAction: suffixAction,
-    title: title,
-    titleText: titleText,
-    children: children,
-    // height: height,
-  });
+  ref.showBottomSheet(props);
 };
-export const hideBottomSheet = (ref: React.MutableRefObject<FBottomSheet>) => {
-  ref.current.hideBottomSheet();
+
+export const hideBottomSheet = (ref: BottomSheetRef) => {
+  ref.hideBottomSheet();
 };

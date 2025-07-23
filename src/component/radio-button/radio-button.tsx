@@ -1,55 +1,67 @@
-import React, { useEffect } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle } from 'react';
 import { TouchableOpacity, View, type ViewStyle } from 'react-native';
-import { lightThemeColor } from '../../skin/color';
+import { useDesignTokens } from '../../module/WiniProvider';
 
-interface FRadioProps {
+interface WRadioProps {
+  size?: number;
   value: string;
   status?: boolean;
   disabled?: boolean;
-  onPress: (value: boolean) => void;
+  onChange?: (value: boolean) => void;
   style?: ViewStyle;
 }
 
-export const FRadioButton = (props: FRadioProps) => {
+interface WRadioButtonRef {
+  checked?: boolean;
+  disabled?: boolean;
+  change?: () => void;
+}
+
+export const WRadioButton = forwardRef<WRadioButtonRef, WRadioProps>(({ style = {}, size = 24, ...props }, ref) => {
   const [checked, setChecked] = React.useState(props.status);
+  const { colors } = useDesignTokens()
 
   useEffect(() => {
     setChecked(props.status);
   }, [props.status]);
 
-  return (
-    <TouchableOpacity
-      key={props.value}
-      activeOpacity={1}
-      disabled={props.disabled}
-      onPress={() => {
-        const temp = !checked;
-        setChecked(temp);
-        props.onPress(temp);
+  const handleChangeValue = () => {
+    const newValue = !checked;
+    setChecked(newValue);
+    props.onChange?.(newValue);
+  }
+
+  useImperativeHandle(ref, () => ({
+    checked,
+    disabled: props.disabled,
+    change: handleChangeValue
+  }), [checked, props.disabled])
+
+  return <TouchableOpacity
+    key={props.value}
+    activeOpacity={1}
+    disabled={props.disabled}
+    onPress={handleChangeValue}
+    style={[
+      { borderColor: colors?.['primary-color-main'] },
+      style,
+      {
+        borderWidth: 2,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: size,
+        width: size,
+        borderRadius: size / 2,
+      }
+    ]}
+  >
+    {checked && <View
+      style={{
+        height: size / 2,
+        width: size / 2,
+        borderRadius: size / 4,
+        backgroundColor: colors?.['primary-color-main'],
       }}
-      style={[
-        {
-          height: 24,
-          width: 24,
-          borderRadius: 12,
-          borderWidth: 2,
-          borderColor: lightThemeColor['primary-color-main'],
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-        props.style,
-      ]}
-    >
-      {checked ? (
-        <View
-          style={{
-            height: 12,
-            width: 12,
-            borderRadius: 6,
-            backgroundColor: lightThemeColor['primary-color-main'],
-          }}
-        />
-      ) : null}
-    </TouchableOpacity>
-  );
-}
+    />}
+  </TouchableOpacity>
+})

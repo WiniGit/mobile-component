@@ -3,9 +3,7 @@ import { type TextStyle, TouchableOpacity, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
 interface RatingProps {
-  /**
-    value: 0-5
-    */
+  /** value: 0-5 */
   value: number;
   size?: number;
   onChange?: (value: number) => void;
@@ -14,11 +12,7 @@ interface RatingProps {
   fillColor?: string;
 }
 
-interface RatingState {
-  value: number;
-}
-
-export const FRating = ({ style = {}, fillColor = "#faad1e", size = 16, strokeColor = "#878792", ...props }: RatingProps) => {
+export const WRating = ({ style = {}, fillColor = "#faad1e", size = 16, strokeColor = "#878792", ...props }: RatingProps) => {
   const [value, setValue] = useState(0);
 
   useEffect(() => {
@@ -28,13 +22,10 @@ export const FRating = ({ style = {}, fillColor = "#faad1e", size = 16, strokeCo
   return (
     <View style={[{ gap: 4, flexDirection: 'row' }, style]}>
       {Array.from({ length: 5 }).map((_, i) => {
-        // let uniqueId = 'rating-star-grad-0'
         let stopValue = 0;
         if (value >= 5) {
-          // uniqueId = 'rating-star-grad-5'
           stopValue = 100;
         } else if (value >= i) {
-          // uniqueId = autoKeyId()
           stopValue = (value - i) * 100;
         }
         return (
