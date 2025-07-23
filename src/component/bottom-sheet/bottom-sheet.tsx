@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Modal, Pressable, Animated, PanResponder, Dimensions, KeyboardAvoidingView, Platform, DimensionValue, TouchableWithoutFeedback, } from 'react-native';
-import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import React, { forwardRef, RefObject, useImperativeHandle, useRef, useState } from 'react';
 import { useDesignTokens } from '../../module/WiniProvider';
 
 interface BottomSheetState {
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
 });
 
 export const showBottomSheet = ({ ref, ...props }: {
-  ref: BottomSheetRef;
+  ref: RefObject<BottomSheetRef>;
   enableDismiss?: boolean;
   dismiss?: () => void;
   title?: string;
@@ -218,9 +218,9 @@ export const showBottomSheet = ({ ref, ...props }: {
   suffixAction?: React.ReactNode;
   children: React.ReactNode;
 }) => {
-  ref.showBottomSheet(props);
+  ref.current.showBottomSheet(props);
 };
 
-export const hideBottomSheet = (ref: BottomSheetRef) => {
-  ref.hideBottomSheet();
+export const hideBottomSheet = (ref: RefObject<BottomSheetRef>) => {
+  ref.current.hideBottomSheet();
 };

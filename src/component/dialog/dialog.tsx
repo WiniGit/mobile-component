@@ -107,7 +107,7 @@ const Container = ({ status = ComponentStatus.INFOR, ...props }: { status?: Comp
     }
   }, [status])
 
-  return <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'ios' ? 35 : 0} style={[styles.container]}>
+  return <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'ios' ? 35 : 0} style={styles.container}>
     {getStatusIcon(status, 64)}
     <Pressable style={{ gap: 4, marginTop: 12, alignItems: 'center' }}>
       {!!props.title?.length && <Text style={{ ...(textStyles?.['label-2'] ?? {}), textAlign: 'center' }}>
@@ -117,7 +117,7 @@ const Container = ({ status = ComponentStatus.INFOR, ...props }: { status?: Comp
         {props.content}
       </Text> : props.content}
     </Pressable>
-    <View style={{ flexDirection: 'row', marginVertical: 24, gap: 8 }}>
+    <View style={{ flexDirection: 'row', marginTop: 24, gap: 8 }}>
       <TouchableOpacity style={[styles.footerButton, { backgroundColor: colors?.['neutral-background-color-main'] }]} onPress={props.onCancel}>
         <Text style={textStyles?.['label-1']}>
           {props.titleCancel ?? t('cancel')}

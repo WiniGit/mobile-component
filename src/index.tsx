@@ -4,7 +4,7 @@ export { Stack, WiniProvider, useDesignTokens } from "./module/WiniProvider"
 export { useNavigation, Link, StackActions, useRoute, useNavigationState, useLinkTo, useLinkProps } from "@react-navigation/native";
 
 // #region export i18n
-export { i18n, useTranslation } from "./language/i18n";
+export { useTranslation } from "./language/i18n";
 
 // #region export controller
 export { BaseDA } from "./controller/config"
