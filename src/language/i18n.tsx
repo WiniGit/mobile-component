@@ -1,5 +1,5 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+import { initReactI18next, useTranslation } from 'react-i18next';
 import RNLanguageDetector from '@os-team/i18next-react-native-language-detector';
 
 // Translation resources
@@ -231,4 +231,4 @@ i18n.use(RNLanguageDetector).use(initReactI18next).init({
     }
 })
 
-export { i18n }
+export { i18n, useTranslation }

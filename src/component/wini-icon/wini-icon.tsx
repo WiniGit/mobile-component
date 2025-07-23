@@ -76,7 +76,9 @@ export const Winicon = ({ style = {}, size = 24, ...props }: WiniconProps) => {
             {svgData ? (
                 <SvgXml
                     preserveAspectRatio="xMinYMin slice"
-                    xml={svgData}
+                    xml={(props.src.startsWith("fill") || props.src.startsWith("outline")) ?
+                        svgData.replace(/fill="[^"]*"/g, 'fill="currentColor"').replace(/stroke="[^"]*"/g, 'stroke="currentColor"') :
+                        svgData}
                     width={size}
                     height={size}
                     color={(props.src.startsWith("fill") || props.src.startsWith("outline")) ? (props.color ?? colors?.["neutral-text-color-subtitle"]) : undefined}
