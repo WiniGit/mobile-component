@@ -31,6 +31,7 @@ export const WRating = ({ style = {}, fillColor = "#faad1e", size = 16, strokeCo
         return (
           <TouchableOpacity
             key={'star-' + i}
+            disabled={!props.onChange}
             onPress={
               props.onChange
                 ? () => props.onChange!(i + 1)

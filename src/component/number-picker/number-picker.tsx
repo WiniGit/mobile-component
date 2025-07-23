@@ -44,6 +44,7 @@ export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ i
       if (typeof e === "string") {
         value = { ...value, ...(styles as any)[e] }
         solidStyle = e === WNumberPickerVariant.solid
+        if (solidStyle) value.borderColor = colors?.['neutral-border-color-bolder']
       } else value = { ...value, ...e }
     }))
     if (solidStyle) {
@@ -71,7 +72,7 @@ export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ i
     isFocused: focused
   }), [focused, val])
 
-  return <View style={[styles.container, restOfStyle]}>
+  return <View style={[styles.container, restOfStyle]} pointerEvents={props.disabled ? "none" : "auto"}>
     <TouchableOpacity
       disabled={props.disabled || val === props.min}
       onPress={() => {
@@ -95,7 +96,8 @@ export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ i
         padding: 0,
         height: '100%',
         color: props.disabled ? colors?.['neutral-text-color-disabled'] : color,
-        fontVariant, fontSize, fontFamily, fontStyle, fontWeight, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius,
+        textAlign: textAlign ?? "center",
+        fontVariant, fontSize, fontFamily, fontStyle, fontWeight, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius,
       }}
       keyboardType='numeric'
       returnKeyType='done'
@@ -103,6 +105,7 @@ export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ i
       onFocus={() => setFocused(true)}
       onChangeText={setInputValue}
       onBlur={() => {
+        setFocused(false)
         let newValue = volume % 1 === 0 ? parseInt(inputValue) : parseFloat(inputValue)
         if (isNaN(newValue)) setInputValue(`${val ?? ""}`)
         else {
@@ -132,7 +135,7 @@ export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ i
           props.onChange?.(newValue)
         }
       }}
-      style={[styles.button, { backgroundColor: (props.disabled || val === props.max) ? colors?.['neutral-background-color-disable'] : undefined }]}
+      style={[styles.button, { backgroundColor: (props.disabled || val === props.max) ? colors?.['neutral-background-color-disable'] : undefined }, customBorderColor ? { borderColor: customBorderColor, borderRadius: 24, borderWidth: 1 } : { borderRadius: 4 }]}
     >
       <Winicon src="outline/layout/plus" size={12} color={colors?.['neutral-text-color-subtitle']} />
     </TouchableOpacity>
@@ -140,13 +143,13 @@ export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ i
       <Text
         numberOfLines={1}
         style={{
-          lineHeight: 1.33,
+          lineHeight: 16,
           fontSize: 12,
           color: helperTextColor,
           position: 'absolute',
-          bottom: 0,
+          bottom: -2,
           left: 2,
-          transform: [{ translateY: 22 }],
+          transform: [{ translateY: "100%" }],
         }}
       >
         {props.helperText}
@@ -162,7 +165,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: 152,
-    gap: 4
+    gap: 4,
+    height: 32
   },
   button: {
     alignItems: 'center',

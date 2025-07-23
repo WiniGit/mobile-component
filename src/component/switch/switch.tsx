@@ -1,5 +1,6 @@
-import React from 'react';
-import { Switch } from 'react-native';
+import React, { useState } from 'react';
+import { Switch, View } from 'react-native';
+import { useDesignTokens } from '../../module/WiniProvider';
 
 interface SwitchProps {
   onChange: (value: boolean) => void;
@@ -8,14 +9,23 @@ interface SwitchProps {
   size?: number;
 }
 
-export const WSwitch = ({ onChange, value = false, color = '#287CF0', size = 1 }: SwitchProps) => {
+export const WSwitch = ({ onChange, value = false, color, size = 32 }: SwitchProps) => {
+  const { colors } = useDesignTokens()
+  const [baseSize, setBaseSize] = useState<{ width: number; height: number }>()
+  const ratio = baseSize ? (size / baseSize.height) : 1
+
   return (
-    <Switch
-      trackColor={{ false: '#EFEFF0', true: color }}
-      ios_backgroundColor="#EFEFF0"
-      style={{ transform: [{ scaleX: size }, { scaleY: size }] }}
-      onValueChange={onChange}
-      value={value}
-    />
+    <View style={{ justifyContent: 'center', alignItems: 'center', overflow: "hidden", height: size, width: baseSize ? Math.ceil(baseSize.width * ratio) : undefined }}>
+      <Switch
+        onLayout={e => {
+          setBaseSize(e.nativeEvent.layout)
+        }}
+        trackColor={{ false: '#EFEFF0', true: color ?? colors?.['primary-color-main'] }}
+        ios_backgroundColor="#EFEFF0"
+        style={{ transform: [{ scaleX: ratio }, { scaleY: ratio }], transformOrigin: 'center' }}
+        onValueChange={onChange}
+        value={value}
+      />
+    </View>
   );
 }

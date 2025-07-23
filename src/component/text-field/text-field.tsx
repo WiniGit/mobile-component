@@ -115,7 +115,7 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = {}
             <Text
                 numberOfLines={1}
                 style={{
-                    lineHeight: 1.33,
+                    lineHeight: 16,
                     fontSize: 12,
                     color: helperTextColor,
                     position: 'absolute',

@@ -86,7 +86,7 @@ const typography: TypoProps = {
         fontSize: 10
     },
     regular1: {
-        lineHeight: 1.33,
+        lineHeight: 16,
         fontSize: 12
     },
     regular2: {
@@ -169,7 +169,7 @@ const typography: TypoProps = {
     },
     // medium
     medium1: {
-        lineHeight: 1.33,
+        lineHeight: 16,
         fontSize: 12,
         fontWeight: "500"
     },
@@ -255,7 +255,7 @@ const typography: TypoProps = {
         fontWeight: "500"
     },
     "heading-9": {
-        lineHeight: 1.33,
+        lineHeight: 16,
         fontSize: 12,
         fontWeight: "500"
     },
@@ -279,7 +279,7 @@ const typography: TypoProps = {
         fontSize: 14
     },
     "label-5": {
-        lineHeight: 1.33,
+        lineHeight: 16,
         fontSize: 12
     },
     // body
@@ -340,7 +340,7 @@ const typography: TypoProps = {
         fontSize: 14
     },
     "subtitle-4": {
-        lineHeight: 1.33,
+        lineHeight: 16,
         fontSize: 12
     },
     "subtitle-5": {
@@ -377,12 +377,12 @@ const typography: TypoProps = {
         fontSize: 14
     },
     "button-text-5": {
-        lineHeight: 1.33,
+        lineHeight: 16,
         fontSize: 12,
         fontWeight: "500"
     },
     "button-text-6": {
-        lineHeight: 1.33,
+        lineHeight: 16,
         fontSize: 12
     },
 }
