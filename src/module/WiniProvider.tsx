@@ -62,7 +62,7 @@ export const DesignTokenProvider: React.FC<{ children: ReactNode, designTokens: 
     const isDark = appliedScheme === 'dark';
 
     function convertRemToPxInString(cssString: string) {
-        return filterCssToClassRulesOnly(cssString.replace(/(\d*\.?\d+)rem/g, (_, remValue) => {
+        return filterCssToClassRulesOnly(cssString.replace(/(\d*\.?\d+)(rem|em)/g, (_, remValue) => {
             const pxValue = parseFloat(remValue) * 10;
             return `${pxValue}px`;
         }))
@@ -93,7 +93,7 @@ export const DesignTokenProvider: React.FC<{ children: ReactNode, designTokens: 
         let _customStyleSheet = {}
         const _designTokens = designTokens.map(e => e.Value ? { ...e, Value: typeof e.Value === "string" ? JSON.parse(e.Value) : e.Value } : e)
         if (_designTokens.length) {
-            const tokenValues = _designTokens.filter(e => e.Type !== DesignTokenType.group && (e.Value?.lightMode || e.Value?.darkMode))
+            const tokenValues = _designTokens.filter(e => e.Type !== DesignTokenType.group && !!e.Value)
             const groupTokens = _designTokens.filter(e => e.Type === DesignTokenType.group)
             const colorVariables = tokenValues.filter(e => e.Type === DesignTokenType.color)
             const boxShadowVariables = tokenValues.filter(e => e.Type === DesignTokenType.boxShadow)
@@ -104,7 +104,28 @@ export const DesignTokenProvider: React.FC<{ children: ReactNode, designTokens: 
                 _colors[`${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`] = isDark ? e.Value.darkMode : e.Value.lightMode;
             })
             fontVariables.forEach(e => {
-                _textStyles[Util.toSlug(e.Name)] ??= parseFontString(e.Value.lightMode)
+                const tkParent = groupTokens.find(g => g.Id === e.ParentId);
+                const fontName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`
+                if (e.Value.lightMode) _textStyles[fontName] ??= parseFontString(e.Value.lightMode)
+                else {
+                    _textStyles[fontName] ??= {}
+                    Object.keys(e.Value).forEach(k => {
+                        if (e.Value[k].includes("rem") || e.Value[k].includes("em")) _textStyles[fontName][Util.kebabToCamelCase(k)] = convertRemToPxInString(e.Value[k])
+                        else _textStyles[fontName][Util.kebabToCamelCase(k)] = e.Value[k]
+                    })
+                }
+            })
+            boxShadowVariables.forEach(e => {
+                const tkParent = groupTokens.find(g => g.Id === e.ParentId);
+                const fontName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`
+                if (e.Value.lightMode) _textStyles[fontName] ??= { boxShadow: e.Value.lightMode }
+                else {
+                    _textStyles[fontName] ??= {}
+                    Object.keys(e.Value).forEach(k => {
+                        if (e.Value[k].includes("rem") || e.Value[k].includes("em")) _textStyles[fontName][Util.kebabToCamelCase(k)] = convertRemToPxInString(e.Value[k])
+                        else _textStyles[fontName][Util.kebabToCamelCase(k)] = e.Value[k]
+                    })
+                }
             })
             try {
                 customVariables.forEach(e => {
@@ -118,9 +139,6 @@ export const DesignTokenProvider: React.FC<{ children: ReactNode, designTokens: 
             } catch (error) {
                 console.log("parse css error: ", error)
             }
-            boxShadowVariables.forEach(e => {
-                _boxShadows[Util.toSlug(e.Name)] = { boxShadow: e.Value.lightMode };
-            })
         }
         _textStyles = { ...typography, ..._textStyles };
         // regular

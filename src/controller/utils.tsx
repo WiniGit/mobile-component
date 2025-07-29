@@ -366,6 +366,11 @@ export class Util {
             .replace(/[ _]/g, '-');              // Replace spaces or underscores with hyphens
     };
 
+    static kebabToCamelCase = (str: string) => {
+        const parts = str.split('-');
+        return parts[0] + parts.slice(1).map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('');
+    }
+
     static timeSince = (dateCreate: number) => {
         const now = new Date(); // Thời điểm hiện tại
         const createdDate = new Date(dateCreate); // Chuyển dateCreate thành Date object

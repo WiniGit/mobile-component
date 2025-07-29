@@ -24,7 +24,6 @@ interface TextFieldProps {
     placeholder?: string;
     returnKeyType?: ReturnKeyTypeOptions | undefined;
     disabled?: boolean;
-    disabledBg?: string;
     multiline?: boolean;
     suffix?: React.ReactNode;
     prefix?: React.ReactNode;
@@ -59,7 +58,7 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = in
         else if (focused) value.borderColor = "#287CF0"
         else value.borderColor = colors?.['neutral-border-color-main']
         if (props.multiline) value.height = undefined
-        if (props.disabled) value.backgroundColor = props.disabledBg ?? colors?.['neutral-background-color-disable']
+        if (props.disabled) value.backgroundColor = colors?.['neutral-background-color-disable']
         return value
     }, [style, focused, props.disabled, props.helperText, colors?.['neutral-background-color-disable']])
     const { fontVariant, fontSize, fontFamily, fontStyle, fontWeight, color, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius, ...restOfStyle } = convertStyle
@@ -82,7 +81,7 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = in
                 padding: 0,
                 height: '100%',
                 color: props.disabled ? colors?.['neutral-text-color-disabled'] : color,
-                opacity: inputValue.length ? 1 : 0.5,
+                opacity: inputValue.length ? 1 : 0.6,
                 fontVariant, fontSize, fontFamily, fontStyle, fontWeight, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius,
             }}
             placeholder={props.placeholder}
