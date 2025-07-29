@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Modal, Pressable, Animated, PanResponder, Dimensions, KeyboardAvoidingView, Platform, DimensionValue, TouchableWithoutFeedback, } from 'react-native';
+import { View, Text, StyleSheet, Modal, Pressable, Animated, PanResponder, Dimensions, KeyboardAvoidingView, Platform, DimensionValue, TouchableWithoutFeedback, ViewStyle, SafeAreaView, } from 'react-native';
 import React, { forwardRef, RefObject, useImperativeHandle, useRef, useState } from 'react';
 import { useDesignTokens } from '../../module/WiniProvider';
 
@@ -6,6 +6,7 @@ interface BottomSheetState {
   enableDismiss?: boolean;
   dismiss?: () => void;
   title?: string;
+  style?: ViewStyle;
   prefixAction?: React.ReactNode;
   suffixAction?: React.ReactNode;
   children?: React.ReactNode;
@@ -44,48 +45,33 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
 
   return (
     // Thêm statusBarTranslucent để ngăn modal cha nhận sự kiện khi modal con hiển thị
-    <Modal transparent visible={isVisible} animationType="slide" statusBarTranslucent={true}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-        <TouchableWithoutFeedback>
-          <Container onDismiss={btmSheetState.enableDismiss ? onDismiss : undefined}>
-            <View style={[styles.container, { height: btmSheetState.height, backgroundColor: colors?.['neutral-background-color-absolute'] }]} pointerEvents="box-none">
-              <View
-                style={{
-                  width: 56,
-                  marginTop: 8,
-                  height: 6,
-                  borderRadius: 10,
-                  backgroundColor: colors?.['neutral-background-color-bolder'],
-                }}
-              />
-              <Pressable style={{ width: '100%' }}>
-                {!!btmSheetState.title?.length && <View style={styles.header}>
-                  {btmSheetState.prefixAction}
-                  <Text
-                    style={{
-                      position: 'absolute',
-                      left: '12%',
-                      right: '12%',
-                      textAlign: 'center',
-                      top: 12,
-                      ...(textStyles?.['label-3'] ?? {})
-                    }}
-                  >
-                    {btmSheetState.title}
-                  </Text>
-                  {btmSheetState.suffixAction}
-                </View>}
-              </Pressable>
-              {btmSheetState.children}
-            </View>
-          </Container>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
-    </Modal>
+    <SafeAreaView>
+      <Modal transparent visible={isVisible} animationType="slide" statusBarTranslucent={true} >
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+          <TouchableWithoutFeedback>
+            <Container onDismiss={btmSheetState.enableDismiss ? onDismiss : undefined}>
+              <View style={[styles.container, { backgroundColor: colors?.['neutral-background-color-absolute'], ...(btmSheetState.style ?? {}) }]} pointerEvents="box-none">
+                <View style={{ width: 56, marginTop: 8, height: 6, borderRadius: 10, backgroundColor: colors?.['neutral-background-color-bolder'] }} />
+                <Pressable style={{ width: '100%', flex: 1 }}>
+                  {!!btmSheetState.title?.length && <View style={[styles.header, { borderBottomColor: colors?.['neutral-border-color-main'] }]}>
+                    {btmSheetState.prefixAction}
+                    <Text style={[styles.title, textStyles?.['heading-7']]}>
+                      {btmSheetState.title}
+                    </Text>
+                    {btmSheetState.suffixAction}
+                  </View>}
+                  {btmSheetState.children}
+                </Pressable>
+              </View>
+            </Container>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </Modal>
+    </SafeAreaView>
   )
 })
 
-const scrSize = Dimensions.get('window');
+const scrSize = Dimensions.get('screen');
 const Container = (props: { children: React.ReactNode; onDismiss?: () => void; }) => {
   const pan = useRef(new Animated.ValueXY()).current;
 
@@ -206,7 +192,16 @@ const styles = StyleSheet.create({
     minHeight: 48,
     width: '100%',
     position: 'relative',
+    borderStyle: "solid",
+    borderBottomWidth: 1,
   },
+  title: {
+    position: 'absolute',
+    left: '12%',
+    right: '12%',
+    textAlign: 'center',
+    top: 12,
+  }
 });
 
 export const showBottomSheet = ({ ref, ...props }: {
@@ -217,6 +212,7 @@ export const showBottomSheet = ({ ref, ...props }: {
   prefixAction?: React.ReactNode;
   suffixAction?: React.ReactNode;
   children: React.ReactNode;
+  style?: ViewStyle;
 }) => {
   ref.current.showBottomSheet(props);
 };

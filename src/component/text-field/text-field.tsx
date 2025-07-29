@@ -115,18 +115,7 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = in
         />
         {props.suffix}
         {props.helperText?.length ? (
-            <Text
-                numberOfLines={1}
-                style={{
-                    lineHeight: 16,
-                    fontSize: 12,
-                    color: helperTextColor,
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 2,
-                    transform: [{ translateY: 22 }],
-                }}
-            >
+            <Text numberOfLines={1} style={[styles.helperText, { color: helperTextColor }]} >
                 {props.helperText}
             </Text>
         ) : null}
@@ -142,6 +131,14 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         alignItems: 'center',
         borderRadius: 8,
+    },
+    helperText: {
+        lineHeight: 16,
+        fontSize: 12,
+        position: 'absolute',
+        bottom: 0,
+        left: 2,
+        transform: [{ translateY: 22 }],
     },
     size24: {
         height: 24,
