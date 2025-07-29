@@ -162,7 +162,7 @@ const OptionDropList = (props: { selected?: string | number, onSelect: (e: Optio
             setTimeout(() => {
                 const scrollIndex = options.data.filter(e => !e.parentId).findIndex(e => e.id === props.selected || options.data.some(c => c.parentId === e.id && c.id === props.selected))
                 if (scrollIndex >= 0) flatListRef.current?.scrollToOffset({ offset: scrollIndex * 34 - 16, animated: true })
-            }, 300)
+            }, 250)
         }
     }, [options.totalCount])
 
