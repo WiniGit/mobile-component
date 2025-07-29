@@ -41,7 +41,9 @@ interface TextFieldRef {
     isFocused: boolean;
 }
 
-export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = {}, helperTextColor = "#E14337", ...props }, ref) => {
+const initStyle = [WTextFieldVariant.size32]
+
+export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = initStyle, helperTextColor = "#E14337", ...props }, ref) => {
     const { colors } = useDesignTokens();
     const [inputValue, setInputValue] = useState('');
     const [focused, setFocused] = useState(false);
@@ -53,12 +55,13 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = {}
                 value = { ...value, ...(styles as any)[e] }
             } else value = { ...value, ...e }
         }))
-        if (focused) value.borderColor = "#287CF0"
         if (props.helperText?.length) value.borderColor = helperTextColor
+        else if (focused) value.borderColor = "#287CF0"
+        else value.borderColor = colors?.['neutral-border-color-main']
         if (props.multiline) value.height = undefined
         if (props.disabled) value.backgroundColor = props.disabledBg ?? colors?.['neutral-background-color-disable']
         return value
-    }, [focused, props.disabled, props.helperText, colors?.['neutral-background-color-disable']])
+    }, [style, focused, props.disabled, props.helperText, colors?.['neutral-background-color-disable']])
     const { fontVariant, fontSize, fontFamily, fontStyle, fontWeight, color, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius, ...restOfStyle } = convertStyle
 
     useEffect(() => {
@@ -79,6 +82,7 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = {}
                 padding: 0,
                 height: '100%',
                 color: props.disabled ? colors?.['neutral-text-color-disabled'] : color,
+                opacity: inputValue.length ? 1 : 0.5,
                 fontVariant, fontSize, fontFamily, fontStyle, fontWeight, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius,
             }}
             placeholder={props.placeholder}
@@ -135,13 +139,10 @@ const styles = StyleSheet.create({
         overflow: 'visible',
         position: 'relative',
         flexDirection: 'row',
-        minHeight: 40,
         borderWidth: 1,
         borderStyle: 'solid',
         alignItems: 'center',
-        justifyContent: 'center',
         borderRadius: 8,
-        width: '100%',
     },
     size24: {
         height: 24,
