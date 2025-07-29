@@ -67,6 +67,12 @@ export const Winicon = ({ style = {}, size = 24, ...props }: WiniconProps) => {
         fetchSvg();
     }, [props.src, props.color]);
 
+    const convertXML = (svgString: string) => {
+        if (svgString.startsWith("fill")) return svgString.replace(/fill="[^"]*"/g, 'fill="currentColor"')
+        else if (svgString.startsWith("outline")) return svgString.replace(/stroke="[^"]*"/g, 'stroke="currentColor"')
+        else return svgString
+    }
+
     return (
         <TouchableOpacity
             disabled={!props.onPress}
@@ -76,9 +82,7 @@ export const Winicon = ({ style = {}, size = 24, ...props }: WiniconProps) => {
             {svgData ? (
                 <SvgXml
                     preserveAspectRatio="xMinYMin slice"
-                    xml={(props.src.startsWith("fill") || props.src.startsWith("outline")) ?
-                        svgData.replace(/fill="[^"]*"/g, 'fill="currentColor"').replace(/stroke="[^"]*"/g, 'stroke="currentColor"') :
-                        svgData}
+                    xml={convertXML(svgData)}
                     width={size}
                     height={size}
                     color={(props.src.startsWith("fill") || props.src.startsWith("outline")) ? (props.color ?? colors?.["neutral-text-color-subtitle"]) : undefined}
