@@ -69,7 +69,7 @@ export const WButton = forwardRef<ButtonRef, ButtonProps>(({ style = initStyle, 
     }))
     return value
   }, [style, colors]);
-  const { fontVariant, fontSize, fontFamily, fontStyle, fontWeight, color, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius, backgroundColor, ...restOfStyle } = convertStyle
+  const { fontVariant, fontSize, lineHeight, fontFamily, fontStyle, fontWeight, color, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius, backgroundColor, ...restOfStyle } = convertStyle
 
   useImperativeHandle(ref, () => ({
     element: uiRef.current as any,

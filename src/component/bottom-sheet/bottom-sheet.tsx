@@ -18,48 +18,67 @@ interface BottomSheetRef {
   hideBottomSheet: () => void;
 }
 
+const scrSize = Dimensions.get('window');
 export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
-  const { textStyles, colors } = useDesignTokens()
+  const { textStyles, colors } = useDesignTokens();
   const [isVisible, setIsVisible] = useState(false);
   const [btmSheetState, setBtmSheetState] = useState<BottomSheetState>({});
 
   const showBottomSheet = (props: BottomSheetState) => {
     setIsVisible(true);
     setBtmSheetState(props);
-  }
+  };
 
   const hideBottomSheet = () => {
     setIsVisible(false);
     setBtmSheetState({});
-  }
+  };
 
-  useImperativeHandle(ref, () => ({
-    showBottomSheet,
-    hideBottomSheet
-  }), [])
+  useImperativeHandle(
+    ref,
+    () => ({
+      showBottomSheet,
+      hideBottomSheet,
+    }),
+    [],
+  );
 
   const onDismiss = () => {
     hideBottomSheet();
     btmSheetState.dismiss?.();
-  }
+  };
 
   return (
     // Thêm statusBarTranslucent để ngăn modal cha nhận sự kiện khi modal con hiển thị
     <SafeAreaView>
-      <Modal transparent visible={isVisible} animationType="slide" statusBarTranslucent={true} >
+      <Modal transparent visible={isVisible} animationType="slide" statusBarTranslucent={true}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
           <TouchableWithoutFeedback>
             <Container onDismiss={btmSheetState.enableDismiss ? onDismiss : undefined}>
-              <View style={[styles.container, { backgroundColor: colors?.['neutral-background-color-absolute'], ...(btmSheetState.style ?? {}) }]} pointerEvents="box-none">
-                <View style={{ width: 56, marginTop: 8, height: 6, borderRadius: 10, backgroundColor: colors?.['neutral-background-color-bolder'] }} />
+              <View
+                style={[
+                  styles.container,
+                  { backgroundColor: colors?.['neutral-background-color-absolute'], ...(btmSheetState.style ?? { height: scrSize.height / 3 }) },
+                ]}
+                pointerEvents="box-none"
+              >
+                <View
+                  style={{
+                    width: 56,
+                    marginTop: 8,
+                    height: 6,
+                    borderRadius: 10,
+                    backgroundColor: colors?.['neutral-background-color-bolder'],
+                  }}
+                />
                 <Pressable style={{ width: '100%', flex: 1 }}>
-                  {!!btmSheetState.title?.length && <View style={[styles.header, { borderBottomColor: colors?.['neutral-border-color-main'] }]}>
-                    {btmSheetState.prefixAction}
-                    <Text style={[styles.title, textStyles?.['heading-7']]}>
-                      {btmSheetState.title}
-                    </Text>
-                    {btmSheetState.suffixAction}
-                  </View>}
+                  {!!btmSheetState.title?.length && (
+                    <View style={[styles.header, { borderBottomColor: colors?.['neutral-border-color-main'], justifyContent: (btmSheetState.prefixAction && btmSheetState.suffixAction) ? "space-between" : btmSheetState.suffixAction ? "flex-end" : "flex-start" }]}>
+                      <Text style={[textStyles?.['heading-7'], styles.title]}>{btmSheetState.title}</Text>
+                      {btmSheetState.prefixAction}
+                      {btmSheetState.suffixAction}
+                    </View>
+                  )}
                   {btmSheetState.children}
                 </Pressable>
               </View>
@@ -68,11 +87,10 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
         </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
-  )
-})
+  );
+});
 
-const scrSize = Dimensions.get('screen');
-const Container = (props: { children: React.ReactNode; onDismiss?: () => void; }) => {
+const Container = (props: { children: React.ReactNode; onDismiss?: () => void }) => {
   const pan = useRef(new Animated.ValueXY()).current;
 
   const panResponder = useRef(
@@ -113,7 +131,7 @@ const Container = (props: { children: React.ReactNode; onDismiss?: () => void; }
           }).start();
         }
       },
-    })
+    }),
   ).current;
 
   return props.onDismiss ? (
@@ -134,6 +152,8 @@ const Container = (props: { children: React.ReactNode; onDismiss?: () => void; }
           alignItems: 'center',
           gap: 8,
           width: '100%',
+          flex: 1,
+          justifyContent: "flex-end",
           transform: [
             {
               translateY: pan.y.interpolate({
@@ -150,9 +170,7 @@ const Container = (props: { children: React.ReactNode; onDismiss?: () => void; }
     </Animated.View>
   ) : (
     <View style={{ ...styles.overlay, backgroundColor: '#00000080' }}>
-      <View style={{ alignItems: 'center', gap: 8, width: '100%' }}>
-        {props.children}
-      </View>
+      <View style={{ alignItems: 'center', gap: 8, width: '100%' }}>{props.children}</View>
     </View>
   );
 };
@@ -182,7 +200,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
     alignItems: 'center',
-    maxHeight: '90%', // Add this to limit maximum height
+    maxHeight: "90%",
   },
   header: {
     flexDirection: 'row',
@@ -192,19 +210,23 @@ const styles = StyleSheet.create({
     minHeight: 48,
     width: '100%',
     position: 'relative',
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderBottomWidth: 1,
   },
   title: {
     position: 'absolute',
-    left: '12%',
-    right: '12%',
+    left: 0,
+    right: 0,
+    top: '50%',
     textAlign: 'center',
-    top: 12,
-  }
+    transform: [{ translateY: "-50%" }]
+  },
 });
 
-export const showBottomSheet = ({ ref, ...props }: {
+export const showBottomSheet = ({
+  ref,
+  ...props
+}: {
   ref: RefObject<BottomSheetRef>;
   enableDismiss?: boolean;
   dismiss?: () => void;

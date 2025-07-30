@@ -205,7 +205,7 @@ const resources = {
             close: 'Đóng',
             delete: 'Xóa',
             edit: 'Chỉnh sửa',
-            itemsSelected: "Đã chọn {{count}} phần từ",
+            itemsSelected: "Đã chọn {{count}}",
             successfully: "Thành công",
             confirm: "Xác nhận",
             seemore: "Xem thêm",

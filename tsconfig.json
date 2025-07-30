@@ -2,8 +2,8 @@
   "compilerOptions": {
     "outDir": "./build",
     "module": "commonjs",
-    "lib": ["es6"],
-    "target": "es6",
+    "lib": ["ESNext"],
+    "target": "ESNext",
     "jsx": "react",
     "moduleResolution": "node",
     "declaration": true,

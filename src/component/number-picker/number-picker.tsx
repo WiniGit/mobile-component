@@ -57,7 +57,7 @@ export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ i
     }
     return value
   }, [style, colors, focused, props.disabled, props.helperText])
-  const { fontVariant, fontSize, fontFamily, fontStyle, fontWeight, color, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius, customBorderColor, ...restOfStyle } = convertStyle
+  const { fontVariant, fontSize, lineHeight, fontFamily, fontStyle, fontWeight, color, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius, customBorderColor, ...restOfStyle } = convertStyle
 
   useEffect(() => {
     if (initValue !== val) setValue(initValue)

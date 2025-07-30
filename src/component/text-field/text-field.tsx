@@ -61,7 +61,7 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = in
         if (props.disabled) value.backgroundColor = colors?.['neutral-background-color-disable']
         return value
     }, [style, focused, props.disabled, props.helperText, colors?.['neutral-background-color-disable']])
-    const { fontVariant, fontSize, fontFamily, fontStyle, fontWeight, color, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius, ...restOfStyle } = convertStyle
+    const { fontVariant, fontSize, lineHeight, fontFamily, fontStyle, fontWeight, color, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius, ...restOfStyle } = convertStyle
 
     useEffect(() => {
         if (props.value !== inputValue) setInputValue(props.value ?? "")
