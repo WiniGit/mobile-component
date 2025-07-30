@@ -594,7 +594,7 @@ const RootStack = (props: Props) => {
     }, [props.pid]);
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
             <DesignTokenProvider designTokens={designTokens}>
                 <FSnackbar />
                 <WDialog />
