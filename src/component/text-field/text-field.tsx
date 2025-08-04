@@ -133,12 +133,10 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     helperText: {
-        lineHeight: 16,
         fontSize: 12,
         position: 'absolute',
-        bottom: 0,
+        bottom: -20,
         left: 2,
-        transform: [{ translateY: 22 }],
     },
     size24: {
         height: 24,

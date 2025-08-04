@@ -548,12 +548,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     helperText: {
-        lineHeight: 16,
         fontSize: 12,
-        position: "absolute",
-        bottom: 0,
+        position: 'absolute',
+        bottom: -20,
         left: 2,
-        transform: [{ translateY: 22 }],
     },
     size24: {
         height: 24,
