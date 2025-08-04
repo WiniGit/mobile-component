@@ -1,6 +1,6 @@
 import React, { createRef, useMemo } from 'react';
 import { ComponentStatus, getStatusIcon } from '../component-status';
-import { KeyboardAvoidingView, Modal, Platform, Pressable, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Platform, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { lightThemeColor } from '../../skin/color';
 import { useDesignTokens } from '../../module/WiniProvider';
 import { useTranslation } from 'react-i18next';
@@ -95,7 +95,7 @@ export const WDialog = () => {
 const Container = ({ status = ComponentStatus.INFOR, ...props }: { status?: ComponentStatus, title?: string, content?: string | React.ReactNode, onCancel?: () => void, onSubmit?: () => void, titleCancel?: string, titleSubmit?: string }) => {
   const { colors, textStyles } = useDesignTokens()
   const { t } = useTranslation()
-  const bgColor = useMemo(() => {
+  const mainColor = useMemo(() => {
     switch (status) {
       case ComponentStatus.WARNING:
         return lightThemeColor['warning-color-main'];
@@ -107,10 +107,24 @@ const Container = ({ status = ComponentStatus.INFOR, ...props }: { status?: Comp
         return lightThemeColor['infor-color-main'];
     }
   }, [status])
+  const bgColor = useMemo(() => {
+    switch (status) {
+      case ComponentStatus.WARNING:
+        return lightThemeColor['warning-color-background'];
+      case ComponentStatus.ERROR:
+        return lightThemeColor['error-color-background'];
+      case ComponentStatus.SUCCSESS:
+        return lightThemeColor['success-color-background'];
+      default: // ComponentStatus.INFOR
+        return lightThemeColor['infor-color-background'];
+    }
+  }, [status])
 
   return <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'ios' ? 35 : 0} style={[styles.container, { backgroundColor: colors?.['neutral-background-color-absolute'] }]}>
-    {getStatusIcon(status, 56)}
-    <Pressable style={{ gap: 8, alignItems: 'center' }}>
+    <View style={{ alignItems: 'center', justifyContent: "center", width: 56, height: 56, borderRadius: 28, backgroundColor: bgColor }}>
+      {getStatusIcon(status, 35)}
+    </View>
+    <Pressable style={{ gap: 8 }}>
       {!!props.title?.length && <Text style={textStyles?.['heading-6']}>
         {props.title}
       </Text>}
@@ -126,7 +140,7 @@ const Container = ({ status = ComponentStatus.INFOR, ...props }: { status?: Comp
       />
       <WButton
         label={props.titleSubmit ?? t('submit')}
-        style={[WButtonVariant.size32, { backgroundColor: bgColor, color: '#fff' }]}
+        style={[WButtonVariant.size32, { backgroundColor: mainColor, color: '#fff' }]}
         onPress={props.onSubmit}
       />
     </View>

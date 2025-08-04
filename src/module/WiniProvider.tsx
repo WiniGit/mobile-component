@@ -79,11 +79,12 @@ export const DesignTokenProvider: React.FC<{
     const appliedScheme = theme === "light" ? systemScheme : theme;
     const isDark = appliedScheme === "dark";
 
-    function convertRemToPxInString(cssString: string) {
+    const convertRemToPxInString = (cssString: string) => {
         return filterCssToClassRulesOnly(
-            cssString.replace(/(\d*\.?\d+)(rem|em)/g, (_, remValue) => {
-                const pxValue = parseFloat(remValue) * 10;
-                return `${pxValue}px`;
+            cssString.replace(/(\d*\.?\d+)(rem|em|px)/g, (ev, remValue) => {
+                if (ev.includes("px")) return `${parseFloat(remValue)}`;
+                const pxValue = parseFloat(remValue) * 16;
+                return `${pxValue}`;
             })
         );
     }
@@ -141,15 +142,12 @@ export const DesignTokenProvider: React.FC<{
             colorVariables.forEach((e) => {
                 const tkParent = groupTokens.find((g) => g.Id === e.ParentId);
                 _colors[
-                    `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(
-                        e.Name
-                    )}`
+                    `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`
                 ] = isDark ? e.Value.darkMode : e.Value.lightMode;
             });
             fontVariables.forEach((e) => {
                 const tkParent = groupTokens.find((g) => g.Id === e.ParentId);
-                const fontName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""
-                    }${Util.toSlug(e.Name)}`;
+                const fontName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`;
                 if (e.Value.lightMode)
                     _textStyles[fontName] ??= parseFontString(e.Value.lightMode);
                 else {
@@ -164,8 +162,7 @@ export const DesignTokenProvider: React.FC<{
             });
             boxShadowVariables.forEach((e) => {
                 const tkParent = groupTokens.find((g) => g.Id === e.ParentId);
-                const fontName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""
-                    }${Util.toSlug(e.Name)}`;
+                const fontName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`;
                 if (e.Value.lightMode)
                     _textStyles[fontName] ??= { boxShadow: e.Value.lightMode };
                 else {
