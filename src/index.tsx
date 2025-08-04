@@ -8,7 +8,7 @@ export { useTranslation } from "./language/i18n";
 
 // #region export controller
 export { BaseDA } from "./controller/config"
-export { DataController, AccountController } from "./controller/data";
+export { DataController, AccountController, SettingDataController } from "./controller/data";
 export { TableController } from "./controller/setting";
 export { Util, randomGID, inputMoneyPattern, formatNumberConvert } from "./controller/utils"
 
