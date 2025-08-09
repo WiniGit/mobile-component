@@ -79,66 +79,19 @@ export const DesignTokenProvider: React.FC<{
     const appliedScheme = theme === "light" ? systemScheme : theme;
     const isDark = appliedScheme === "dark";
 
-    const convertRemToPxInString = (cssString: string) => {
-        return filterCssToClassRulesOnly(
-            cssString.replace(/(\d*\.?\d+)(rem|em|px)/g, (ev, remValue) => {
-                if (ev.includes("px")) return `${parseFloat(remValue)}`;
-                const pxValue = parseFloat(remValue) * 16;
-                return `${pxValue}`;
-            })
-        );
-    }
-
-    function filterCssToClassRulesOnly(rawCss: string) {
-        // Biểu thức chính quy để tìm các khối bắt đầu bằng ".classname"
-        // và kết thúc bằng cặp ngoặc nhọn {}.
-        // \.          -> khớp với ký tự dấu chấm
-        // [a-zA-Z0-9_-]+ -> khớp với tên class (chữ, số, gạch dưới, gạch ngang)
-        // \s*\{       -> khớp với khoảng trắng (nếu có) và dấu {
-        // [^}]+       -> khớp với bất kỳ ký tự nào không phải là dấu }
-        // \}          -> khớp với dấu }
-        const classRuleRegex = /\.([a-zA-Z0-9_-]+)\s*\{[^}]+\}/g;
-
-        // Tìm tất cả các kết quả khớp trong chuỗi
-        const matches = rawCss.match(classRuleRegex);
-
-        // Nếu tìm thấy, nối chúng lại thành một chuỗi mới.
-        // Nếu không, trả về một chuỗi rỗng.
-        return matches ? matches.join("\n\n") : "";
-    }
-
     useEffect(() => {
         const _colors = isDark ? darkThemeColor : lightThemeColor;
         let _textStyles: any = textStyles ?? {};
         const _boxShadows = { ...initBoxShadows };
         let _customStyleSheet = {};
-        const _designTokens = designTokens.map((e) =>
-            e.Value
-                ? {
-                    ...e,
-                    Value: typeof e.Value === "string" ? JSON.parse(e.Value) : e.Value,
-                }
-                : e
-        );
+        const _designTokens = designTokens.map((e) => (e.Value ? { ...e, Value: typeof e.Value === "string" ? JSON.parse(e.Value) : e.Value } : e));
         if (_designTokens.length) {
-            const tokenValues = _designTokens.filter(
-                (e) => e.Type !== DesignTokenType.group && !!e.Value
-            );
-            const groupTokens = _designTokens.filter(
-                (e) => e.Type === DesignTokenType.group
-            );
-            const colorVariables = tokenValues.filter(
-                (e) => e.Type === DesignTokenType.color
-            );
-            const boxShadowVariables = tokenValues.filter(
-                (e) => e.Type === DesignTokenType.boxShadow
-            );
-            const fontVariables = tokenValues.filter(
-                (e) => e.Type === DesignTokenType.font
-            );
-            const customVariables = tokenValues.filter(
-                (e) => e.Type === DesignTokenType.custom
-            );
+            const tokenValues = _designTokens.filter((e) => e.Type !== DesignTokenType.group && !!e.Value);
+            const groupTokens = _designTokens.filter((e) => e.Type === DesignTokenType.group);
+            const colorVariables = tokenValues.filter((e) => e.Type === DesignTokenType.color);
+            const boxShadowVariables = tokenValues.filter((e) => e.Type === DesignTokenType.boxShadow);
+            const fontVariables = tokenValues.filter((e) => e.Type === DesignTokenType.font);
+            const customVariables = tokenValues.filter((e) => e.Type === DesignTokenType.custom);
             colorVariables.forEach((e) => {
                 const tkParent = groupTokens.find((g) => g.Id === e.ParentId);
                 _colors[
@@ -148,51 +101,26 @@ export const DesignTokenProvider: React.FC<{
             fontVariables.forEach((e) => {
                 const tkParent = groupTokens.find((g) => g.Id === e.ParentId);
                 const fontName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`;
-                if (e.Value.lightMode)
-                    _textStyles[fontName] ??= parseFontString(e.Value.lightMode);
-                else {
-                    _textStyles[fontName] ??= {};
-                    Object.keys(e.Value).forEach((k) => {
-                        if (e.Value[k].includes("rem") || e.Value[k].includes("em"))
-                            _textStyles[fontName][Util.kebabToCamelCase(k)] =
-                                convertRemToPxInString(e.Value[k]);
-                        else _textStyles[fontName][Util.kebabToCamelCase(k)] = e.Value[k];
-                    });
-                }
+                if (e.Value.appMode)
+                    _textStyles[fontName] ??= e.Value.appMode
             });
             boxShadowVariables.forEach((e) => {
                 const tkParent = groupTokens.find((g) => g.Id === e.ParentId);
                 const fontName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`;
                 if (e.Value.lightMode)
-                    _textStyles[fontName] ??= { boxShadow: e.Value.lightMode };
-                else {
-                    _textStyles[fontName] ??= {};
-                    Object.keys(e.Value).forEach((k) => {
-                        if (e.Value[k].includes("rem") || e.Value[k].includes("em"))
-                            _textStyles[fontName][Util.kebabToCamelCase(k)] =
-                                convertRemToPxInString(e.Value[k]);
-                        else _textStyles[fontName][Util.kebabToCamelCase(k)] = e.Value[k];
-                    });
+                    _textStyles[fontName] ??= e.Value.appMode
+            });
+            customVariables.forEach((e) => {
+                if (e.Value.appMode?.length) {
+                    try {
+                        var fn = new Function('colors', `return ${e.Value.appMode}`)(_colors)
+                    } catch (error) {
+                        console.log("parse css error: ", e, error);
+                    }
+                    if (fn) _customStyleSheet = { ..._customStyleSheet, ...fn }
                 }
             });
-            try {
-                customVariables.forEach((e) => {
-                    _customStyleSheet = {
-                        ..._customStyleSheet,
-                        ...transform(
-                            convertRemToPxInString(e.Value.lightMode).replace(
-                                /var\(--([a-zA-Z0-9-_]+)\)/g,
-                                (_, variableName) => {
-                                    return _colors[variableName] || "#fff";
-                                }
-                            )
-                        ),
-                    };
-                });
-                setCustomStyleSheet(_customStyleSheet);
-            } catch (error) {
-                console.log("parse css error: ", error);
-            }
+            setCustomStyleSheet(_customStyleSheet);
         }
         _textStyles = { ...typography, ..._textStyles };
         // regular
