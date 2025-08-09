@@ -98,12 +98,14 @@ export const DesignTokenProvider: React.FC<{
                     `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`
                 ] = isDark ? e.Value.darkMode : e.Value.lightMode;
             });
+            console.log("????font", fontVariables.map(e => ({ ...e, Value: e.Value.appMode })));
             fontVariables.forEach((e) => {
                 const tkParent = groupTokens.find((g) => g.Id === e.ParentId);
                 const fontName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`;
                 if (e.Value.appMode)
                     _textStyles[fontName] ??= e.Value.appMode
             });
+            console.log("????shadow", boxShadowVariables.map(e => ({ ...e, Value: e.Value.appMode })));
             boxShadowVariables.forEach((e) => {
                 const tkParent = groupTokens.find((g) => g.Id === e.ParentId);
                 const fontName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`;
@@ -114,6 +116,7 @@ export const DesignTokenProvider: React.FC<{
                 if (e.Value.appMode?.length) {
                     try {
                         var fn = new Function('colors', `return ${e.Value.appMode}`)(_colors)
+                        console.log("??custom:", { Id: e.Id, Name: e.Name, Value: fn })
                     } catch (error) {
                         console.log("parse css error: ", e, error);
                     }
