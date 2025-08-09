@@ -5,11 +5,11 @@ import { SvgUri } from 'react-native-svg';
 
 interface WImageProps {
   style?: ViewStyle;
-  uri?: string;
+  src?: string;
   resizeMode?: ImageResizeMode
 }
 
-export const WImage = ({ uri, ...props }: WImageProps) => {
+export const WImage = ({ src, ...props }: WImageProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [svgError, setSvgError] = useState<boolean>(false);
@@ -18,19 +18,19 @@ export const WImage = ({ uri, ...props }: WImageProps) => {
     setIsLoading(true)
     setIsError(false)
     setSvgError(false)
-  }, [uri]);
+  }, [src]);
 
-  return uri?.length ? <>
+  return src?.length ? <>
     <Pressable pointerEvents="none" style={props.style}>
-      {(uri.endsWith("svg") || isError) ?
+      {(src.endsWith("svg") || isError) ?
         <SvgUri
-          uri={svgError ? "https://cdn.jsdelivr.net/gh/WiniGit/icon-library@latest/outline/development/image-2.svg" : uri}
+          uri={svgError ? "https://cdn.jsdelivr.net/gh/WiniGit/icon-library@latest/outline/development/image-2.svg" : src}
           style={isLoading ? { position: 'absolute', opacity: 0 } : { width: "100%", height: "100%" }}
           onLoad={() => setIsLoading(false)}
           onError={() => setSvgError(true)}
         /> :
         <Image
-          source={{ uri: uri }}
+          source={{ uri: src }}
           resizeMode={props.resizeMode}
           style={isLoading ? { position: 'absolute', opacity: 0 } : { width: "100%", height: "100%" }}
           onLoadEnd={() => setIsLoading(false)}
