@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, Pressable, ViewStyle, ImageResizeMode, StyleProp, GestureResponderEvent } from 'react-native';
+import { View, Image, Pressable, ViewStyle, ImageResizeMode, StyleProp, GestureResponderEvent, LayoutChangeEvent } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { SvgUri } from 'react-native-svg';
 
@@ -10,6 +10,7 @@ interface WImageProps {
   src?: string;
   resizeMode?: ImageResizeMode;
   onPress?: ((event: GestureResponderEvent) => void);
+  onLayout?: ((event: LayoutChangeEvent) => void)
 }
 
 export const WImage = ({ src, ...props }: WImageProps) => {
@@ -24,7 +25,7 @@ export const WImage = ({ src, ...props }: WImageProps) => {
   }, [src]);
 
   return src?.length ? <>
-    <Pressable pointerEvents="none" style={props.style} onPress={props.onPress}>
+    <Pressable pointerEvents="none" style={props.style} onPress={props.onPress} onLayout={props.onLayout}>
       {(src.endsWith("svg") || isError) ?
         <SvgUri
           uri={svgError ? "https://cdn.jsdelivr.net/gh/WiniGit/icon-library@latest/outline/development/image-2.svg" : src}

@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
-import { Text, TouchableOpacity, StyleSheet, TextStyle, ViewStyle, View } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, TextStyle, ViewStyle, View, GestureResponderEvent, LayoutChangeEvent } from 'react-native';
 import { ReactNode } from 'react';
 import { useDesignTokens } from '../../module/WiniProvider';
 import { lightThemeColor } from '../../skin/color';
@@ -20,7 +20,8 @@ export enum WButtonVariant {
 }
 
 interface ButtonProps {
-  onPress?: () => void;
+  onPress?: (event: GestureResponderEvent) => void;
+  onLayout?: ((event: LayoutChangeEvent) => void);
   label: string;
   prefix?: ReactNode;
   suffix?: ReactNode;
@@ -33,7 +34,7 @@ const initStyle: any = [WButtonVariant.size32, { lineHeight: 22, fontSize: 14, f
 interface ButtonRef {
   element?: View,
   disabled?: boolean,
-  press?: () => void
+  press?: (event: GestureResponderEvent) => void
 }
 
 export const WButton = forwardRef<ButtonRef, ButtonProps>(({ style = initStyle, ...props }, ref) => {
@@ -81,6 +82,7 @@ export const WButton = forwardRef<ButtonRef, ButtonProps>(({ style = initStyle, 
     <TouchableOpacity
       ref={uiRef}
       onPress={props.onPress}
+      onLayout={props.onLayout}
       disabled={props.disabled}
       style={[styles.container, restOfStyle, { backgroundColor: props.disabled ? colors?.['neutral-background-color-disable'] : backgroundColor }]}
     >
