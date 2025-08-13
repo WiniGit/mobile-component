@@ -11,7 +11,6 @@ import React, {
     useState,
 } from "react";
 import {
-    Dimensions,
     FlatList,
     StyleSheet,
     Text,
