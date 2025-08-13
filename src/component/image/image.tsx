@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, Pressable, ViewStyle, ImageResizeMode } from 'react-native';
+import { View, Image, Pressable, ViewStyle, ImageResizeMode, StyleProp } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { SvgUri } from 'react-native-svg';
 
 interface WImageProps {
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
+  width?: number | string;
+  height?: number | string;
   src?: string;
   resizeMode?: ImageResizeMode
 }
@@ -26,6 +28,8 @@ export const WImage = ({ src, ...props }: WImageProps) => {
         <SvgUri
           uri={svgError ? "https://cdn.jsdelivr.net/gh/WiniGit/icon-library@latest/outline/development/image-2.svg" : src}
           style={isLoading ? { position: 'absolute', opacity: 0 } : { width: "100%", height: "100%" }}
+          width={props.width}
+          height={props.height}
           onLoad={() => setIsLoading(false)}
           onError={() => setSvgError(true)}
         /> :
@@ -33,6 +37,8 @@ export const WImage = ({ src, ...props }: WImageProps) => {
           source={{ uri: src }}
           resizeMode={props.resizeMode}
           style={isLoading ? { position: 'absolute', opacity: 0 } : { width: "100%", height: "100%" }}
+          width={props.width as any}
+          height={props.height as any}
           onLoadEnd={() => setIsLoading(false)}
           onError={() => setIsError(true)}
         />}
@@ -42,5 +48,5 @@ export const WImage = ({ src, ...props }: WImageProps) => {
         </SkeletonPlaceholder>
       )}
     </Pressable>
-  </> : <SvgUri uri={"https://cdn.jsdelivr.net/gh/WiniGit/icon-library@latest/outline/development/image-2.svg"} />
+  </> : <SvgUri uri={"https://cdn.jsdelivr.net/gh/WiniGit/icon-library@latest/outline/development/image-2.svg"} style={props.style} />
 };
