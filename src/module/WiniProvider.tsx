@@ -23,7 +23,6 @@ import {
 } from "react-native";
 import { typography, TypoProps } from "../skin/typography";
 import { BoxShadowProps, initBoxShadows } from "../skin/boxShadow";
-import transform from "css-to-react-native-transform";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { I18nextProvider } from "react-i18next";
 import { i18n } from "../language/i18n";

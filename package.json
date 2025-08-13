@@ -1,7 +1,7 @@
 {
   "name": "wini-mobile-component",
   "private": false,
-  "version": "0.0.48",
+  "version": "0.0.50",
   "description": "A simple ui library for React-native",
   "main": "build/index.js",
   "module": "build/index.js",
@@ -23,9 +23,7 @@
   },
   "dependencies": {
     "@os-team/i18next-react-native-language-detector": "^1.1.6",
-    "css-to-react-native-transform": "^2.1.0",
     "date-fns": "^4.1.0",
-    "f": "^1.4.0",
     "i18next": "^25.3.2",
     "react-i18next": "^15.6.0",
     "react-native-linear-gradient": "^2.8.3",
