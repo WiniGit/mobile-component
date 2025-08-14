@@ -19,6 +19,7 @@ import {
     SafeAreaView,
     TextStyle,
     useColorScheme,
+    useWindowDimensions,
     ViewStyle,
 } from "react-native";
 import { typography, TypoProps } from "../skin/typography";
@@ -77,6 +78,7 @@ export const DesignTokenProvider: React.FC<{
     const [theme, setTheme] = useState<ThemeType>("light");
     const appliedScheme = theme === "light" ? systemScheme : theme;
     const isDark = appliedScheme === "dark";
+    const windowSize = useWindowDimensions()
 
     useEffect(() => {
         const _colors = isDark ? darkThemeColor : lightThemeColor;
@@ -114,7 +116,7 @@ export const DesignTokenProvider: React.FC<{
             customVariables.forEach((e) => {
                 if (e.Value.appMode?.length) {
                     try {
-                        var fn = new Function('colors', `return ${e.Value.appMode}`)(_colors)
+                        var fn = new Function('colors', "windowSize", `return ${e.Value.appMode}`)(_colors, windowSize)
                         console.log("??custom:", { Id: e.Id, Name: e.Name, Value: fn })
                     } catch (error) {
                         console.log("parse css error: ", e, error);
