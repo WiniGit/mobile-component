@@ -77,7 +77,7 @@ export const Winicon = ({ style = {}, size = 24, ...props }: WiniconProps) => {
         <TouchableOpacity
             disabled={!props.onPress}
             onPress={props.onPress}
-            style={[styles.icon, style, { width: size, height: size }]}
+            style={[styles.icon, style]}
         >
             {svgData ? (
                 <SvgXml
