@@ -79,167 +79,160 @@ interface Select1Ref {
 
 const initStyle = [WSelect1Variant.size32];
 
-export const WSelect1 = forwardRef<Select1Ref, Select1Props>(
-    ({ style = initStyle, helperTextColor = "#E14337", ...props }, ref) => {
-        const { colors } = useDesignTokens();
-        const containerRef = useRef<View>(null);
-        const bottomSheetRef = useRef<any>(null);
-        const [options, setOptions] = useState<Array<OptionsItem>>([]);
-        const [value, setValue] = useState<string | number>();
-        const valueItem = useMemo<OptionsItem | undefined>(
-            () => options.find((e) => e.id === value),
-            [options.length, value]
-        );
-        const convertStyle: TextStyle = useMemo(() => {
-            const tmp = Array.isArray(style) ? style : [style];
-            let value: any = { ...styles.container };
-            tmp.forEach((e) => {
-                if (typeof e === "string") {
-                    value = { ...value, ...(styles as any)[e] };
-                } else value = { ...value, ...e };
-            });
-            if (props.helperText?.length) value.borderColor = helperTextColor;
-            else value.borderColor = colors?.["neutral-border-color-main"];
-            if (props.disabled)
-                value.backgroundColor = colors?.["neutral-background-color-disable"];
-            return value;
-        }, [
-            style,
-            props.disabled,
-            props.helperText,
-            colors?.["neutral-background-color-disable"],
-        ]);
-        const {
-            fontVariant,
-            fontSize,
-            lineHeight,
-            fontFamily,
-            fontStyle,
-            fontWeight,
-            color,
-            textAlign,
-            textAlignVertical,
-            textDecorationColor,
-            textDecorationLine,
-            textTransform,
-            textDecorationStyle,
-            textShadowColor,
-            textShadowOffset,
-            textShadowRadius,
-            ...restOfStyle
-        } = convertStyle;
+export const WSelect1 = forwardRef<Select1Ref, Select1Props>(({ style = initStyle, helperTextColor = "#E14337", ...props }, ref) => {
+    const { colors } = useDesignTokens();
+    const containerRef = useRef<View>(null);
+    const bottomSheetRef = useRef<any>(null);
+    const [options, setOptions] = useState<Array<OptionsItem>>([]);
+    const [value, setValue] = useState<string | number>();
+    const valueItem = useMemo<OptionsItem | undefined>(
+        () => options.find((e) => e.id === value),
+        [options.length, value]
+    );
+    const convertStyle: TextStyle = useMemo(() => {
+        const tmp = Array.isArray(style) ? style : [style];
+        let value: any = { ...styles.container };
+        tmp.forEach((e) => {
+            if (typeof e === "string") {
+                value = { ...value, ...(styles as any)[e] };
+            } else value = { ...value, ...e };
+        });
+        if (props.helperText?.length) value.borderColor = helperTextColor;
+        else value.borderColor = colors?.["neutral-border-color-main"];
+        if (props.disabled)
+            value.backgroundColor = colors?.["neutral-background-color-disable"];
+        return value;
+    }, [style, props.disabled, props.helperText, colors?.["neutral-background-color-disable"]]);
+    const {
+        fontVariant,
+        fontSize,
+        lineHeight,
+        fontFamily,
+        fontStyle,
+        fontWeight,
+        color,
+        textAlign,
+        textAlignVertical,
+        textDecorationColor,
+        textDecorationLine,
+        textTransform,
+        textDecorationStyle,
+        textShadowColor,
+        textShadowOffset,
+        textShadowRadius,
+        ...restOfStyle
+    } = convertStyle;
 
-        useEffect(() => {
-            setValue(props.value);
-        }, [props.value]);
-        useEffect(() => {
-            setOptions(props.options ?? []);
-        }, [props.options]);
+    useEffect(() => {
+        setValue(props.value);
+    }, [props.value]);
+    useEffect(() => {
+        setOptions(props.options ?? []);
+    }, [props.options]);
 
-        const onOpenOptions = () => {
-            showBottomSheet({
-                ref: bottomSheetRef,
-                enableDismiss: true,
-                style: { height: 240 },
-                children: props.customOptionsList ?? (
-                    <OptionDropList
-                        getOptions={
-                            props.getOptions ??
-                            (async ({ search }) => {
-                                if (search?.length) {
-                                    const filter = options.filter(
-                                        (e) =>
-                                            search.toLowerCase().includes(`${e.id}`.toLowerCase()) ||
-                                            `${e.id}`.toLowerCase().includes(search.toLowerCase()) ||
-                                            search
-                                                .toLowerCase()
-                                                .includes(`${e.name}`.toLowerCase()) ||
-                                            `${e.name}`.toLowerCase().includes(search.toLowerCase())
-                                    );
-                                    return { data: filter, totalCount: filter.length };
-                                }
-                                return { data: options, totalCount: options.length };
-                            })
-                        }
-                        selected={value}
-                        onSelect={(e) => {
-                            if (options.every((o) => o.id !== e.id)) setOptions([e]);
-                            setValue(e.id);
-                            if (props.onChange) props.onChange(e);
-                            hideBottomSheet(bottomSheetRef);
+    const onOpenOptions = () => {
+        showBottomSheet({
+            ref: bottomSheetRef,
+            enableDismiss: true,
+            style: { height: 240 },
+            children: props.customOptionsList ?? (
+                <OptionDropList
+                    getOptions={
+                        props.getOptions ??
+                        (async ({ search }) => {
+                            if (search?.length) {
+                                const filter = options.filter(
+                                    (e) =>
+                                        search.toLowerCase().includes(`${e.id}`.toLowerCase()) ||
+                                        `${e.id}`.toLowerCase().includes(search.toLowerCase()) ||
+                                        search
+                                            .toLowerCase()
+                                            .includes(`${e.name}`.toLowerCase()) ||
+                                        `${e.name}`.toLowerCase().includes(search.toLowerCase())
+                                );
+                                return { data: filter, totalCount: filter.length };
+                            }
+                            return { data: options, totalCount: options.length };
+                        })
+                    }
+                    selected={value}
+                    onSelect={(e) => {
+                        if (options.every((o) => o.id !== e.id)) setOptions([e]);
+                        setValue(e.id);
+                        if (props.onChange) props.onChange(e);
+                        hideBottomSheet(bottomSheetRef);
+                    }}
+                />
+            ),
+        });
+    };
+
+    useImperativeHandle(
+        ref,
+        () => ({
+            element: containerRef.current as any,
+            options: options,
+            setOptions: setOptions,
+            onOpenOptions: onOpenOptions,
+        }),
+        [options, containerRef]
+    );
+
+    return (
+        <>
+            <WBottomSheet ref={bottomSheetRef} />
+            <TouchableOpacity
+                ref={containerRef}
+                style={restOfStyle}
+                disabled={props.disabled}
+                onPress={props.disabled ? undefined : onOpenOptions}
+            >
+                {valueItem?.prefix ?? props.prefix}
+                {typeof valueItem?.name === "object" ? (
+                    valueItem.name
+                ) : (
+                    <Text
+                        numberOfLines={1}
+                        style={{
+                            width: "100%",
+                            flex: 1,
+                            padding: 0,
+                            color: props.disabled
+                                ? colors?.["neutral-text-color-disabled"]
+                                : color,
+                            opacity: valueItem ? 1 : 0.6,
+                            fontVariant,
+                            fontSize,
+                            fontFamily,
+                            fontStyle,
+                            fontWeight,
+                            textAlign,
+                            textAlignVertical,
+                            textDecorationColor,
+                            textDecorationLine,
+                            textTransform,
+                            textDecorationStyle,
+                            textShadowColor,
+                            textShadowOffset,
+                            textShadowRadius,
                         }}
-                    />
-                ),
-            });
-        };
-
-        useImperativeHandle(
-            ref,
-            () => ({
-                element: containerRef.current as any,
-                options: options,
-                setOptions: setOptions,
-                onOpenOptions: onOpenOptions,
-            }),
-            [options, containerRef]
-        );
-
-        return (
-            <>
-                <WBottomSheet ref={bottomSheetRef} />
-                <TouchableOpacity
-                    ref={containerRef}
-                    helper-text={props.helperText}
-                    style={restOfStyle}
-                    disabled={props.disabled}
-                    onPress={props.disabled ? undefined : onOpenOptions}
-                >
-                    {valueItem?.prefix ?? props.prefix}
-                    {typeof valueItem?.name === "object" ? (
-                        valueItem.name
-                    ) : (
-                        <Text
-                            numberOfLines={1}
-                            style={{
-                                width: "100%",
-                                flex: 1,
-                                padding: 0,
-                                color: props.disabled
-                                    ? colors?.["neutral-text-color-disabled"]
-                                    : color,
-                                opacity: valueItem ? 1 : 0.6,
-                                fontVariant,
-                                fontSize,
-                                fontFamily,
-                                fontStyle,
-                                fontWeight,
-                                textAlign,
-                                textAlignVertical,
-                                textDecorationColor,
-                                textDecorationLine,
-                                textTransform,
-                                textDecorationStyle,
-                                textShadowColor,
-                                textShadowOffset,
-                                textShadowRadius,
-                            }}
-                        >
-                            {valueItem?.name ?? props.placeholder}
-                        </Text>
-                    )}
-                    {props.suffix ?? <Winicon src={`fill/arrows/down-arrow`} size={12} />}
-                    {props.helperText?.length ? (
-                        <Text
-                            numberOfLines={1}
-                            style={[styles.helperText, { color: helperTextColor }]}
-                        >
-                            {props.helperText}
-                        </Text>
-                    ) : null}
-                </TouchableOpacity>
-            </>
-        );
-    }
+                    >
+                        {valueItem?.name ?? props.placeholder}
+                    </Text>
+                )}
+                {props.suffix ?? <Winicon src={`fill/arrows/down-arrow`} size={12} />}
+                {props.helperText?.length ? (
+                    <Text
+                        numberOfLines={1}
+                        style={[styles.helperText, { color: helperTextColor }]}
+                    >
+                        {props.helperText}
+                    </Text>
+                ) : null}
+            </TouchableOpacity>
+        </>
+    );
+}
 );
 
 const OptionDropList = (props: {

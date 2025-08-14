@@ -360,7 +360,6 @@ const OptionDropList = forwardRef<any, OptionDropListProps>((props, ref) => {
                 </View>
                 <Winicon src='outline/user interface/e-remove' size={20}
                     onPress={() => {
-                        console.log("????????????????????????")
                         hideBottomSheet(ref as any)
                     }} />
                 <Text style={textStyles?.['button-text-5']} onPress={() => {

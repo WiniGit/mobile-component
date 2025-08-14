@@ -37,6 +37,7 @@ interface TextFieldProps {
 
 interface TextFieldRef {
     value: string;
+    setInputValue: (value: string) => void;
     isFocused: boolean;
 }
 
@@ -69,6 +70,7 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = in
 
     useImperativeHandle(ref, () => ({
         value: inputValue,
+        setInputValue: setInputValue,
         isFocused: focused
     }), [focused, inputValue])
 
