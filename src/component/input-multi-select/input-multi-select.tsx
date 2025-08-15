@@ -138,7 +138,6 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
         showBottomSheet({
             ref: bottomSheetRef,
             enableDismiss: true,
-            style: { maxHeight: 320 },
             children: props.customOptionsList ?? (
                 <OptionDropList
                     ref={bottomSheetRef}
@@ -393,7 +392,7 @@ const OptionDropList = forwardRef<any, OptionDropListProps>((props, ref) => {
                         </View>
                     ) : (
                         <FlatList
-                            style={{ flex: 1, marginVertical: 4 }}
+                            style={{ maxHeight: 300, marginVertical: 4 }}
                             data={parentList}
                             keyExtractor={(item, index) => item.id + '-' + index}
                             ItemSeparatorComponent={() => <View style={{ height: 2 }} />}

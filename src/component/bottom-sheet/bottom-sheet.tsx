@@ -51,14 +51,14 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
   return (
     // Thêm statusBarTranslucent để ngăn modal cha nhận sự kiện khi modal con hiển thị
     <SafeAreaView>
-      <Modal transparent visible={isVisible} animationType="slide" statusBarTranslucent={true} >
-        <Pressable style={{ flex: 1 }}>
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+      <Modal transparent visible={isVisible} animationType="slide" statusBarTranslucent={true}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+          <TouchableWithoutFeedback style={{ flex: 1 }}>
             <Container onDismiss={btmSheetState.enableDismiss ? onDismiss : undefined}>
               <View
                 style={[
                   styles.container,
-                  { backgroundColor: colors?.['neutral-background-color-absolute'] },
+                  { backgroundColor: colors?.['neutral-background-color-absolute'], ...(btmSheetState.style ?? { height: scrSize.height / 3 }) },
                 ]}
                 pointerEvents="box-none"
               >
@@ -71,7 +71,7 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
                     backgroundColor: colors?.['neutral-background-color-bolder'],
                   }}
                 />
-                <Pressable style={[{ width: '100%' }, btmSheetState.style]}>
+                <Pressable style={{ width: '100%', flex: btmSheetState.style?.height !== "auto" ? 1 : undefined }}>
                   {!!btmSheetState.title?.length && (
                     <View style={[styles.header, { borderBottomColor: colors?.['neutral-border-color-main'], justifyContent: (btmSheetState.prefixAction && btmSheetState.suffixAction) ? "space-between" : btmSheetState.suffixAction ? "flex-end" : "flex-start" }]}>
                       <Text style={[textStyles?.['heading-7'], styles.title]}>{btmSheetState.title}</Text>
@@ -83,8 +83,8 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
                 </Pressable>
               </View>
             </Container>
-          </KeyboardAvoidingView>
-        </Pressable>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   );

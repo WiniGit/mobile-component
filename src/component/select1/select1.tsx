@@ -134,7 +134,6 @@ export const WSelect1 = forwardRef<Select1Ref, Select1Props>(({ style = initStyl
         showBottomSheet({
             ref: bottomSheetRef,
             enableDismiss: true,
-            style: { maxHeight: 260 },
             children: props.customOptionsList ?? (
                 <OptionDropList
                     getOptions={
@@ -325,7 +324,7 @@ const OptionDropList = (props: {
                     ) : (
                         <FlatList
                             ref={flatListRef}
-                            style={{ flex: 1, marginVertical: 4 }}
+                            style={{ maxHeight: 240, marginVertical: 4 }}
                             data={options.data.filter((e) => !e.parentId)}
                             keyExtractor={(item, index) => item.id + "-" + index}
                             ItemSeparatorComponent={() => <View style={{ height: 2 }} />}
