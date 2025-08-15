@@ -138,7 +138,7 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
         showBottomSheet({
             ref: bottomSheetRef,
             enableDismiss: true,
-            style: { height: 300 },
+            style: { maxHeight: 320 },
             children: props.customOptionsList ?? (
                 <OptionDropList
                     ref={bottomSheetRef}

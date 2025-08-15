@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { LayoutChangeEvent, StyleSheet, Text, TextInput, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useDesignTokens } from '../../module/WiniProvider';
 import { Winicon } from '../wini-icon/wini-icon';
@@ -14,6 +14,7 @@ interface NumberPickerProps {
   initValue?: number;
   hideMinus?: boolean;
   onChange?: (value: number) => void;
+  onLayout?: (event: LayoutChangeEvent) => void;
   style?: Array<ViewStyle | TextStyle | WNumberPickerVariant> | ViewStyle | TextStyle | WNumberPickerVariant
   disabled?: boolean;
   min?: number;
@@ -26,6 +27,7 @@ interface NumberPickerProps {
 
 interface NumberPickerRef {
   value: number;
+  setValue: (value: number) => void;
   isFocused: boolean;
 }
 
@@ -69,10 +71,11 @@ export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ i
 
   useImperativeHandle(ref, () => ({
     value: val,
+    setValue,
     isFocused: focused
   }), [focused, val])
 
-  return <View style={[styles.container, restOfStyle]} pointerEvents={props.disabled ? "none" : "auto"}>
+  return <View style={[styles.container, restOfStyle]} onLayout={props.onLayout} pointerEvents={props.disabled ? "none" : "auto"}>
     <TouchableOpacity
       disabled={props.disabled || val === props.min}
       onPress={() => {

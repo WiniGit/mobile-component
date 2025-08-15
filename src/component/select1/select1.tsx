@@ -134,7 +134,7 @@ export const WSelect1 = forwardRef<Select1Ref, Select1Props>(({ style = initStyl
         showBottomSheet({
             ref: bottomSheetRef,
             enableDismiss: true,
-            style: { height: 240 },
+            style: { maxHeight: 260 },
             children: props.customOptionsList ?? (
                 <OptionDropList
                     getOptions={

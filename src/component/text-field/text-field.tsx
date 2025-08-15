@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react';
-import { KeyboardTypeOptions, ReturnKeyTypeOptions, StyleSheet, Text, TextInput, TextInputFocusEvent, TextStyle, View, ViewStyle } from 'react-native';
+import { GestureResponderEvent, KeyboardTypeOptions, LayoutChangeEvent, Pressable, ReturnKeyTypeOptions, StyleSheet, Text, TextInput, TextInputFocusEvent, TextStyle, View, ViewStyle } from 'react-native';
 import { useDesignTokens } from '../../module/WiniProvider';
 
 export enum WTextFieldVariant {
@@ -13,7 +13,8 @@ interface TextFieldProps {
     value?: string;
     maxLength?: number;
     numberOfLines?: number;
-    onPress?: () => void;
+    onPress?: (event: GestureResponderEvent) => void;
+    onLayout?: ((event: LayoutChangeEvent) => void)
     onChange?: (e: string) => void;
     onSubmit?: (e: string) => void;
     onBlur?: (
@@ -74,7 +75,7 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = in
         isFocused: focused
     }), [focused, inputValue])
 
-    return <View style={restOfStyle}>
+    return <Pressable style={restOfStyle} disabled={props.disabled} onLayout={props.onLayout} onPress={props.onPress}>
         {props.prefix}
         <TextInput
             style={{
@@ -92,7 +93,6 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = in
             numberOfLines={props.numberOfLines}
             autoFocus={props.autoFocus}
             value={inputValue}
-            onPress={props.onPress}
             returnKeyType={props.returnKeyType}
             onFocus={(ev: TextInputFocusEvent) => {
                 setFocused(true);
@@ -121,7 +121,7 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = in
                 {props.helperText}
             </Text>
         ) : null}
-    </View>
+    </Pressable>
 })
 
 const styles = StyleSheet.create({

@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import {
   FlatList,
+  LayoutChangeEvent,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -18,6 +19,7 @@ import { useDesignTokens } from "../../module/WiniProvider";
 
 interface CheckboxProps {
   onChange?: (value: boolean) => void;
+  onLayout?: ((event: LayoutChangeEvent) => void);
   value?: boolean | null;
   checkColor?: string;
   disabled?: boolean;
@@ -29,6 +31,7 @@ interface CheckboxProps {
 
 interface CheckboxRef {
   checked?: boolean | null;
+  setChecked?: (value: boolean) => void;
   disabled?: boolean;
   change?: () => void;
 }
@@ -52,6 +55,7 @@ export const WCheckbox = forwardRef<CheckboxRef, CheckboxProps>(
       ref,
       () => ({
         checked,
+        setChecked,
         disabled: props.disabled,
         change: handleChangeValue,
       }),
@@ -62,9 +66,8 @@ export const WCheckbox = forwardRef<CheckboxRef, CheckboxProps>(
       <TouchableOpacity
         style={{ padding: 4 }}
         disabled={props.disabled || props.readOnly}
-        onPress={
-          props.disabled || props.readOnly ? undefined : handleChangeValue
-        }
+        onPress={props.disabled || props.readOnly ? undefined : handleChangeValue}
+        onLayout={props.onLayout}
       >
         <View
           style={[

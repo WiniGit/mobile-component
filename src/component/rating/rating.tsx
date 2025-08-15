@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { type TextStyle, TouchableOpacity, View } from 'react-native';
+import { LayoutChangeEvent, type TextStyle, TouchableOpacity, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
 interface RatingProps {
@@ -7,6 +7,7 @@ interface RatingProps {
   value: number;
   size?: number;
   onChange?: (value: number) => void;
+  onLayout?: ((event: LayoutChangeEvent) => void);
   style?: TextStyle;
   strokeColor?: string;
   fillColor?: string;
@@ -20,7 +21,7 @@ export const WRating = ({ style = {}, fillColor = "#faad1e", size = 16, strokeCo
   }, [props.value])
 
   return (
-    <View style={[{ gap: 4, flexDirection: 'row' }, style]}>
+    <View onLayout={props.onLayout} style={[{ gap: 4, flexDirection: 'row' }, style]} pointerEvents={props.onChange ? 'auto' : 'none'}>
       {Array.from({ length: 5 }).map((_, i) => {
         let stopValue = 0;
         if (value >= 5) {
@@ -32,11 +33,7 @@ export const WRating = ({ style = {}, fillColor = "#faad1e", size = 16, strokeCo
           <TouchableOpacity
             key={'star-' + i}
             disabled={!props.onChange}
-            onPress={
-              props.onChange
-                ? () => props.onChange!(i + 1)
-                : undefined
-            }
+            onPress={props.onChange ? () => props.onChange!(i + 1) : undefined}
           >
             <SvgXml
               xml={`<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http:www.w3.org/2000/svg">

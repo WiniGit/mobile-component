@@ -71,9 +71,7 @@ export const DesignTokenProvider: React.FC<{
     const [colors, setColors] = useState<ColorProps>();
     const [textStyles, setTextStyles] = useState<TypoProps>();
     const [boxShadows, setBoxShadows] = useState<BoxShadowProps>();
-    const [customStyleSheet, setCustomStyleSheet] = useState<{
-        [k: string]: ViewStyle;
-    }>();
+    const [customStyleSheet, setCustomStyleSheet] = useState<{ [k: string]: ViewStyle }>();
     const systemScheme = useColorScheme();
     const [theme, setTheme] = useState<ThemeType>("light");
     const appliedScheme = theme === "light" ? systemScheme : theme;

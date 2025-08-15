@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GestureResponderEvent, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
+import { GestureResponderEvent, LayoutChangeEvent, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
 import { SvgXml } from "react-native-svg"
 import { useDesignTokens } from "../../module/WiniProvider";
 
@@ -10,7 +10,8 @@ interface WiniconProps {
     style?: ViewStyle;
     size?: number;
     color?: string;
-    onPress?: (event: GestureResponderEvent) => void
+    onPress?: (event: GestureResponderEvent) => void;
+    onLayout?: (event: LayoutChangeEvent) => void
 }
 
 export const Winicon = ({ style = {}, size = 24, ...props }: WiniconProps) => {
@@ -77,6 +78,7 @@ export const Winicon = ({ style = {}, size = 24, ...props }: WiniconProps) => {
         <TouchableOpacity
             disabled={!props.onPress}
             onPress={props.onPress}
+            onLayout={props.onLayout}
             style={[styles.icon, style]}
         >
             {svgData ? (
