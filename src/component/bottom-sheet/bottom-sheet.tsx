@@ -58,7 +58,7 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
               <View
                 style={[
                   styles.container,
-                  { backgroundColor: colors?.['neutral-background-color-absolute'], ...(btmSheetState.style ?? { height: scrSize.height / 3 }) },
+                  { backgroundColor: colors?.['neutral-background-color-absolute'] },
                 ]}
                 pointerEvents="box-none"
               >
@@ -71,7 +71,7 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
                     backgroundColor: colors?.['neutral-background-color-bolder'],
                   }}
                 />
-                <Pressable style={{ width: '100%', flex: btmSheetState.style?.height !== "auto" ? 1 : undefined }}>
+                <Pressable style={[{ width: '100%' }, btmSheetState.style]}>
                   {!!btmSheetState.title?.length && (
                     <View style={[styles.header, { borderBottomColor: colors?.['neutral-border-color-main'], justifyContent: (btmSheetState.prefixAction && btmSheetState.suffixAction) ? "space-between" : btmSheetState.suffixAction ? "flex-end" : "flex-start" }]}>
                       <Text style={[textStyles?.['heading-7'], styles.title]}>{btmSheetState.title}</Text>
