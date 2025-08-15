@@ -1,7 +1,7 @@
 import React, { forwardRef, ReactNode, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { differenceInCalendarDays } from "date-fns"
-import { LayoutChangeEvent, Pressable, ScrollView, StyleSheet, Text, TextStyle, TouchableOpacity, useWindowDimensions, View, ViewStyle } from "react-native"
+import { LayoutChangeEvent, Platform, Pressable, ScrollView, StyleSheet, Text, TextStyle, TouchableOpacity, useWindowDimensions, View, ViewStyle } from "react-native"
 import { WCalendar } from "../calendar/calendar"
 import { useDesignTokens } from "../../module/WiniProvider"
 import { Util } from "../../controller/utils"
@@ -498,7 +498,7 @@ const PopupDateTimePicker = forwardRef(({ value, endValue, repeatValue, onApply,
                 }}
             />
         </ScrollView>
-        {onApply && <View style={{ flexDirection: "row", alignItems: "center", gap: 8, paddingVertical: 12, paddingHorizontal: 16, borderTopWidth: 1, borderStyle: "solid", borderTopColor: colors?.["neutral-border-color-main"], width: "100%" }}>
+        {onApply && <View style={[styles.footerActions, { backgroundColor: colors?.["neutral-background-color-absolute"], borderTopColor: colors?.["neutral-border-color-main"] }]}>
             <WButton
                 label={t("reset")}
                 style={[WButtonVariant.size40, textStyles!["label-3"], { flex: 1, backgroundColor: colors?.["neutral-background-color-main"] }]}
@@ -552,6 +552,17 @@ const styles = StyleSheet.create({
         rowGap: 12,
         padding: 16,
         paddingTop: 4,
+    },
+    footerActions: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+        paddingTop: 12,
+        paddingBottom: Platform.OS === 'ios' ? 32 : 16,
+        paddingHorizontal: 16,
+        borderTopWidth: 1,
+        borderStyle: "solid",
+        width: "100%"
     },
     helperText: {
         fontSize: 12,
