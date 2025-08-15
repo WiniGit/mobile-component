@@ -18,11 +18,17 @@ export const WImage = ({ src, ...props }: WImageProps) => {
   const [isError, setIsError] = useState<boolean>(false);
   const [svgError, setSvgError] = useState<boolean>(false);
 
-  useEffect(() => {
-    setIsLoading(true)
-    setIsError(false)
-    setSvgError(false)
-  }, [src]);
+  useEffect(() => { 
+    if (src?.length) {
+      setIsLoading(true)
+      setIsError(false)
+      setSvgError(false)
+    } else {
+      setIsLoading(false)
+      setIsError(true)
+      setSvgError(true)
+    }
+  }, [src])
 
   return src?.length ? <>
     <Pressable pointerEvents="none" style={props.style} onPress={props.onPress} onLayout={props.onLayout}>

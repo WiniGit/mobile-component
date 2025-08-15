@@ -399,7 +399,7 @@ const PopupDateTimePicker = forwardRef(({ value, endValue, repeatValue, onApply,
                             ref={inputEndRef}
                             style={[textStyles!["body-3"], WTextFieldVariant.size32, { width: (windowSize.width - 40) / 2 }]}
                             placeholder={t("end-date")}
-                            onBlur={(ev, inputValue) => {
+                            onBlur={(_, inputValue) => {
                                 if (regexDate.test(inputValue)) {
                                     const dateValue = Util.stringToDate(inputValue, 'dd/mm/yyyy', '/')
                                     if (differenceInCalendarDays(dateValue, methods.getValues('date-start')) < 0) {
