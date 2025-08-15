@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Modal, Pressable, Animated, PanResponder, Dimensions, KeyboardAvoidingView, Platform, DimensionValue, TouchableWithoutFeedback, ViewStyle, SafeAreaView, } from 'react-native';
+import { View, Text, StyleSheet, Modal, Pressable, Animated, PanResponder, Dimensions, KeyboardAvoidingView, Platform, DimensionValue, TouchableWithoutFeedback, ViewStyle, SafeAreaView, useWindowDimensions, } from 'react-native';
 import React, { forwardRef, RefObject, useImperativeHandle, useRef, useState } from 'react';
 import { useDesignTokens } from '../../module/WiniProvider';
 
@@ -18,11 +18,11 @@ interface BottomSheetRef {
   hideBottomSheet: () => void;
 }
 
-const scrSize = Dimensions.get('window');
 export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
   const { textStyles, colors } = useDesignTokens();
   const [isVisible, setIsVisible] = useState(false);
   const [btmSheetState, setBtmSheetState] = useState<BottomSheetState>({});
+  const scrSize = useWindowDimensions()
 
   const showBottomSheet = (props: BottomSheetState) => {
     setIsVisible(true);
@@ -53,7 +53,7 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
     <SafeAreaView>
       <Modal transparent visible={isVisible} animationType="slide" statusBarTranslucent={true}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback style={{ flex: 1 }}>
             <Container onDismiss={btmSheetState.enableDismiss ? onDismiss : undefined}>
               <View
                 style={[
@@ -71,7 +71,7 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
                     backgroundColor: colors?.['neutral-background-color-bolder'],
                   }}
                 />
-                <Pressable style={{ width: '100%', flex: 1 }}>
+                <Pressable style={{ width: '100%', flex: btmSheetState.style?.height !== "auto" ? 1 : undefined }}>
                   {!!btmSheetState.title?.length && (
                     <View style={[styles.header, { borderBottomColor: colors?.['neutral-border-color-main'], justifyContent: (btmSheetState.prefixAction && btmSheetState.suffixAction) ? "space-between" : btmSheetState.suffixAction ? "flex-end" : "flex-start" }]}>
                       <Text style={[textStyles?.['heading-7'], styles.title]}>{btmSheetState.title}</Text>
@@ -92,6 +92,7 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
 
 const Container = (props: { children: React.ReactNode; onDismiss?: () => void }) => {
   const pan = useRef(new Animated.ValueXY()).current;
+  const scrSize = useWindowDimensions()
 
   const panResponder = useRef(
     PanResponder.create({
