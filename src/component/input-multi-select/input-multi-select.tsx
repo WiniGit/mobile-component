@@ -70,7 +70,6 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
     const bottomSheetRef = useRef<any>(null);
     const [options, setOptions] = useState<Array<OptionsItem>>([]);
     const [value, setValue] = useState<Array<string | number>>([]);
-    const [isOpen, setIsOpen] = useState<boolean>(false);
     const convertStyle: TextStyle = useMemo(() => {
         const tmp = Array.isArray(style) ? style : [style];
         let value: any = {};
@@ -81,11 +80,10 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
             } else value = { ...value, ...e };
         });
         if (props.helperText?.length) value.borderColor = helperTextColor;
-        else if (isOpen) value.borderColor = colors?.['primary-color-main'];
         else value.borderColor ??= colors?.['neutral-border-color-main'];
         if (props.disabled) value.backgroundColor = colors?.['neutral-background-color-disable'];
         return value;
-    }, [style, props.simpleStyle, isOpen, props.disabled, props.helperText, colors?.['neutral-background-color-disable']]);
+    }, [style, props.simpleStyle, props.disabled, props.helperText, colors?.['neutral-background-color-disable']]);
     const {
         flexWrap,
         fontVariant,
@@ -128,7 +126,6 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
     };
 
     const onOpenOptions = () => {
-        setIsOpen(true);
         let tmpValue = [...value];
         showBottomSheet({
             ref: bottomSheetRef,
@@ -138,7 +135,6 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
                     ref={bottomSheetRef}
                     optionListTitle={props.optionListTitle}
                     onClose={() => {
-                        setIsOpen(false);
                         setValue(tmpValue);
                         props.onChange?.(tmpValue);
                     }}

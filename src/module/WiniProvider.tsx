@@ -107,9 +107,12 @@ export const DesignTokenProvider: React.FC<{
             console.log("????shadow", boxShadowVariables.map(e => ({ ...e, Value: e.Value.appMode })));
             boxShadowVariables.forEach((e) => {
                 const tkParent = groupTokens.find((g) => g.Id === e.ParentId);
-                const fontName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`;
-                if (e.Value.lightMode)
-                    _textStyles[fontName] ??= e.Value.appMode
+                const shadowName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`;
+                if (e.Value.appMode)
+                    _boxShadows[shadowName] ??= e.Value.appMode.replace(
+                        /var\(--([\w-]+),\s*([^()]+)\)/g,
+                        (m: string, p1: string, p2: string) => (_colors[p1] ?? p2)
+                    );
             });
             customVariables.forEach((e) => {
                 if (e.Value.appMode?.length) {
