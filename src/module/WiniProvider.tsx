@@ -17,6 +17,7 @@ import { WDialog } from "../component/dialog/dialog";
 import { ColorProps, darkThemeColor, lightThemeColor } from "../skin/color";
 import {
     SafeAreaView,
+    StatusBar,
     TextStyle,
     useColorScheme,
     useWindowDimensions,
@@ -108,13 +109,15 @@ export const DesignTokenProvider: React.FC<{
             boxShadowVariables.forEach((e) => {
                 const tkParent = groupTokens.find((g) => g.Id === e.ParentId);
                 const shadowName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`;
-                if (e.Value.appMode?.boxShadow)
+                if (e.Value.appMode?.boxShadow) {
                     _boxShadows[shadowName] ??= {
                         boxShadow: e.Value.appMode.boxShadow.replace(
                             /var\(--([\w-]+),\s*([^()]+)\)/g,
                             (m: string, p1: string, p2: string) => (_colors[p1] ?? p2)
                         )
                     }
+                    console.log("????shadow convert", _boxShadows[shadowName]);
+                }
             });
             customVariables.forEach((e) => {
                 if (e.Value.appMode?.length) {
@@ -526,12 +529,24 @@ const RootStack = (props: Props) => {
     }, [props.pid]);
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <DesignTokenProvider designTokens={designTokens}>
+        <DesignTokenProvider designTokens={designTokens}>
+            <MyStatusBar />
+            <SafeAreaView style={{ flex: 1 }}>
                 <FSnackbar />
                 <WDialog />
                 {loadedResources && props.children}
-            </DesignTokenProvider>
-        </SafeAreaView>
+            </SafeAreaView>
+        </DesignTokenProvider>
     );
 };
+
+const MyStatusBar = () => {
+    const { theme } = useDesignTokens();
+
+    return (
+        <StatusBar
+            barStyle={`${theme === 'light' ? 'dark' : 'light'}-content`}
+            backgroundColor={theme === 'light' ? "#000" : "#fff"}
+        />
+    );
+}
