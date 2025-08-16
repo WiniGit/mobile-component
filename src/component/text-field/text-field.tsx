@@ -60,7 +60,7 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = in
         }))
         if (props.helperText?.length) value.borderColor = helperTextColor
         else if (focused) value.borderColor = "#287CF0"
-        else value.borderColor = colors?.['neutral-border-color-main']
+        else value.borderColor ??= colors?.['neutral-border-color-main']
         if (props.disabled) value.backgroundColor = colors?.['neutral-background-color-disable']
         return value
     }, [style, props.simpleStyle, focused, props.disabled, props.helperText, colors?.['neutral-background-color-disable']])

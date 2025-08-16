@@ -82,7 +82,7 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
         });
         if (props.helperText?.length) value.borderColor = helperTextColor;
         else if (isOpen) value.borderColor = colors?.['primary-color-main'];
-        else value.borderColor = colors?.['neutral-border-color-main'];
+        else value.borderColor ??= colors?.['neutral-border-color-main'];
         if (props.disabled) value.backgroundColor = colors?.['neutral-background-color-disable'];
         return value;
     }, [style, props.simpleStyle, isOpen, props.disabled, props.helperText, colors?.['neutral-background-color-disable']]);

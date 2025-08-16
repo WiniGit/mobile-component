@@ -62,7 +62,7 @@ export const WDateTimePicker = ({ style = initStyle, pickerType = "auto", helper
             } else value = { ...value, ...e };
         });
         if (props.helperText?.length) value.borderColor = helperTextColor;
-        else value.borderColor = colors?.["neutral-border-color-main"];
+        else value.borderColor ??= colors?.["neutral-border-color-main"];
         if (props.disabled)
             value.backgroundColor = colors?.["neutral-background-color-disable"];
         return value;

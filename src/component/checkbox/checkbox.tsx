@@ -1,9 +1,9 @@
 import React, {
   useState,
   useEffect,
-  type ReactNode,
   forwardRef,
   useImperativeHandle,
+  ReactNode,
 } from "react";
 import {
   FlatList,
@@ -22,6 +22,7 @@ interface CheckboxProps {
   onLayout?: ((event: LayoutChangeEvent) => void);
   value?: boolean | null;
   checkColor?: string;
+  activeColor?: string;
   disabled?: boolean;
   readOnly?: boolean;
   style?: ViewStyle;
@@ -75,8 +76,8 @@ export const WCheckbox = forwardRef<CheckboxRef, CheckboxProps>(({ size = 20, ch
             { width: size, height: size },
             checked
               ? {
-                backgroundColor: colors?.["primary-color-main"],
-                borderColor: colors?.["primary-color-main"],
+                backgroundColor: props.activeColor ?? colors?.["primary-color-main"],
+                borderColor: props.activeColor ?? colors?.["primary-color-main"],
               }
               : { borderColor: colors?.["neutral-border-color-bolder"] },
           ]}

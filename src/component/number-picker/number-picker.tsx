@@ -43,12 +43,13 @@ export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ i
     const tmp = Array.isArray(style) ? style : [style]
     let value: any = {}
     if (!props.simpleStyle) value = { ...styles.container }
-    let solidStyle = false
+    const solidStyle = tmp.some(e => e === WNumberPickerVariant.solid)
     tmp.forEach((e => {
       if (typeof e === "string") {
-        value = { ...value, ...(styles as any)[e] }
-        solidStyle = e === WNumberPickerVariant.solid
-        if (solidStyle) value.borderColor = colors?.['neutral-border-color-bolder']
+        if (!props.simpleStyle) {
+          value = { ...value, ...(styles as any)[e] }
+          if (solidStyle) value.borderColor ??= colors?.['neutral-border-color-bolder']
+        }
       } else value = { ...value, ...e }
     }))
     if (solidStyle) {
