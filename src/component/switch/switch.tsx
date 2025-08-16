@@ -4,8 +4,9 @@ import { useDesignTokens } from '../../module/WiniProvider';
 
 interface SwitchProps {
   onChange?: (value: boolean) => void;
-  value: boolean;
-  color: string;
+  value?: boolean;
+  color?: string;
+  dotColor?: string;
   size?: number;
   disabled?: boolean
 }
@@ -27,7 +28,7 @@ export const WSwitch = ({ value = false, size = 32, ...props }: SwitchProps) => 
       }}
       disabled={props.disabled}
       trackColor={{ false: props.disabled ? colors?.['neutral-background-color-disable'] : colors?.['neutral-background-color-main'], true: props.color ?? (props.disabled ? colors?.['primary-color-lighter'] : colors?.['primary-color-main']) }}
-      thumbColor={(props.disabled && !checked) ? colors?.['neutral-text-color-disabled'] : colors?.['neutral-background-color-absolute']}
+      thumbColor={(props.disabled && !checked) ? colors?.['neutral-text-color-disabled'] : (props.dotColor ?? colors?.['neutral-text-color-stable'])}
       ios_backgroundColor={props.disabled ? colors?.['neutral-background-color-disable'] : colors?.['neutral-background-color-main']}
       style={{ transform: [{ scaleX: ratio }, { scaleY: ratio }], transformOrigin: 'center' }}
       value={checked}

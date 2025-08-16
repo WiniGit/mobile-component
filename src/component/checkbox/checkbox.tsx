@@ -36,8 +36,7 @@ interface CheckboxRef {
   change?: () => void;
 }
 
-export const WCheckbox = forwardRef<CheckboxRef, CheckboxProps>(
-  ({ size = 20, checkColor = "#fff", style = {}, ...props }, ref) => {
+export const WCheckbox = forwardRef<CheckboxRef, CheckboxProps>(({ size = 20, checkColor = "#fff", style = {}, ...props }, ref) => {
     const { colors } = useDesignTokens();
     const [checked, setChecked] = useState(props.value);
 

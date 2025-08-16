@@ -23,6 +23,7 @@ interface NumberPickerProps {
   volume?: number;
   helperText?: string;
   helperTextColor?: string;
+  simpleStyle?: boolean;
 }
 
 interface NumberPickerRef {
@@ -41,6 +42,7 @@ export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ i
   const convertStyle: any = useMemo(() => {
     const tmp = Array.isArray(style) ? style : [style]
     let value: any = {}
+    if (!props.simpleStyle) value = { ...styles.container }
     let solidStyle = false
     tmp.forEach((e => {
       if (typeof e === "string") {
@@ -58,7 +60,7 @@ export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ i
       delete value.borderColor
     }
     return value
-  }, [style, colors, focused, props.disabled, props.helperText])
+  }, [style, props.simpleStyle, colors, focused, props.disabled, props.helperText])
   const { fontVariant, fontSize, lineHeight, fontFamily, fontStyle, fontWeight, color, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius, customBorderColor, ...restOfStyle } = convertStyle
 
   useEffect(() => {
@@ -75,7 +77,7 @@ export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ i
     isFocused: focused
   }), [focused, val])
 
-  return <View style={[styles.container, restOfStyle]} onLayout={props.onLayout} pointerEvents={props.disabled ? "none" : "auto"}>
+  return <View style={[restOfStyle, styles.simpleStyle]} onLayout={props.onLayout} pointerEvents={props.disabled ? "none" : "auto"}>
     <TouchableOpacity
       disabled={props.disabled || val === props.min}
       onPress={() => {
@@ -162,11 +164,13 @@ export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ i
 })
 
 const styles = StyleSheet.create({
-  container: {
+  simpleStyle: {
     overflow: 'visible',
     position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  container: {
     width: 152,
     gap: 4,
     height: 32

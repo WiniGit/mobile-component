@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, Modal, Pressable, Animated, PanResponder, Dimensions, KeyboardAvoidingView, Platform, DimensionValue, TouchableWithoutFeedback, ViewStyle, SafeAreaView, useWindowDimensions, } from 'react-native';
 import React, { forwardRef, RefObject, useImperativeHandle, useRef, useState } from 'react';
+import { View, Text, StyleSheet, Modal, Pressable, Animated, PanResponder, KeyboardAvoidingView, Platform, DimensionValue, TouchableWithoutFeedback, ViewStyle, SafeAreaView, useWindowDimensions, } from 'react-native';
 import { useDesignTokens } from '../../module/WiniProvider';
 
 interface BottomSheetState {
@@ -51,7 +51,7 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
   return (
     // Thêm statusBarTranslucent để ngăn modal cha nhận sự kiện khi modal con hiển thị
     <SafeAreaView>
-      <Modal transparent visible={isVisible} animationType="slide" statusBarTranslucent={true}>
+      <Modal transparent visible={isVisible} animationType="slide" statusBarTranslucent={true} >
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
           <TouchableWithoutFeedback style={{ flex: 1 }}>
             <Container onDismiss={btmSheetState.enableDismiss ? onDismiss : undefined}>

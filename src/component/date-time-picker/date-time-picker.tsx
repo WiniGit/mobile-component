@@ -9,7 +9,7 @@ import { Winicon } from "../wini-icon/wini-icon"
 import { hideBottomSheet, showBottomSheet, WBottomSheet } from "../bottom-sheet/bottom-sheet"
 import { WCheckbox } from "../checkbox/checkbox"
 import { WSelect1 } from "../select1/select1"
-import { WTextField, WTextFieldVariant } from "../text-field/text-field"
+import { WTextField, SizeVariant } from "../text-field/text-field"
 import { WButton, WButtonVariant } from "../button/button"
 import { useForm } from "react-hook-form"
 
@@ -18,13 +18,6 @@ interface ValueProps {
     end?: Date,
     /** type: 1: daily, 2: weekly, 3: monthly */
     repeatData?: { type: 1 | 2 | 3, value: Array<string | number> }
-}
-
-export enum WDateTimePickerVariant {
-    size24 = "size24",
-    size32 = "size32",
-    size40 = "size40",
-    size48 = "size48",
 }
 
 interface DateTimePickerProps {
@@ -36,10 +29,10 @@ interface DateTimePickerProps {
     helperTextColor?: string;
     placeholder?: string;
     style?:
-    | Array<ViewStyle | TextStyle | WDateTimePickerVariant>
+    | Array<ViewStyle | TextStyle | SizeVariant>
     | ViewStyle
     | TextStyle
-    | WDateTimePickerVariant;
+    | SizeVariant;
     disabled?: boolean;
     pickerType?: "auto" | "date" | "datetime" | "daterange" | "datetimerange";
     enableRepeat?: boolean;
@@ -51,7 +44,7 @@ interface DateTimePickerProps {
     onLayout?: (event: LayoutChangeEvent) => void
 }
 
-const initStyle = [WDateTimePickerVariant.size32];
+const initStyle = [SizeVariant.size32];
 
 export const WDateTimePicker = ({ style = initStyle, pickerType = "auto", helperTextColor = "#E14337", ...props }: DateTimePickerProps) => {
     const { colors } = useDesignTokens()
@@ -380,7 +373,7 @@ const PopupDateTimePicker = forwardRef(({ value, endValue, repeatValue, onApply,
                 header={pickerType !== "date" && <View style={[styles.timeRangeContainer, { borderBottomColor: colors?.["neutral-border-color-main"] }]}>
                     <WTextField
                         ref={inputStartRef}
-                        style={[textStyles!["body-3"], WTextFieldVariant.size32, { width: (windowSize.width - 40) / 2 }]}
+                        style={[textStyles!["body-3"], SizeVariant.size32, { width: (windowSize.width - 40) / 2 }]}
                         type="numeric"
                         placeholder={pickerType.includes("range") || pickerType === "auto" ? t("start-date") : "dd/mm/yyyy"}
                         onBlur={(_, inputValue) => {
@@ -397,7 +390,7 @@ const PopupDateTimePicker = forwardRef(({ value, endValue, repeatValue, onApply,
                     {(pickerType.includes("range") || pickerType === "auto") &&
                         <WTextField
                             ref={inputEndRef}
-                            style={[textStyles!["body-3"], WTextFieldVariant.size32, { width: (windowSize.width - 40) / 2 }]}
+                            style={[textStyles!["body-3"], SizeVariant.size32, { width: (windowSize.width - 40) / 2 }]}
                             placeholder={t("end-date")}
                             onBlur={(_, inputValue) => {
                                 if (regexDate.test(inputValue)) {
@@ -413,7 +406,7 @@ const PopupDateTimePicker = forwardRef(({ value, endValue, repeatValue, onApply,
                     {selectTime && <>
                         <WTextField
                             ref={inputStartTimeRef}
-                            style={[textStyles!["body-3"], WTextFieldVariant.size32, { width: (windowSize.width - 40) / 2 }]}
+                            style={[textStyles!["body-3"], SizeVariant.size32, { width: (windowSize.width - 40) / 2 }]}
                             placeholder={"hh:mm"}
                             onBlur={(_, inputValue) => {
                                 if (regexTime.test(inputValue)) {
@@ -424,7 +417,7 @@ const PopupDateTimePicker = forwardRef(({ value, endValue, repeatValue, onApply,
                         {(pickerType.includes("range") || pickerType === "auto") &&
                             <WTextField
                                 ref={inputEndTimeRef}
-                                style={[textStyles!["body-3"], WTextFieldVariant.size32, { width: (windowSize.width - 40) / 2 }]}
+                                style={[textStyles!["body-3"], SizeVariant.size32, { width: (windowSize.width - 40) / 2 }]}
                                 placeholder={"hh:mm"}
                                 onBlur={(_, inputValue) => {
                                     if (regexTime.test(inputValue)) {

@@ -4,10 +4,10 @@ import { useDesignTokens } from '../../module/WiniProvider';
 
 interface WRadioProps {
   size?: number;
-  value: string | number;
+  value?: string | number;
   checked?: boolean;
   disabled?: boolean;
-  onChange?: (value: string | number) => void;
+  onChange?: (value?: string | number) => void;
   style?: ViewStyle;
 }
 

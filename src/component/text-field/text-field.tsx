@@ -2,7 +2,7 @@ import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useState } 
 import { GestureResponderEvent, KeyboardTypeOptions, LayoutChangeEvent, Pressable, ReturnKeyTypeOptions, StyleSheet, Text, TextInput, TextInputFocusEvent, TextStyle, View, ViewStyle } from 'react-native';
 import { useDesignTokens } from '../../module/WiniProvider';
 
-export enum WTextFieldVariant {
+export enum SizeVariant {
     size24 = "size24",
     size32 = "size32",
     size40 = "size40",
@@ -30,10 +30,11 @@ interface TextFieldProps {
     prefix?: React.ReactNode;
     helperText?: string;
     helperTextColor?: string;
-    style?: Array<ViewStyle | TextStyle | WTextFieldVariant> | ViewStyle | TextStyle | WTextFieldVariant
+    style?: Array<ViewStyle | TextStyle | SizeVariant> | ViewStyle | TextStyle | SizeVariant
     autoFocus?: boolean;
     secureTextEntry?: boolean;
     type?: KeyboardTypeOptions;
+    simpleStyle?: boolean;
 }
 
 interface TextFieldRef {
@@ -42,7 +43,7 @@ interface TextFieldRef {
     isFocused: boolean;
 }
 
-const initStyle = [WTextFieldVariant.size32]
+const initStyle = [SizeVariant.size32]
 
 export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = initStyle, helperTextColor = "#E14337", ...props }, ref) => {
     const { colors } = useDesignTokens();
@@ -50,7 +51,8 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = in
     const [focused, setFocused] = useState(false);
     const convertStyle: TextStyle = useMemo(() => {
         const tmp = Array.isArray(style) ? style : [style]
-        let value: any = { ...styles.container }
+        let value: any = {}
+        if (!props.simpleStyle) value = { ...styles.container }
         tmp.forEach((e => {
             if (typeof e === "string") {
                 value = { ...value, ...(styles as any)[e] }
@@ -59,10 +61,9 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = in
         if (props.helperText?.length) value.borderColor = helperTextColor
         else if (focused) value.borderColor = "#287CF0"
         else value.borderColor = colors?.['neutral-border-color-main']
-        if (props.multiline) value.height = undefined
         if (props.disabled) value.backgroundColor = colors?.['neutral-background-color-disable']
         return value
-    }, [style, focused, props.disabled, props.helperText, colors?.['neutral-background-color-disable']])
+    }, [style, props.simpleStyle, focused, props.disabled, props.helperText, colors?.['neutral-background-color-disable']])
     const { fontVariant, fontSize, lineHeight, fontFamily, fontStyle, fontWeight, color, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius, ...restOfStyle } = convertStyle
 
     useEffect(() => {
@@ -75,7 +76,7 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = in
         isFocused: focused
     }), [focused, inputValue])
 
-    return <Pressable style={restOfStyle} disabled={props.disabled} onLayout={props.onLayout} onPress={props.onPress}>
+    return <Pressable style={[restOfStyle, styles.simpleStyle]} disabled={props.disabled} onLayout={props.onLayout} onPress={props.onPress}>
         {props.prefix}
         <TextInput
             style={{
@@ -125,13 +126,15 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = in
 })
 
 const styles = StyleSheet.create({
-    container: {
+    simpleStyle: {
         overflow: 'visible',
         position: 'relative',
         flexDirection: 'row',
+        alignItems: 'center',
+    },
+    container: {
         borderWidth: 1,
         borderStyle: 'solid',
-        alignItems: 'center',
         borderRadius: 8,
     },
     helperText: {

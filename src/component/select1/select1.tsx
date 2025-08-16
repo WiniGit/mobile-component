@@ -10,31 +10,12 @@ import React, {
     useRef,
     useState,
 } from "react";
-import {
-    FlatList,
-    StyleSheet,
-    Text,
-    TextStyle,
-    TouchableOpacity,
-    View,
-    ViewStyle,
-} from "react-native";
-import {
-    hideBottomSheet,
-    showBottomSheet,
-    WBottomSheet,
-} from "../bottom-sheet/bottom-sheet";
+import { FlatList, LayoutChangeEvent, Platform, Pressable, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import { hideBottomSheet, showBottomSheet, WBottomSheet } from "../bottom-sheet/bottom-sheet";
 import { useDesignTokens } from "../../module/WiniProvider";
 import { Winicon } from "../wini-icon/wini-icon";
 import { useTranslation } from "react-i18next";
-import { WTextField, WTextFieldVariant } from "../text-field/text-field";
-
-export enum WSelect1Variant {
-    size24 = "size24",
-    size32 = "size32",
-    size40 = "size40",
-    size48 = "size48",
-}
+import { WTextField, SizeVariant } from "../text-field/text-field";
 
 export interface OptionsItem {
     id: string | number;
@@ -54,16 +35,17 @@ interface Select1Props {
         parentId?: string | number;
     }) => Promise<{ data: Array<OptionsItem>; totalCount: number }>;
     onChange?: (v?: OptionsItem) => void;
+    onLayout?: (event: LayoutChangeEvent) => void;
     placeholder?: string;
     disabled?: boolean;
     className?: string;
     helperText?: string;
     helperTextColor?: string;
     style?:
-    | Array<ViewStyle | TextStyle | WSelect1Variant>
+    | Array<ViewStyle | TextStyle | SizeVariant>
     | ViewStyle
     | TextStyle
-    | WSelect1Variant;
+    | SizeVariant;
     prefix?: ReactNode;
     suffix?: ReactNode;
     simpleStyle?: boolean;
@@ -77,7 +59,7 @@ interface Select1Ref {
     onOpenOptions: () => void;
 }
 
-const initStyle = [WSelect1Variant.size32];
+const initStyle = [SizeVariant.size32];
 
 export const WSelect1 = forwardRef<Select1Ref, Select1Props>(({ style = initStyle, helperTextColor = "#E14337", ...props }, ref) => {
     const { colors } = useDesignTokens();
@@ -91,7 +73,8 @@ export const WSelect1 = forwardRef<Select1Ref, Select1Props>(({ style = initStyl
     );
     const convertStyle: TextStyle = useMemo(() => {
         const tmp = Array.isArray(style) ? style : [style];
-        let value: any = { ...styles.container };
+        let value: any = {};
+        if (!props.simpleStyle) value = { ...styles.container };
         tmp.forEach((e) => {
             if (typeof e === "string") {
                 value = { ...value, ...(styles as any)[e] };
@@ -102,7 +85,7 @@ export const WSelect1 = forwardRef<Select1Ref, Select1Props>(({ style = initStyl
         if (props.disabled)
             value.backgroundColor = colors?.["neutral-background-color-disable"];
         return value;
-    }, [style, props.disabled, props.helperText, colors?.["neutral-background-color-disable"]]);
+    }, [style, props.simpleStyle, props.disabled, props.helperText, colors?.["neutral-background-color-disable"]]);
     const {
         fontVariant,
         fontSize,
@@ -182,7 +165,8 @@ export const WSelect1 = forwardRef<Select1Ref, Select1Props>(({ style = initStyl
             <WBottomSheet ref={bottomSheetRef} />
             <TouchableOpacity
                 ref={containerRef}
-                style={restOfStyle}
+                onLayout={props.onLayout}
+                style={[restOfStyle, styles.simpleStyle]}
                 disabled={props.disabled}
                 onPress={props.disabled ? undefined : onOpenOptions}
             >
@@ -231,8 +215,7 @@ export const WSelect1 = forwardRef<Select1Ref, Select1Props>(({ style = initStyl
             </TouchableOpacity>
         </>
     );
-}
-);
+});
 
 const OptionDropList = (props: {
     selected?: string | number;
@@ -248,11 +231,9 @@ const OptionDropList = (props: {
     const searchValue = useDeferredValue(searchInput);
     const initTotal = useRef<number>(null);
     const flatListRef = useRef<FlatList>(null);
-    const [options, setOptions] = useState<{
-        data: OptionsItem[];
-        totalCount?: number;
-    }>({ data: [], totalCount: undefined });
+    const [options, setOptions] = useState<{ data: OptionsItem[]; totalCount?: number }>({ data: [], totalCount: undefined });
     const { t } = useTranslation();
+
     const getData = async (length?: number) => {
         const res = await props.getOptions({
             length: length ?? 0,
@@ -292,7 +273,7 @@ const OptionDropList = (props: {
     }, [options.totalCount]);
 
     return (
-        <>
+        <Pressable style={{ backgroundColor: colors?.["neutral-background-color-absolute"], paddingTop: 8, paddingBottom: Platform.OS === 'ios' ? 28 : 8 }}>
             {options.totalCount === 0 && !initTotal.current ? (
                 <View style={{ alignItems: "center", marginVertical: 8 }}>
                     <Winicon src="color/files/archive-file" size={28} />
@@ -306,7 +287,7 @@ const OptionDropList = (props: {
                         <WTextField
                             style={[
                                 textStyles?.["body-3"] ?? {},
-                                WTextFieldVariant.size40,
+                                SizeVariant.size40,
                                 { marginVertical: 8, marginHorizontal: 16, backgroundColor: colors?.['neutral-border-color-main'] },
                             ]}
                             placeholder={t("search")}
@@ -314,49 +295,40 @@ const OptionDropList = (props: {
                             onChange={setSearchInput}
                         />
                     )}
-                    {options.totalCount === 0 ? (
-                        <View style={{ alignItems: "center", marginVertical: 8 }}>
-                            <Winicon src="color/files/archive-file" size={28} />
-                            <Text style={[textStyles?.["heading-7"], { margin: 8 }]}>
-                                {t("noResultFound")}
-                            </Text>
-                        </View>
-                    ) : (
-                        <FlatList
-                            ref={flatListRef}
-                            style={{ maxHeight: 240, marginVertical: 4 }}
-                            data={options.data.filter((e) => !e.parentId)}
-                            keyExtractor={(item, index) => item.id + "-" + index}
-                            ItemSeparatorComponent={() => <View style={{ height: 2 }} />}
-                            renderItem={({ item }) => {
-                                const children = options.data.filter(
-                                    (e) => e.parentId === item.id
-                                );
-                                return (
-                                    <OptionsItemTile
-                                        item={item}
-                                        selected={props.selected}
-                                        children={children}
-                                        onPress={props.onSelect}
-                                        getOptions={(params) =>
-                                            props.getOptions?.({ ...params, search: searchValue })
-                                        }
-                                    />
-                                );
-                            }}
-                            onEndReached={() => {
-                                if (
-                                    options.totalCount &&
-                                    options.data.length < options.totalCount
-                                )
-                                    getData(options.data.length);
-                            }}
-                            onEndReachedThreshold={0.5} // Trigger when 50% from the end
-                        />
-                    )}
+                    {options.totalCount === 0 ? <View style={{ alignItems: "center", marginVertical: 8 }}>
+                        <Winicon src="color/files/archive-file" size={28} />
+                        <Text style={[textStyles?.["heading-7"], { margin: 8 }]}>
+                            {t("noResultFound")}
+                        </Text>
+                    </View> : <FlatList
+                        ref={flatListRef}
+                        style={{ maxHeight: Platform.OS === 'ios' ? 260 : 240 }}
+                        data={options.data.filter((e) => !e.parentId)}
+                        keyExtractor={(item, index) => item.id + "-" + index}
+                        ItemSeparatorComponent={() => <View style={{ height: 2 }} />}
+                        renderItem={({ item }) => {
+                            const children = options.data.filter((e) => e.parentId === item.id);
+                            return (
+                                <OptionsItemTile
+                                    item={item}
+                                    selected={props.selected}
+                                    children={children}
+                                    onPress={props.onSelect}
+                                    getOptions={(params) =>
+                                        props.getOptions?.({ ...params, search: searchValue })
+                                    }
+                                />
+                            );
+                        }}
+                        onEndReached={() => {
+                            if (options.totalCount && options.data.length < options.totalCount)
+                                getData(options.data.length);
+                        }}
+                        onEndReachedThreshold={0.5} // Trigger when 50% from the end
+                    />}
                 </>
             )}
-        </>
+        </Pressable>
     );
 };
 
@@ -520,13 +492,15 @@ function OptionsItemTile({
 }
 
 const styles = StyleSheet.create({
-    container: {
+    simpleStyle: {
         overflow: "visible",
         position: "relative",
         flexDirection: "row",
+        alignItems: "center",
+    },
+    container: {
         borderWidth: 1,
         borderStyle: "solid",
-        alignItems: "center",
         borderRadius: 8,
     },
     selectTile: {

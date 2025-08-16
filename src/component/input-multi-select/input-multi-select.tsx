@@ -1,5 +1,4 @@
 import React, {
-    CSSProperties,
     Dispatch,
     forwardRef,
     ReactNode,
@@ -11,13 +10,13 @@ import React, {
     useRef,
     useState,
 } from 'react';
-import { FlatList, GestureResponderEvent, StyleSheet, Text, TextStyle, TouchableOpacity, View } from 'react-native';
+import { FlatList, GestureResponderEvent, LayoutChangeEvent, Platform, Pressable, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { hideBottomSheet, showBottomSheet, WBottomSheet } from '../bottom-sheet/bottom-sheet';
 import { WCheckbox } from '../checkbox/checkbox';
 import { useDesignTokens } from '../../module/WiniProvider';
 import { Winicon } from '../wini-icon/wini-icon';
 import { useTranslation } from 'react-i18next';
-import { WTextField, WTextFieldVariant } from '../text-field/text-field';
+import { WTextField, SizeVariant } from '../text-field/text-field';
 
 interface OptionsItem {
     id: string | number;
@@ -28,15 +27,7 @@ interface OptionsItem {
     totalChild?: number;
 }
 
-export enum WSelectMultipleVariant {
-    size24 = 'size24',
-    size32 = 'size32',
-    size40 = 'size40',
-    size48 = 'size48',
-}
-
 interface SelectMultipleProps {
-    id?: string;
     value?: Array<string | number>;
     options: Required<Array<OptionsItem>>;
     getOptions?: (params: {
@@ -45,14 +36,17 @@ interface SelectMultipleProps {
         parentId?: string | number;
     }) => Promise<{ data: Array<OptionsItem>; totalCount: number }>;
     onChange?: (value?: Array<string | number>) => void;
+    onLayout?: (event: LayoutChangeEvent) => void;
     placeholder?: string;
     disabled?: boolean;
-    className?: string;
     helperText?: string;
     helperTextColor?: string;
-    style?: CSSProperties;
+    style?:
+    | Array<ViewStyle | TextStyle | SizeVariant>
+    | ViewStyle
+    | TextStyle
+    | SizeVariant;
     showClearValueButton?: boolean;
-    popupClassName?: string;
     prefix?: ReactNode;
     suffix?: ReactNode;
     simpleStyle?: boolean;
@@ -68,7 +62,7 @@ interface SelectMultipleRef {
     onOpenOptions: () => void;
 }
 
-const initStyle = [WSelectMultipleVariant.size32];
+const initStyle = [SizeVariant.size32];
 
 export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps>(({ style = initStyle, helperTextColor = '#E14337', previewMaxLength = 3, ...props }, ref) => {
     const { colors } = useDesignTokens();
@@ -79,7 +73,8 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const convertStyle: TextStyle = useMemo(() => {
         const tmp = Array.isArray(style) ? style : [style];
-        let value: any = { ...styles.container };
+        let value: any = {};
+        if (!props.simpleStyle) value = { ...styles.container };
         tmp.forEach(e => {
             if (typeof e === 'string') {
                 value = { ...value, ...(styles as any)[e] };
@@ -90,7 +85,7 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
         else value.borderColor = colors?.['neutral-border-color-main'];
         if (props.disabled) value.backgroundColor = colors?.['neutral-background-color-disable'];
         return value;
-    }, [style, isOpen, props.disabled, props.helperText, colors?.['neutral-background-color-disable']]);
+    }, [style, props.simpleStyle, isOpen, props.disabled, props.helperText, colors?.['neutral-background-color-disable']]);
     const {
         flexWrap,
         fontVariant,
@@ -201,8 +196,9 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
             <WBottomSheet ref={bottomSheetRef} />
             <TouchableOpacity
                 ref={containerRef}
+                onLayout={props.onLayout}
                 helper-text={props.helperText}
-                style={restOfStyle}
+                style={[restOfStyle, styles.simpleStyle]}
                 disabled={props.disabled}
                 onPress={props.disabled ? undefined : onOpenOptions}
             >
@@ -351,7 +347,7 @@ const OptionDropList = forwardRef<any, OptionDropListProps>((props, ref) => {
     const parentList = options.data.filter(e => !e.parentId);
 
     return (
-        <>
+        <Pressable style={{ backgroundColor: colors?.["neutral-background-color-absolute"], paddingTop: 8, paddingBottom: Platform.OS === 'ios' ? 28 : 8 }}>
             <View style={[{ position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, height: props.optionListTitle ? 56 : 38 }]}>
                 <View style={{ position: "absolute", alignItems: "center", left: 0, right: 0, top: "50%", transform: [{ translateY: "-50%" }] }}>
                     {props.optionListTitle && <Text style={textStyles?.['heading-7']}>{props.optionListTitle}</Text>}
@@ -361,10 +357,11 @@ const OptionDropList = forwardRef<any, OptionDropListProps>((props, ref) => {
                     onPress={() => {
                         hideBottomSheet(ref as any)
                     }} />
-                <Text style={textStyles?.['button-text-5']} onPress={() => {
-                    setSelected([])
-                    props.onChange(false, [])
-                }}>{t("reset")}</Text>
+                <Text style={textStyles?.['button-text-5']}
+                    onPress={() => {
+                        setSelected([])
+                        props.onChange(false, [])
+                    }}>{t("reset")}</Text>
             </View>
             {options.totalCount === 0 && !initTotal.current ? (
                 <View style={{ alignItems: 'center', marginVertical: 8 }}>
@@ -377,7 +374,7 @@ const OptionDropList = forwardRef<any, OptionDropListProps>((props, ref) => {
                         <WTextField
                             style={[
                                 textStyles?.['body-3'] ?? {},
-                                WTextFieldVariant.size40,
+                                SizeVariant.size40,
                                 { marginTop: 4, marginBottom: 8, marginHorizontal: 16, backgroundColor: colors?.['neutral-border-color-main'] },
                             ]}
                             placeholder={t('search')}
@@ -385,44 +382,40 @@ const OptionDropList = forwardRef<any, OptionDropListProps>((props, ref) => {
                             onChange={setSearchInput}
                         />
                     )}
-                    {options.totalCount === 0 ? (
-                        <View style={{ alignItems: 'center', marginVertical: 8 }}>
-                            <Winicon src="color/files/archive-file" size={28} />
-                            <Text style={[textStyles?.['heading-7'], { margin: 8 }]}>{t('noResultFound')}</Text>
-                        </View>
-                    ) : (
-                        <FlatList
-                            style={{ maxHeight: 300, marginVertical: 4 }}
-                            data={parentList}
-                            keyExtractor={(item, index) => item.id + '-' + index}
-                            ItemSeparatorComponent={() => <View style={{ height: 2 }} />}
-                            renderItem={({ item }) => {
-                                const children = options.data.filter(e => e.parentId === item.id);
-                                return (
-                                    <OptionsItemTile
-                                        item={item}
-                                        selected={selected}
-                                        children={children}
-                                        getOptions={props.getOptions}
-                                        arr={parentList}
-                                        onChange={(ev, optList) => {
-                                            const tmp = selected.filter(s => !optList.some(c => s.id === c.id)) ?? [];
-                                            if (ev) tmp.push(...optList.filter((e, _, arr) => arr.every(c => e.id !== c.parentId)));
-                                            setSelected(tmp);
-                                            props.onChange(ev, optList);
-                                        }}
-                                    />
-                                );
-                            }}
-                            onEndReached={() => {
-                                if (options.totalCount && options.data.length < options.totalCount) getData(options.data.length);
-                            }}
-                            onEndReachedThreshold={0.5} // Trigger when 50% from the end
-                        />
-                    )}
+                    {options.totalCount === 0 ? <View style={{ alignItems: 'center', marginVertical: 8 }}>
+                        <Winicon src="color/files/archive-file" size={28} />
+                        <Text style={[textStyles?.['heading-7'], { margin: 8 }]}>{t('noResultFound')}</Text>
+                    </View> : <FlatList
+                        style={{ maxHeight: Platform.OS === 'ios' ? 320 : 300 }}
+                        data={parentList}
+                        keyExtractor={(item, index) => item.id + '-' + index}
+                        ItemSeparatorComponent={() => <View style={{ height: 2 }} />}
+                        renderItem={({ item }) => {
+                            const children = options.data.filter(e => e.parentId === item.id);
+                            return (
+                                <OptionsItemTile
+                                    item={item}
+                                    selected={selected}
+                                    children={children}
+                                    getOptions={props.getOptions}
+                                    arr={parentList}
+                                    onChange={(ev, optList) => {
+                                        const tmp = selected.filter(s => !optList.some(c => s.id === c.id)) ?? [];
+                                        if (ev) tmp.push(...optList.filter((e, _, arr) => arr.every(c => e.id !== c.parentId)));
+                                        setSelected(tmp);
+                                        props.onChange(ev, optList);
+                                    }}
+                                />
+                            );
+                        }}
+                        onEndReached={() => {
+                            if (options.totalCount && options.data.length < options.totalCount) getData(options.data.length);
+                        }}
+                        onEndReachedThreshold={0.5} // Trigger when 50% from the end
+                    />}
                 </>
             )}
-        </>
+        </Pressable>
     );
 })
 
@@ -624,13 +617,15 @@ function OptionsItemTile({ item, children, selected, onChange, getOptions }: Opt
 }
 
 const styles = StyleSheet.create({
-    container: {
+    simpleStyle: {
         overflow: 'visible',
         position: 'relative',
         flexDirection: 'row',
+        alignItems: 'center',
+    },
+    container: {
         borderWidth: 1,
         borderStyle: 'solid',
-        alignItems: 'center',
         borderRadius: 8,
     },
     previewContainer: {

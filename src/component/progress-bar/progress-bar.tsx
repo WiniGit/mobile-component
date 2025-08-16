@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
+import { Pressable, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
 import { ComponentStatus, getStatusIcon } from '../component-status'
 import { useDesignTokens } from '../../module/WiniProvider'
 import { Winicon } from '../wini-icon/wini-icon'
@@ -23,10 +23,10 @@ export const WProgressBar = ({ status = ComponentStatus.INFOR, percent = 0, styl
     const [openDetails, setOpenDetails] = useState(true)
 
     return props.progressBarOnly ?
-        <View style={[styles.progressBarValue, { backgroundColor: props.fullColor ?? colors?.['neutral-background-color-main'] }, style]}>
+        <Pressable style={[styles.progressBarValue, { backgroundColor: props.fullColor ?? colors?.['neutral-background-color-main'] }, style]}>
             <View style={[styles.progressBarPercent, { backgroundColor: props.percentColor ?? colors?.['primary-color-main'], width: `${percent}%` }]} />
-        </View> :
-        <View style={[styles.progressBarContainer, style]}>
+        </Pressable> :
+        <Pressable style={[styles.progressBarContainer, style]}>
             {!props.hideTitle && (typeof props.title === "string" ? <TouchableOpacity style={styles.progressBarTitle} onPress={() => { setOpenDetails(!openDetails) }}>
                 <Text style={textStyles?.['heading-8']}>{props.title}</Text>
                 <Winicon src={openDetails ? "fill/arrows/down-arrow" : "fill/arrows/up-arrow"} size={14} />
@@ -38,7 +38,7 @@ export const WProgressBar = ({ status = ComponentStatus.INFOR, percent = 0, styl
                 {status === ComponentStatus.INFOR ? null : getStatusIcon(status, 16)}
                 <Text style={textStyles?.['label-4']}>{percent}/100</Text>
             </View> : null}
-        </View>
+        </Pressable>
 }
 
 const styles = StyleSheet.create({
