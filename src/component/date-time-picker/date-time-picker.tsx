@@ -41,7 +41,8 @@ interface DateTimePickerProps {
     prefix?: ReactNode;
     suffix?: ReactNode;
     onChange?: (ev?: Date | ValueProps) => void;
-    onLayout?: (event: LayoutChangeEvent) => void
+    onLayout?: (event: LayoutChangeEvent) => void;
+    simpleStyle?: boolean
 }
 
 const initStyle = [SizeVariant.size32];
@@ -53,7 +54,8 @@ export const WDateTimePicker = ({ style = initStyle, pickerType = "auto", helper
     const [value, setValue] = useState<Date | ValueProps>()
     const convertStyle: TextStyle = useMemo(() => {
         const tmp = Array.isArray(style) ? style : [style];
-        let value: any = { ...styles.container };
+        let value: any = {};
+        if (!props.simpleStyle) value = { ...styles.container };
         tmp.forEach((e) => {
             if (typeof e === "string") {
                 value = { ...value, ...(styles as any)[e] };
@@ -64,7 +66,7 @@ export const WDateTimePicker = ({ style = initStyle, pickerType = "auto", helper
         if (props.disabled)
             value.backgroundColor = colors?.["neutral-background-color-disable"];
         return value;
-    }, [style, props.disabled, props.helperText, colors?.["neutral-background-color-disable"]]);
+    }, [style, props.simpleStyle, props.disabled, props.helperText, colors?.["neutral-background-color-disable"]]);
     const {
         fontVariant,
         fontSize,
@@ -167,7 +169,7 @@ export const WDateTimePicker = ({ style = initStyle, pickerType = "auto", helper
         <WBottomSheet ref={bottomSheetRef} />
         <TouchableOpacity
             ref={containerRef}
-            style={restOfStyle}
+            style={[restOfStyle, styles.simpleStyle]}
             disabled={props.disabled}
             onPress={props.disabled ? undefined : showCalendar}
             onLayout={props.onLayout}
@@ -526,13 +528,15 @@ const PopupDateTimePicker = forwardRef(({ value, endValue, repeatValue, onApply,
 })
 
 const styles = StyleSheet.create({
-    container: {
+    simpleStyle: {
         overflow: "visible",
         position: "relative",
         flexDirection: "row",
+        alignItems: "center",
+    },
+    container: {
         borderWidth: 1,
         borderStyle: "solid",
-        alignItems: "center",
         borderRadius: 8,
     },
     timeRangeContainer: {
