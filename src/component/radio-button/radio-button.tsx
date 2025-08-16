@@ -9,6 +9,8 @@ interface WRadioProps {
   disabled?: boolean;
   onChange?: (value?: string | number) => void;
   style?: ViewStyle;
+  activeColor?: string;
+  offColor?: string;
 }
 
 interface WRadioButtonRef {
@@ -20,13 +22,13 @@ interface WRadioButtonRef {
 export const WRadioButton = forwardRef<WRadioButtonRef, WRadioProps>(({ style = {}, size = 24, ...props }, ref) => {
   const [checked, setChecked] = React.useState(props.checked);
   const { colors } = useDesignTokens()
-  const { backgroundColor, borderColor, ...restOfStyle } = style
+  const { backgroundColor, ...restOfStyle } = style
   const statusStyle = useMemo(() => {
-    const tmp = { backgroundColor, borderColor: borderColor ?? colors?.['neutral-border-color-bolder'] }
-    if (checked && !props.disabled) tmp.borderColor = colors?.['primary-color-main']
+    const tmp = { backgroundColor, borderColor: props.offColor ?? colors?.['neutral-border-color-bolder'] }
+    if (checked && !props.disabled) tmp.borderColor = props.activeColor ?? colors?.['primary-color-main']
     if (props.disabled) tmp.backgroundColor = colors?.['neutral-background-color-disable']
     return tmp
-  }, [backgroundColor, borderColor, checked, props.disabled, colors])
+  }, [backgroundColor, checked, props.disabled, colors, props.activeColor, props.offColor])
 
   useEffect(() => {
     setChecked(props.checked);
@@ -66,7 +68,7 @@ export const WRadioButton = forwardRef<WRadioButtonRef, WRadioProps>(({ style = 
         height: size / 2,
         width: size / 2,
         borderRadius: size / 4,
-        backgroundColor: props.disabled ? colors?.['neutral-text-color-disabled'] : colors?.['primary-color-main'],
+        backgroundColor: props.disabled ? colors?.['neutral-text-color-disabled'] : (props.activeColor ?? colors?.['primary-color-main']),
       }}
     />}
   </TouchableOpacity>
