@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
-import { Text, TouchableOpacity, StyleSheet, TextStyle, ViewStyle, View, GestureResponderEvent, LayoutChangeEvent } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, TextStyle, ViewStyle, View, GestureResponderEvent, LayoutChangeEvent, StyleProp } from 'react-native';
 import { ReactNode } from 'react';
 import { useDesignTokens } from '../../module/WiniProvider';
 import { lightThemeColor } from '../../skin/color';
@@ -21,12 +21,12 @@ export enum WButtonVariant {
 
 interface ButtonProps {
   onPress?: (event: GestureResponderEvent) => void;
-  onLayout?: ((event: LayoutChangeEvent) => void);
+  onLayout?: (event: LayoutChangeEvent) => void;
   label: string;
   prefix?: ReactNode;
   suffix?: ReactNode;
   disabled?: boolean;
-  style?: Array<ViewStyle | TextStyle | WButtonVariant> | ViewStyle | TextStyle | WButtonVariant
+  style?: StyleProp<ViewStyle | TextStyle | WButtonVariant>;
 }
 
 const initStyle: any = [WButtonVariant.size32, { lineHeight: 22, fontSize: 14, fontWeight: "500" }]
@@ -43,7 +43,7 @@ export const WButton = forwardRef<ButtonRef, ButtonProps>(({ style = initStyle, 
   const convertStyle: TextStyle = useMemo(() => {
     const tmp = Array.isArray(style) ? style : [style]
     let value: any = {}
-    tmp.forEach((e => {
+    tmp.forEach((e: any) => {
       if (typeof e === "string") {
         value = { ...value, ...(styles as any)[e] }
         switch (e) {
@@ -67,7 +67,7 @@ export const WButton = forwardRef<ButtonRef, ButtonProps>(({ style = initStyle, 
             break;
         }
       } else value = { ...value, ...e }
-    }))
+    })
     return value
   }, [style, colors]);
   const { fontVariant, fontSize, lineHeight, fontFamily, fontStyle, fontWeight, color, textAlign, textAlignVertical, textDecorationColor, textDecorationLine, textTransform, textDecorationStyle, textShadowColor, textShadowOffset, textShadowRadius, backgroundColor, ...restOfStyle } = convertStyle

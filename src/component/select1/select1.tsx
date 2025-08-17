@@ -10,7 +10,7 @@ import React, {
     useRef,
     useState,
 } from "react";
-import { FlatList, LayoutChangeEvent, Platform, Pressable, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import { FlatList, LayoutChangeEvent, Platform, Pressable, StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
 import { hideBottomSheet, showBottomSheet, WBottomSheet } from "../bottom-sheet/bottom-sheet";
 import { useDesignTokens } from "../../module/WiniProvider";
 import { Winicon } from "../wini-icon/wini-icon";
@@ -41,11 +41,7 @@ interface Select1Props {
     className?: string;
     helperText?: string;
     helperTextColor?: string;
-    style?:
-    | Array<ViewStyle | TextStyle | SizeVariant>
-    | ViewStyle
-    | TextStyle
-    | SizeVariant;
+    style?: StyleProp<ViewStyle | TextStyle | SizeVariant>;
     prefix?: ReactNode;
     suffix?: ReactNode;
     simpleStyle?: boolean;
@@ -75,7 +71,7 @@ export const WSelect1 = forwardRef<Select1Ref, Select1Props>(({ style = initStyl
         const tmp = Array.isArray(style) ? style : [style];
         let value: any = {};
         if (!props.simpleStyle) value = { ...styles.container };
-        tmp.forEach((e) => {
+        tmp.forEach((e: any) => {
             if (typeof e === "string") {
                 value = { ...value, ...(styles as any)[e] };
             } else value = { ...value, ...e };

@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react';
-import { GestureResponderEvent, KeyboardTypeOptions, LayoutChangeEvent, Pressable, ReturnKeyTypeOptions, StyleSheet, Text, TextInput, TextInputFocusEvent, TextStyle, View, ViewStyle } from 'react-native';
+import { GestureResponderEvent, KeyboardTypeOptions, LayoutChangeEvent, Pressable, ReturnKeyTypeOptions, StyleProp, StyleSheet, Text, TextInput, TextInputFocusEvent, TextStyle, View, ViewStyle } from 'react-native';
 import { useDesignTokens } from '../../module/WiniProvider';
 
 export enum SizeVariant {
@@ -30,7 +30,7 @@ interface TextFieldProps {
     prefix?: React.ReactNode;
     helperText?: string;
     helperTextColor?: string;
-    style?: Array<ViewStyle | TextStyle | SizeVariant> | ViewStyle | TextStyle | SizeVariant
+    style?: StyleProp<ViewStyle | TextStyle | SizeVariant>
     autoFocus?: boolean;
     secureTextEntry?: boolean;
     type?: KeyboardTypeOptions;
@@ -53,11 +53,11 @@ export const WTextField = forwardRef<TextFieldRef, TextFieldProps>(({ style = in
         const tmp = Array.isArray(style) ? style : [style]
         let value: any = {}
         if (!props.simpleStyle) value = { ...styles.container }
-        tmp.forEach((e => {
+        tmp.forEach((e: any) => {
             if (typeof e === "string") {
                 value = { ...value, ...(styles as any)[e] }
             } else value = { ...value, ...e }
-        }))
+        })
         if (props.helperText?.length) value.borderColor = helperTextColor
         else if (focused) value.borderColor = "#287CF0"
         else value.borderColor ??= colors?.['neutral-border-color-main']

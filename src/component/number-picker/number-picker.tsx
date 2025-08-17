@@ -1,4 +1,4 @@
-import { LayoutChangeEvent, StyleSheet, Text, TextInput, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { LayoutChangeEvent, StyleProp, StyleSheet, Text, TextInput, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useDesignTokens } from '../../module/WiniProvider';
 import { Winicon } from '../wini-icon/wini-icon';
@@ -15,7 +15,7 @@ interface NumberPickerProps {
   hideMinus?: boolean;
   onChange?: (value: number) => void;
   onLayout?: (event: LayoutChangeEvent) => void;
-  style?: Array<ViewStyle | TextStyle | WNumberPickerVariant> | ViewStyle | TextStyle | WNumberPickerVariant
+  style?: StyleProp<ViewStyle | TextStyle | WNumberPickerVariant>;
   disabled?: boolean;
   min?: number;
   max?: number;
@@ -32,7 +32,7 @@ interface NumberPickerRef {
   isFocused: boolean;
 }
 
-const initStyle: any = [WNumberPickerVariant.size32]
+const initStyle = [WNumberPickerVariant.size32]
 
 export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ initValue = 0, volume = 1, style = initStyle, helperTextColor = "#E14337", ...props }, ref) => {
   const { colors } = useDesignTokens()
@@ -44,14 +44,14 @@ export const WNumberPicker = forwardRef<NumberPickerRef, NumberPickerProps>(({ i
     let value: any = {}
     if (!props.simpleStyle) value = { ...styles.container }
     const solidStyle = tmp.some(e => e === WNumberPickerVariant.solid)
-    tmp.forEach((e => {
+    tmp.forEach((e: any) => {
       if (typeof e === "string") {
         if (!props.simpleStyle) {
           value = { ...value, ...(styles as any)[e] }
           if (solidStyle) value.borderColor ??= colors?.['neutral-border-color-bolder']
         }
       } else value = { ...value, ...e }
-    }))
+    })
     if (solidStyle) {
       if (focused) value.borderColor = "#287CF0"
       if (props.helperText?.length) value.borderColor = helperTextColor

@@ -10,7 +10,7 @@ import React, {
     useRef,
     useState,
 } from 'react';
-import { FlatList, GestureResponderEvent, LayoutChangeEvent, Platform, Pressable, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { FlatList, GestureResponderEvent, LayoutChangeEvent, Platform, Pressable, StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { hideBottomSheet, showBottomSheet, WBottomSheet } from '../bottom-sheet/bottom-sheet';
 import { WCheckbox } from '../checkbox/checkbox';
 import { useDesignTokens } from '../../module/WiniProvider';
@@ -41,11 +41,7 @@ interface SelectMultipleProps {
     disabled?: boolean;
     helperText?: string;
     helperTextColor?: string;
-    style?:
-    | Array<ViewStyle | TextStyle | SizeVariant>
-    | ViewStyle
-    | TextStyle
-    | SizeVariant;
+    style?: StyleProp<ViewStyle | TextStyle | SizeVariant>;
     showClearValueButton?: boolean;
     prefix?: ReactNode;
     suffix?: ReactNode;
@@ -74,7 +70,7 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
         const tmp = Array.isArray(style) ? style : [style];
         let value: any = {};
         if (!props.simpleStyle) value = { ...styles.container };
-        tmp.forEach(e => {
+        tmp.forEach((e: any) => {
             if (typeof e === 'string') {
                 value = { ...value, ...(styles as any)[e] };
             } else value = { ...value, ...e };
