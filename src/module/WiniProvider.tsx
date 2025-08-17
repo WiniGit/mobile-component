@@ -16,8 +16,6 @@ import { FSnackbar } from "../component/snackbar/snackbar";
 import { WDialog } from "../component/dialog/dialog";
 import { ColorProps, darkThemeColor, lightThemeColor } from "../skin/color";
 import {
-    SafeAreaView,
-    StatusBar,
     TextStyle,
     useColorScheme,
     useWindowDimensions,
@@ -530,23 +528,9 @@ const RootStack = (props: Props) => {
 
     return (
         <DesignTokenProvider designTokens={designTokens}>
-            <MyStatusBar />
-            <SafeAreaView style={{ flex: 1 }}>
-                <FSnackbar />
-                <WDialog />
-                {loadedResources && props.children}
-            </SafeAreaView>
+            <FSnackbar />
+            <WDialog />
+            {loadedResources && props.children}
         </DesignTokenProvider>
     );
 };
-
-const MyStatusBar = () => {
-    const { theme } = useDesignTokens();
-
-    return (
-        <StatusBar
-            barStyle={`${theme === 'light' ? 'dark' : 'light'}-content`}
-            backgroundColor={theme === 'light' ? "#000" : "#fff"}
-        />
-    );
-}
