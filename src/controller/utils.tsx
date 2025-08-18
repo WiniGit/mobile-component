@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { differenceInSeconds, parse } from 'date-fns';
-import { v4 as uuidv4 } from 'uuid';
+import uuid from 'react-native-uuid';
 
 export class Util {
     static dateTime_stringToDecimal(stringDate: string) {
@@ -582,4 +582,4 @@ export function inputMoneyPattern(ev: any) {
     }
 }
 
-export const randomGID = () => uuidv4().replace(/-/g, '');
+export const randomGID = () => uuid.v4().replace(/-/g, '');
