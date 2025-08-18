@@ -189,7 +189,6 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
             <TouchableOpacity
                 ref={containerRef}
                 onLayout={props.onLayout}
-                helper-text={props.helperText}
                 style={[restOfStyle, styles.simpleStyle]}
                 disabled={props.disabled}
                 onPress={props.disabled ? undefined : onOpenOptions}

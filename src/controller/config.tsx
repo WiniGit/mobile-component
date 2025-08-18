@@ -97,7 +97,7 @@ export class BaseDA {
         }
     }
 
-    static uploadFiles = async (listFile: Array<File>) => {
+    static uploadFiles = async (listFile: Array<{ uri: string; type: string; name: string }>) => {
         listFile = [...listFile];
         // const headersObj: any = await getHeaders()
         const headersObj: any = { pid: ConfigData.pid }

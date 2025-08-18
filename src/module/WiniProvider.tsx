@@ -59,14 +59,9 @@ interface DesignTokenContextType {
     setTheme: (theme: ThemeType) => void;
 }
 
-const DesignTokenContext = createContext<DesignTokenContextType | undefined>(
-    undefined
-);
+const DesignTokenContext = createContext<DesignTokenContextType | undefined>(undefined);
 
-export const DesignTokenProvider: React.FC<{
-    children: ReactNode;
-    designTokens: Array<{ [p: string]: any }>;
-}> = ({ children, designTokens = [] }) => {
+export const DesignTokenProvider: React.FC<{ children: ReactNode; designTokens: Array<{ [p: string]: any }> }> = ({ children, designTokens = [] }) => {
     const [colors, setColors] = useState<ColorProps>();
     const [textStyles, setTextStyles] = useState<TypoProps>();
     const [boxShadows, setBoxShadows] = useState<BoxShadowProps>();
@@ -427,29 +422,6 @@ export const useDesignTokens = () => {
     }
     return context;
 };
-
-function parseFontString(input: string): TextStyle {
-    const regex =
-        /^(normal|bold|lighter|bolder|\d{3})\s+(\d+(?:\.\d+)?(?:px|pt|pc|in|cm|mm|em|ex|ch|rem|lh|vw|vh|vmin|vmax|%))\/(\d+(?:\.\d+)?(?:px|pt|pc|in|cm|mm|em|ex|ch|rem|lh|vw|vh|vmin|vmax|%))\s+(['"].+['"])$/i;
-    const match = input.match(regex);
-
-    if (!match) return {};
-
-    const [weight, size, line, family] = match;
-
-    return {
-        fontWeight: isNaN(parseInt(weight))
-            ? (weight as any)
-            : parseInt(weight, 10),
-        fontSize: size.endsWith("rem")
-            ? parseFloat(size.replace("rem", "")) * 10
-            : parseFloat(size.replace("px", "")),
-        lineHeight: line.endsWith("rem")
-            ? parseFloat(line.replace("rem", "")) * 10
-            : parseFloat(line.replace("px", "")),
-        fontFamily: family,
-    };
-}
 
 export const WiniProvider = (props: Props) => {
     return (
