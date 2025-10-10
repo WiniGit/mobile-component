@@ -83,6 +83,7 @@ export const Winicon = ({ style = {}, size = 24, ...props }: WiniconProps) => {
         >
             {svgData ? (
                 <SvgXml
+                    key={props.color}
                     preserveAspectRatio="xMinYMin slice"
                     xml={convertXML(svgData)}
                     width={size}

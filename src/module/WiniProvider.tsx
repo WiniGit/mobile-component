@@ -11,12 +11,11 @@ import { DesignTokenType } from "./da";
 import { Util } from "../controller/utils";
 import { DataController } from "../controller/data";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer, StackActions } from "@react-navigation/native";
+import { NavigationContainer, StackActions, useNavigation } from "@react-navigation/native";
 import { FSnackbar } from "../component/snackbar/snackbar";
 import { WDialog } from "../component/dialog/dialog";
 import { ColorProps, darkThemeColor, lightThemeColor } from "../skin/color";
 import {
-    TextStyle,
     useColorScheme,
     useWindowDimensions,
     ViewStyle,
@@ -91,14 +90,12 @@ export const DesignTokenProvider: React.FC<{ children: ReactNode; designTokens: 
                     `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`
                 ] = isDark ? e.Value.darkMode : e.Value.lightMode;
             });
-            console.log("????font", fontVariables.map(e => ({ ...e, Value: e.Value.appMode })));
             fontVariables.forEach((e) => {
                 const tkParent = groupTokens.find((g) => g.Id === e.ParentId);
                 const fontName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`;
                 if (e.Value.appMode)
                     _textStyles[fontName] ??= e.Value.appMode
             });
-            console.log("????shadow", boxShadowVariables.map(e => ({ ...e, Value: e.Value.appMode })));
             boxShadowVariables.forEach((e) => {
                 const tkParent = groupTokens.find((g) => g.Id === e.ParentId);
                 const shadowName = `${tkParent ? `${Util.toSlug(tkParent.Name)}-` : ""}${Util.toSlug(e.Name)}`;
@@ -109,7 +106,6 @@ export const DesignTokenProvider: React.FC<{ children: ReactNode; designTokens: 
                             (m: string, p1: string, p2: string) => (_colors[p1] ?? p2)
                         )
                     }
-                    console.log("????shadow convert", _boxShadows[shadowName]);
                 }
             });
             customVariables.forEach((e) => {
@@ -444,20 +440,19 @@ const RootStack = (props: Props) => {
     ConfigData.url = props.url;
     ConfigData.imgUrlId = props.imgUrlId;
     ConfigData.fileUrl = props.fileUrl;
+    const navigation = useNavigation()
     if (props.globalHeaders)
         ConfigData.globalHeaders = props.globalHeaders as any;
-    ConfigData.onInvalidToken =
-        props.onInvalidToken ??
-        (() => {
-            Util.clearStorage();
-            StackActions.popTo("/login");
-        });
     const [loadedResources, setLoadedResources] = useState(false);
-    const [designTokens, setDesignTokens] = useState<Array<{ [p: string]: any }>>(
-        []
-    );
+    const [designTokens, setDesignTokens] = useState<Array<{ [p: string]: any }>>([]);
+
+    const defaultInValidToken = () => {
+        Util.clearStorage();
+        navigation.dispatch(StackActions.popToTop())
+    }
 
     useEffect(() => {
+        ConfigData.onInvalidToken = props.onInvalidToken ?? defaultInValidToken;
         if (props.pid.length === 32) {
             const _desginTokenController = new TableController("designtoken");
             _desginTokenController.getAll().then((res) => {
