@@ -69,8 +69,8 @@ export const Winicon = ({ style = {}, size = 24, ...props }: WiniconProps) => {
     }, [props.src, props.color]);
 
     const convertXML = (svgString: string) => {
-        if (svgString.startsWith("fill")) return svgString.replace(/fill="[^"]*"/g, 'fill="currentColor"')
-        else if (svgString.startsWith("outline")) return svgString.replace(/stroke="[^"]*"/g, 'stroke="currentColor"')
+        if (props.src.startsWith("fill")) return svgString.replace(/fill="[^"]*"/g, 'fill="currentColor"')
+        else if (props.src.startsWith("outline")) return svgString.replace(/stroke="[^"]*"/g, 'stroke="currentColor"')
         else return svgString
     }
 
