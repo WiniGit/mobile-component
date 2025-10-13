@@ -445,6 +445,7 @@ function OptionsItemTile({
                                     <>
                                         {child.prefix}
                                         <Text
+                                            numberOfLines={1}
                                             style={[
                                                 textStyles?.["label-4"],
                                                 {
@@ -501,7 +502,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     selectTile: {
-        height: 32,
+        minHeight: 32,
         paddingHorizontal: 8,
         marginHorizontal: 8,
         borderRadius: 8,

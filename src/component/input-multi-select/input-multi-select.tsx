@@ -575,6 +575,7 @@ function OptionsItemTile({ item, children, selected, onChange, getOptions }: Opt
                                     <>
                                         {child.prefix}
                                         <Text
+                                            numberOfLines={1}
                                             style={[
                                                 textStyles?.['label-4'],
                                                 {
@@ -639,7 +640,7 @@ const styles = StyleSheet.create({
         height: 24,
     },
     selectTile: {
-        height: 32,
+        minHeight: 32,
         paddingHorizontal: 8,
         marginHorizontal: 8,
         borderRadius: 8,
