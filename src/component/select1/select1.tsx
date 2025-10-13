@@ -229,6 +229,7 @@ const OptionDropList = (props: {
     const flatListRef = useRef<FlatList>(null);
     const [options, setOptions] = useState<{ data: OptionsItem[]; totalCount?: number }>({ data: [], totalCount: undefined });
     const { t } = useTranslation();
+    const [layoutHeight, setLayoutHeight] = useState<number>();
 
     const getData = async (length?: number) => {
         const res = await props.getOptions({
@@ -269,7 +270,10 @@ const OptionDropList = (props: {
     }, [options.totalCount]);
 
     return (
-        <Pressable style={{ backgroundColor: colors?.["neutral-background-color-absolute"], paddingTop: 8, paddingBottom: Platform.OS === 'ios' ? 28 : 8 }}>
+        <Pressable style={{ backgroundColor: colors?.["neutral-background-color-absolute"], paddingTop: 8, paddingBottom: Platform.OS === 'ios' ? 28 : 8, height: layoutHeight }}
+            onLayout={(ev) => {
+                if (ev.nativeEvent.layout.height) setLayoutHeight(ev.nativeEvent.layout.height)
+            }}>
             {options.totalCount === 0 && !initTotal.current ? (
                 <View style={{ alignItems: "center", marginVertical: 8 }}>
                     <Winicon src="color/files/archive-file" size={28} />
@@ -385,6 +389,7 @@ function OptionsItemTile({
                                     : item.disabled
                                         ? colors?.["neutral-background-color-disable"]
                                         : undefined,
+                            borderBottomColor: colors?.["neutral-border-color-main"]
                         },
                     ]}
                     onPress={() => {
@@ -437,6 +442,7 @@ function OptionsItemTile({
                                                 : child.disabled
                                                     ? colors?.["neutral-background-color-disable"]
                                                     : undefined,
+                                        borderBottomColor: colors?.["neutral-border-color-main"]
                                     },
                                 ]}
                                 onPress={() => onPress(child)}
@@ -509,6 +515,8 @@ const styles = StyleSheet.create({
         gap: 8,
         alignItems: "center",
         flexDirection: "row",
+        borderBottomWidth: 1,
+        borderStyle: "solid",
     },
     helperText: {
         fontSize: 12,

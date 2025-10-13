@@ -317,6 +317,8 @@ const OptionDropList = forwardRef<any, OptionDropListProps>((props, ref) => {
     });
     const { t } = useTranslation();
     const [selected, setSelected] = useState<Array<OptionsItem>>([]);
+    const [layoutHeight, setLayoutHeight] = useState<number>();
+
     const getData = async (length?: number) => {
         const res = await props.getOptions({ length: length ?? 0, search: searchValue });
         if (initTotal.current === null) initTotal.current = res.totalCount;
@@ -338,7 +340,10 @@ const OptionDropList = forwardRef<any, OptionDropListProps>((props, ref) => {
     const parentList = options.data.filter(e => !e.parentId);
 
     return (
-        <Pressable style={{ backgroundColor: colors?.["neutral-background-color-absolute"], paddingTop: 8, paddingBottom: Platform.OS === 'ios' ? 28 : 8 }}>
+        <Pressable style={{ backgroundColor: colors?.["neutral-background-color-absolute"], paddingTop: 8, paddingBottom: Platform.OS === 'ios' ? 28 : 8, height: layoutHeight }}
+            onLayout={(ev) => {
+                if (ev.nativeEvent.layout.height) setLayoutHeight(ev.nativeEvent.layout.height)
+            }}>
             <View style={[{ position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, height: props.optionListTitle ? 56 : 38 }]}>
                 <View style={{ position: "absolute", alignItems: "center", left: 0, right: 0, top: "50%", transform: [{ translateY: "-50%" }] }}>
                     {props.optionListTitle && <Text style={textStyles?.['heading-7']}>{props.optionListTitle}</Text>}
@@ -461,7 +466,10 @@ function OptionsItemTile({ item, children, selected, onChange, getOptions }: Opt
                 <View
                     style={[
                         styles.selectTile,
-                        { backgroundColor: item.disabled ? colors?.['neutral-background-color-disable'] : undefined }
+                        {
+                            backgroundColor: item.disabled ? colors?.['neutral-background-color-disable'] : undefined,
+                            borderBottomColor: colors?.["neutral-border-color-main"]
+                        }
                     ]}
                 >
                     <WCheckbox
@@ -506,7 +514,10 @@ function OptionsItemTile({ item, children, selected, onChange, getOptions }: Opt
                     disabled={item.disabled}
                     style={[
                         styles.selectTile,
-                        { backgroundColor: item.disabled ? colors?.['neutral-background-color-disable'] : undefined },
+                        {
+                            backgroundColor: item.disabled ? colors?.['neutral-background-color-disable'] : undefined,
+                            borderBottomColor: colors?.["neutral-border-color-main"]
+                        },
                     ]}
                     onPress={() => {
                         onChange(!itemChecked, [item]);
@@ -557,6 +568,7 @@ function OptionsItemTile({ item, children, selected, onChange, getOptions }: Opt
                                             : child.disabled
                                                 ? colors?.['neutral-background-color-disable']
                                                 : undefined,
+                                        borderBottomColor: colors?.["neutral-border-color-main"]
                                     },
                                 ]}
                                 onPress={() => {
@@ -647,6 +659,8 @@ const styles = StyleSheet.create({
         gap: 8,
         alignItems: 'center',
         flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderStyle: "solid",
     },
     helperText: {
         fontSize: 12,
