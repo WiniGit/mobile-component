@@ -10,10 +10,11 @@ interface WImageProps {
   src?: string;
   resizeMode?: ImageResizeMode;
   onPress?: ((event: GestureResponderEvent) => void);
-  onLayout?: ((event: LayoutChangeEvent) => void)
+  onLayout?: ((event: LayoutChangeEvent) => void);
+  crossOrigin?: "anonymous" | "use-credentials"
 }
 
-export const WImage = ({ src, style = {}, ...props }: WImageProps) => {
+export const WImage = ({ src, style = {}, crossOrigin, ...props }: WImageProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [svgError, setSvgError] = useState<boolean>(false);
@@ -49,6 +50,7 @@ export const WImage = ({ src, style = {}, ...props }: WImageProps) => {
           height={props.height as any}
           onLoadEnd={() => setIsLoading(false)}
           onError={() => setIsError(true)}
+          crossOrigin={crossOrigin}
         />}
       {isLoading && (
         <SkeletonPlaceholder backgroundColor="#e0e0e0" highlightColor="#f5f5f5">
