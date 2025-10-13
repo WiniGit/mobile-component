@@ -342,7 +342,9 @@ const OptionDropList = forwardRef<any, OptionDropListProps>((props, ref) => {
     return (
         <Pressable style={{ backgroundColor: colors?.["neutral-background-color-absolute"], paddingTop: 8, paddingBottom: Platform.OS === 'ios' ? 28 : 8, height: layoutHeight }}
             onLayout={(ev) => {
-                if (ev.nativeEvent.layout.height) setLayoutHeight(ev.nativeEvent.layout.height)
+                if (ev.nativeEvent.layout.height && options.totalCount)
+                    setLayoutHeight(ev.nativeEvent.layout.height)
+                else setLayoutHeight(260)
             }}>
             <View style={[{ position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, height: props.optionListTitle ? 56 : 38 }]}>
                 <View style={{ position: "absolute", alignItems: "center", left: 0, right: 0, top: "50%", transform: [{ translateY: "-50%" }] }}>

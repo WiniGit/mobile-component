@@ -272,7 +272,9 @@ const OptionDropList = (props: {
     return (
         <Pressable style={{ backgroundColor: colors?.["neutral-background-color-absolute"], paddingTop: 8, paddingBottom: Platform.OS === 'ios' ? 28 : 8, height: layoutHeight }}
             onLayout={(ev) => {
-                if (ev.nativeEvent.layout.height) setLayoutHeight(ev.nativeEvent.layout.height)
+                if (ev.nativeEvent.layout.height && options.totalCount)
+                    setLayoutHeight(ev.nativeEvent.layout.height)
+                else setLayoutHeight(260)
             }}>
             {options.totalCount === 0 && !initTotal.current ? (
                 <View style={{ alignItems: "center", marginVertical: 8 }}>
