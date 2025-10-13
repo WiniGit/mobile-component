@@ -1,10 +1,11 @@
 import React, { createRef, useMemo } from 'react';
 import { ComponentStatus, getStatusIcon } from '../component-status';
-import { KeyboardAvoidingView, Modal, Platform, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { lightThemeColor } from '../../skin/color';
 import { useDesignTokens } from '../../module/WiniProvider';
 import { useTranslation } from 'react-i18next';
 import { WButton, WButtonVariant } from '../button/button';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface DialogState {
   readonly open?: boolean;

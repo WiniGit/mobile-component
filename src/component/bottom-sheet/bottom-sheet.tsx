@@ -1,6 +1,7 @@
 import React, { forwardRef, RefObject, useImperativeHandle, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Modal, Pressable, Animated, PanResponder, KeyboardAvoidingView, Platform, DimensionValue, TouchableWithoutFeedback, ViewStyle, SafeAreaView, useWindowDimensions, } from 'react-native';
+import { View, Text, StyleSheet, Modal, Pressable, Animated, PanResponder, KeyboardAvoidingView, Platform, DimensionValue, TouchableWithoutFeedback, ViewStyle, useWindowDimensions, } from 'react-native';
 import { useDesignTokens } from '../../module/WiniProvider';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface BottomSheetState {
   enableDismiss?: boolean;
