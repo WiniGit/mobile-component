@@ -17,7 +17,7 @@ interface EmptyViewProps {
 export const WEmptyView = ({ style = {}, ...props }: EmptyViewProps) => {
     const { textStyles } = useDesignTokens()
     return <View style={[{ alignItems: "center", justifyContent: "center" }, style]}>
-        {props.iconElement ?? <Winicon src={(props.icon as any) ?? "color/files/archive"} size={24} />}
+        {props.iconElement ?? <Winicon src={(props.icon as any) ?? "color/files/archive-file"} size={40} />}
         {props.titleElement ?? (props.title && <Text style={[textStyles?.["heading-8"], { marginTop: 16, textAlign: "center" }]}>{props.title}</Text>)}
         {props.subtitleElement ?? (props.subtitle && <Text style={[textStyles?.["subtitle-4"], { marginTop: 4, textAlign: "center" }]}>{props.subtitle}</Text>)}
     </View>
