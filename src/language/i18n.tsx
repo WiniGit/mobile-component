@@ -110,6 +110,7 @@ const resources = {
             movetostart: "Move to start",
             movetoend: "Move to end",
             repeat: "Repeat",
+            search: "Search",
         },
     },
     vi: {
@@ -218,6 +219,7 @@ const resources = {
             movetostart: "Chuyển lên đầu",
             movetoend: "Chuyển xuống cuối",
             repeat: "Lặp lại",
+            search: "Tìm kiếm",
         },
     },
 }
