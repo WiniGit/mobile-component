@@ -403,6 +403,7 @@ const OptionDropList = forwardRef<any, OptionDropListProps>((props, ref) => {
                             if (options.totalCount && options.data.length < options.totalCount) getData(options.data.length);
                         }}
                         onEndReachedThreshold={0.5} // Trigger when 50% from the end
+                        ListFooterComponent={<View style={{ height: 16 }} />}
                     />}
                 </>
             )}

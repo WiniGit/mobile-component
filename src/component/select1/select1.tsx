@@ -321,6 +321,7 @@ const OptionDropList = (props: {
                                 getData(options.data.length);
                         }}
                         onEndReachedThreshold={0.5} // Trigger when 50% from the end
+                        ListFooterComponent={<View style={{ height: 16 }} />}
                     />}
                 </>
             )}
