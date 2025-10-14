@@ -17,6 +17,7 @@ import { useDesignTokens } from '../../module/WiniProvider';
 import { Winicon } from '../wini-icon/wini-icon';
 import { useTranslation } from 'react-i18next';
 import { WTextField, SizeVariant } from '../text-field/text-field';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface OptionsItem {
     id: string | number;
@@ -339,7 +340,7 @@ const OptionDropList = forwardRef<any, OptionDropListProps>((props, ref) => {
 
     const parentList = options.data.filter(e => !e.parentId);
 
-    return (
+    return <SafeAreaView edges={["left", "right", "bottom"]}>
         <Pressable style={{ backgroundColor: colors?.["neutral-background-color-absolute"], paddingTop: 8, paddingBottom: Platform.OS === 'ios' ? 28 : 8, height: layoutHeight }}
             onLayout={(ev) => {
                 if (ev.nativeEvent.layout.height && options.totalCount)
@@ -415,7 +416,7 @@ const OptionDropList = forwardRef<any, OptionDropListProps>((props, ref) => {
                 </>
             )}
         </Pressable>
-    );
+    </SafeAreaView>
 })
 
 interface OptionTileProps {

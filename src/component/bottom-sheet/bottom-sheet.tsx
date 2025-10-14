@@ -1,5 +1,5 @@
 import React, { forwardRef, RefObject, useImperativeHandle, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Modal, Pressable, Animated, PanResponder, KeyboardAvoidingView, Platform, DimensionValue, TouchableWithoutFeedback, ViewStyle, useWindowDimensions, } from 'react-native';
+import { View, Text, StyleSheet, Modal, Pressable, Animated, PanResponder, KeyboardAvoidingView, Platform, DimensionValue, TouchableWithoutFeedback, ViewStyle, useWindowDimensions } from 'react-native';
 import { useDesignTokens } from '../../module/WiniProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -12,6 +12,7 @@ interface BottomSheetState {
   suffixAction?: React.ReactNode;
   children?: React.ReactNode;
   height?: DimensionValue;
+  safeArea?: boolean;
 }
 
 interface BottomSheetRef {
@@ -23,7 +24,6 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
   const { textStyles, colors } = useDesignTokens();
   const [isVisible, setIsVisible] = useState(false);
   const [btmSheetState, setBtmSheetState] = useState<BottomSheetState>({});
-  const scrSize = useWindowDimensions()
 
   const showBottomSheet = (props: BottomSheetState) => {
     setIsVisible(true);
@@ -49,46 +49,46 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
     btmSheetState.dismiss?.();
   };
 
-  return (
+  const returnModal = () => {
     // Thêm statusBarTranslucent để ngăn modal cha nhận sự kiện khi modal con hiển thị
-    <SafeAreaView>
-      <Modal transparent visible={isVisible} animationType="slide" statusBarTranslucent={true} >
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-          <TouchableWithoutFeedback style={{ flex: 1 }}>
-            <Container onDismiss={btmSheetState.enableDismiss ? onDismiss : undefined}>
+    return <Modal transparent visible={isVisible} animationType="slide" statusBarTranslucent={true} >
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+        <TouchableWithoutFeedback style={{ flex: 1 }}>
+          <Container onDismiss={btmSheetState.enableDismiss ? onDismiss : undefined}>
+            <View
+              style={[
+                styles.container,
+                { backgroundColor: colors?.['neutral-background-color-absolute'] },
+              ]}
+              pointerEvents="box-none"
+            >
               <View
-                style={[
-                  styles.container,
-                  { backgroundColor: colors?.['neutral-background-color-absolute'] },
-                ]}
-                pointerEvents="box-none"
-              >
-                <View
-                  style={{
-                    width: 56,
-                    marginTop: 8,
-                    height: 6,
-                    borderRadius: 10,
-                    backgroundColor: colors?.['neutral-background-color-bolder'],
-                  }}
-                />
-                <Pressable style={[{ width: '100%' }, btmSheetState.style]}>
-                  {!!btmSheetState.title?.length && (
-                    <View style={[styles.header, { borderBottomColor: colors?.['neutral-border-color-main'], justifyContent: (btmSheetState.prefixAction && btmSheetState.suffixAction) ? "space-between" : btmSheetState.suffixAction ? "flex-end" : "flex-start" }]}>
-                      <Text style={[textStyles?.['heading-7'], styles.title]}>{btmSheetState.title}</Text>
-                      {btmSheetState.prefixAction}
-                      {btmSheetState.suffixAction}
-                    </View>
-                  )}
-                  {btmSheetState.children}
-                </Pressable>
-              </View>
-            </Container>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-      </Modal>
-    </SafeAreaView>
-  );
+                style={{
+                  width: 56,
+                  marginTop: 8,
+                  height: 6,
+                  borderRadius: 10,
+                  backgroundColor: colors?.['neutral-background-color-bolder'],
+                }}
+              />
+              <Pressable style={[{ width: '100%' }, btmSheetState.style]}>
+                {!!btmSheetState.title?.length && (
+                  <View style={[styles.header, { borderBottomColor: colors?.['neutral-border-color-main'], justifyContent: (btmSheetState.prefixAction && btmSheetState.suffixAction) ? "space-between" : btmSheetState.suffixAction ? "flex-end" : "flex-start" }]}>
+                    <Text style={[textStyles?.['heading-7'], styles.title]}>{btmSheetState.title}</Text>
+                    {btmSheetState.prefixAction}
+                    {btmSheetState.suffixAction}
+                  </View>
+                )}
+                {btmSheetState.children}
+              </Pressable>
+            </View>
+          </Container>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </Modal>
+  }
+
+  return btmSheetState.safeArea ? <SafeAreaView>{returnModal()}</SafeAreaView> : returnModal()
 });
 
 const Container = (props: { children: React.ReactNode; onDismiss?: () => void }) => {
@@ -237,6 +237,7 @@ export const showBottomSheet = ({
   suffixAction?: React.ReactNode;
   children: React.ReactNode;
   style?: ViewStyle;
+  safeArea?: boolean;
 }) => {
   ref.current.showBottomSheet(props);
 };
