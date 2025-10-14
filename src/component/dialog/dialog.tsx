@@ -64,27 +64,25 @@ export class CustomDialog extends React.Component<Object, DialogState> {
   }
 
   render() {
-    return <SafeAreaView>
-      <Modal animationType="slide" visible={this.state.open ?? false} transparent>
-        <View style={styles.overlay}>
-          <Container
-            status={this.state.status}
-            title={this.state.title}
-            content={this.state.content}
-            titleSubmit={this.state.submitTitle}
-            onSubmit={() => {
-              if (this.state.onSubmit) this.state.onSubmit();
-              this.closeDialog();
-            }}
-            titleCancel={this.state.titleCancel}
-            onCancel={() => {
-              if (this.state.onCancel) this.state.onCancel();
-              this.closeDialog();
-            }}
-          />
-        </View>
-      </Modal>
-    </SafeAreaView>
+    return <Modal animationType="slide" visible={this.state.open ?? false} transparent>
+      <View style={styles.overlay}>
+        <Container
+          status={this.state.status}
+          title={this.state.title}
+          content={this.state.content}
+          titleSubmit={this.state.submitTitle}
+          onSubmit={() => {
+            if (this.state.onSubmit) this.state.onSubmit();
+            this.closeDialog();
+          }}
+          titleCancel={this.state.titleCancel}
+          onCancel={() => {
+            if (this.state.onCancel) this.state.onCancel();
+            this.closeDialog();
+          }}
+        />
+      </View>
+    </Modal>
   }
 }
 
