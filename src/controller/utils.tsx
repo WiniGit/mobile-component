@@ -167,9 +167,9 @@ export class Util {
      * action with localStorage
      *  */
     static setStorage = async (listKeyValue: Array<{ key: string, value: string }>) => {
-        if (!listKeyValue) return;
+        if (!listKeyValue?.length) return;
         try {
-            await AsyncStorage.multiSet(listKeyValue.map((item) => [item.key, item.value]));
+            await AsyncStorage.multiSet(listKeyValue.map((item) => [item.key, typeof item.value === 'object' ? JSON.stringify(item.value) : typeof item.value !== 'string' ? `${item.value}` : item.value]));
         } catch (error) {
             console.error('setStorage failed:', error);
         }
