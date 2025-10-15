@@ -145,7 +145,7 @@ const SmallContainer = ({ status = ComponentStatus.INFOR, ...props }: ContainerP
       <TouchableOpacity onPress={props.onCancel} style={styles.actionBtn}>
         <Text style={[textStyles?.['label-4']]}>{props.titleCancel ?? t('cancel')}</Text>
       </TouchableOpacity>
-      <View style={{ width: 1, height: 32, backgroundColor: colors?.['neutral-border-color-main'] }} />
+      <View style={{ width: 1, height: 36, backgroundColor: colors?.['neutral-border-color-main'] }} />
       <TouchableOpacity onPress={props.onSubmit} style={styles.actionBtn}>
         <Text style={[textStyles?.['label-4'], { color: mainColor }]}>{props.titleSubmit ?? t('submit')}</Text>
       </TouchableOpacity>
@@ -214,6 +214,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#00000080',
   },
   container: {
@@ -224,6 +225,7 @@ const styles = StyleSheet.create({
   },
   smallContainer: {
     width: '100%',
+    maxWidth: 320,
     borderRadius: 8,
     borderWidth: 1,
     borderStyle: "solid",
@@ -237,7 +239,7 @@ const styles = StyleSheet.create({
   actionBtn: {
     alignItems: "center",
     justifyContent: "center",
-    height: 32,
+    height: 36,
     flex: 1
   }
 });
