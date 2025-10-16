@@ -52,6 +52,7 @@ type ThemeType = "light" | "dark";
 interface DesignTokenContextType {
     colors?: ColorProps;
     textStyles?: TypoProps;
+    setTextStyles: React.Dispatch<React.SetStateAction<TypoProps | undefined>>;
     boxShadows?: BoxShadowProps;
     customStyleSheet?: { [k: string]: ViewStyle };
     theme: ThemeType;
@@ -398,6 +399,7 @@ export const DesignTokenProvider: React.FC<{ children: ReactNode; designTokens: 
             value={{
                 colors,
                 textStyles,
+                setTextStyles,
                 boxShadows,
                 customStyleSheet,
                 theme,
