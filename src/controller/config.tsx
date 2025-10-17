@@ -109,12 +109,7 @@ export class BaseDA {
             headers: headersObj,
             body: formData,
         })
-        if (response.code === 200) {
-            return response.data
-        } else {
-            showSnackbar({ message: response.message, status: ComponentStatus.ERROR })
-        }
-        return null;
+        return response;
     }
 
     static getFilesInfor = async (ids: Array<string>) => {
