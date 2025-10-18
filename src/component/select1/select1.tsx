@@ -10,7 +10,7 @@ import React, {
     useRef,
     useState,
 } from "react";
-import { FlatList, LayoutChangeEvent, Platform, Pressable, StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import { FlatList, LayoutChangeEvent, Platform, Pressable, StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle, useWindowDimensions } from "react-native";
 import { hideBottomSheet, showBottomSheet, WBottomSheet } from "../bottom-sheet/bottom-sheet";
 import { useDesignTokens } from "../../module/WiniProvider";
 import { Winicon } from "../wini-icon/wini-icon";
@@ -231,6 +231,7 @@ const OptionDropList = (props: {
     const [options, setOptions] = useState<{ data: OptionsItem[]; totalCount?: number }>({ data: [], totalCount: undefined });
     const { t } = useTranslation();
     const [layoutHeight, setLayoutHeight] = useState<number>();
+    const scr = useWindowDimensions()
 
     const getData = async (length?: number) => {
         const res = await props.getOptions({
@@ -308,7 +309,7 @@ const OptionDropList = (props: {
                         style={{ maxHeight: Platform.OS === 'ios' ? 260 : 240 }}
                         data={options.data.filter((e) => !e.parentId)}
                         keyExtractor={(item, index) => item.id + "-" + index}
-                        ItemSeparatorComponent={() => <View style={{ height: 2 }} />}
+                        ItemSeparatorComponent={() => <View style={{ marginVertical: 2, width: scr.width - 16, backgroundColor: colors?.["neutral-background-color-lighter"] }} />}
                         renderItem={({ item }) => {
                             const children = options.data.filter((e) => e.parentId === item.id);
                             return (
@@ -392,7 +393,6 @@ function OptionsItemTile({
                                     : item.disabled
                                         ? colors?.["neutral-background-color-disable"]
                                         : undefined,
-                            borderBottomColor: colors?.["neutral-border-color-main"]
                         },
                     ]}
                     onPress={() => {
@@ -445,7 +445,6 @@ function OptionsItemTile({
                                                 : child.disabled
                                                     ? colors?.["neutral-background-color-disable"]
                                                     : undefined,
-                                        borderBottomColor: colors?.["neutral-border-color-main"]
                                     },
                                 ]}
                                 onPress={() => onPress(child)}
@@ -518,8 +517,6 @@ const styles = StyleSheet.create({
         gap: 8,
         alignItems: "center",
         flexDirection: "row",
-        borderBottomWidth: 1,
-        borderStyle: "solid",
     },
     helperText: {
         fontSize: 12,
