@@ -389,7 +389,7 @@ const OptionDropList = forwardRef<any, OptionDropListProps>((props, ref) => {
                         style={{ maxHeight: Platform.OS === 'ios' ? 320 : 300 }}
                         data={parentList}
                         keyExtractor={(item, index) => item.id + '-' + index}
-                        ItemSeparatorComponent={() => <View style={{ marginVertical: 2, width: scr.width - 16, backgroundColor: colors?.["neutral-background-color-lighter"] }} />}
+                        ItemSeparatorComponent={() => <View style={{ marginVertical: 2, height: 1, width: scr.width - 16, backgroundColor: colors?.["neutral-background-color-lighter"] }} />}
                         renderItem={({ item }) => {
                             const children = options.data.filter(e => e.parentId === item.id);
                             return (

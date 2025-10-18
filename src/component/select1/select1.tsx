@@ -309,7 +309,7 @@ const OptionDropList = (props: {
                         style={{ maxHeight: Platform.OS === 'ios' ? 260 : 240 }}
                         data={options.data.filter((e) => !e.parentId)}
                         keyExtractor={(item, index) => item.id + "-" + index}
-                        ItemSeparatorComponent={() => <View style={{ marginVertical: 2, width: scr.width - 16, backgroundColor: colors?.["neutral-background-color-lighter"] }} />}
+                        ItemSeparatorComponent={() => <View style={{ marginVertical: 2, height: 1, width: scr.width - 16, backgroundColor: colors?.["neutral-background-color-lighter"] }} />}
                         renderItem={({ item }) => {
                             const children = options.data.filter((e) => e.parentId === item.id);
                             return (
