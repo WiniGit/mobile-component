@@ -50,6 +50,7 @@ interface SelectMultipleProps {
     customOptionsList?: ReactNode;
     previewMaxLength?: number;
     optionListTitle?: string;
+    customValueElement?: ReactNode;
 }
 
 interface SelectMultipleRef {
@@ -195,7 +196,7 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
                 onPress={props.disabled ? undefined : onOpenOptions}
             >
                 {props.prefix}
-                <View style={[styles.previewContainer, { flexWrap }]}>
+                {props.customValueElement ?? <View style={[styles.previewContainer, { flexWrap }]}>
                     {!value.length && (
                         <Text
                             numberOfLines={1}
@@ -277,7 +278,7 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
                                 }}>+{value.length - previewMaxLength}</Text>
                         </View>
                     )}
-                </View>
+                </View>}
                 {props.suffix ||
                     (props.showClearValueButton && value.length ? (
                         <Winicon src={'outline/user interface/c-remove'} size={14} onPress={clearValue} />

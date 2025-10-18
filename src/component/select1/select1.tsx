@@ -47,6 +47,7 @@ interface Select1Props {
     suffix?: ReactNode;
     simpleStyle?: boolean;
     customOptionsList?: ReactNode;
+    customValueElement?: ReactNode;
 }
 
 interface Select1Ref {
@@ -168,7 +169,7 @@ export const WSelect1 = forwardRef<Select1Ref, Select1Props>(({ style = initStyl
                 onPress={props.disabled ? undefined : onOpenOptions}
             >
                 {valueItem?.prefix ?? props.prefix}
-                {typeof valueItem?.name === "object" ? (
+                {props.customValueElement ?? (typeof valueItem?.name === "object" ? (
                     valueItem.name
                 ) : (
                     <Text
@@ -199,7 +200,7 @@ export const WSelect1 = forwardRef<Select1Ref, Select1Props>(({ style = initStyl
                     >
                         {valueItem?.name ?? props.placeholder}
                     </Text>
-                )}
+                ))}
                 {props.suffix ?? <Winicon src={`fill/arrows/down-arrow`} size={12} />}
                 {props.helperText?.length ? (
                     <Text
