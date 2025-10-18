@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   },
   smallContainer: {
     width: '100%',
-    maxWidth: 320,
+    maxWidth: 270,
     borderRadius: 8,
     borderWidth: 1,
     borderStyle: "solid",
