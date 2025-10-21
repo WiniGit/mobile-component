@@ -138,8 +138,8 @@ const SmallContainer = ({ status = ComponentStatus.INFOR, ...props }: ContainerP
 
   return <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'ios' ? 35 : 0} style={[styles.smallContainer, { backgroundColor: colors?.['neutral-background-color-absolute'], borderColor: colors?.['neutral-border-color-main'] }]}>
     <View style={{ gap: 8, padding: 16, alignItems: "center" }}>
-      {!!props.title?.length && <Text style={textStyles?.['heading-7']}>{props.title}</Text>}
-      {typeof props.content === 'string' ? <Text style={textStyles?.["subtitle-4"]}>{props.content}</Text> : props.content}
+      {!!props.title?.length && <Text style={[textStyles?.['heading-7'],{textAlign:"center"}]}>{props.title}</Text>}
+      {typeof props.content === 'string' ? <Text style={[textStyles?.["subtitle-4"],{textAlign:"center"}]}>{props.content}</Text> : props.content}
     </View>
     <View style={[styles.smallFooter, { borderTopColor: colors?.['neutral-border-color-main'] }]}>
       <TouchableOpacity onPress={props.onCancel} style={styles.actionBtn}>
