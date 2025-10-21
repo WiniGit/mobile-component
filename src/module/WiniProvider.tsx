@@ -47,7 +47,7 @@ interface Props {
     globalHeaders?: () => Promise<{ [k: string]: any }>;
 }
 
-type ThemeType = "light" | "dark";
+type ThemeType = "auto" | "light" | "dark";
 
 interface DesignTokenContextType {
     colors?: ColorProps;
@@ -61,14 +61,14 @@ interface DesignTokenContextType {
 
 const DesignTokenContext = createContext<DesignTokenContextType | undefined>(undefined);
 
-export const DesignTokenProvider: React.FC<{ children: ReactNode; designTokens: Array<{ [p: string]: any }> }> = ({ children, designTokens = [] }) => {
+export const DesignTokenProvider: React.FC<{ children: ReactNode; designTokens: Array<{ [p: string]: any }>;theme: ThemeType }> = ({ children, designTokens = [], ...props }) => {
     const [colors, setColors] = useState<ColorProps>();
     const [textStyles, setTextStyles] = useState<TypoProps>();
     const [boxShadows, setBoxShadows] = useState<BoxShadowProps>();
     const [customStyleSheet, setCustomStyleSheet] = useState<{ [k: string]: ViewStyle }>();
     const systemScheme = useColorScheme();
-    const [theme, setTheme] = useState<ThemeType>("light");
-    const appliedScheme = theme === "light" ? systemScheme : theme;
+    const [theme, setTheme] = useState<ThemeType>(props.theme);
+    const appliedScheme = props.theme === "auto" ? systemScheme : theme;
     const isDark = appliedScheme === "dark";
     const windowSize = useWindowDimensions()
 
