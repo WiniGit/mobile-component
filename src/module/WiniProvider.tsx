@@ -45,6 +45,8 @@ interface Props {
     children?: ReactNode;
     onProjectLoaded?: (item: any) => void;
     globalHeaders?: () => Promise<{ [k: string]: any }>;
+    /** default: theme = auto */
+    theme?: ThemeType;
 }
 
 type ThemeType = "auto" | "light" | "dark";
@@ -61,7 +63,7 @@ interface DesignTokenContextType {
 
 const DesignTokenContext = createContext<DesignTokenContextType | undefined>(undefined);
 
-export const DesignTokenProvider: React.FC<{ children: ReactNode; designTokens: Array<{ [p: string]: any }>;theme: ThemeType }> = ({ children, designTokens = [], ...props }) => {
+export const DesignTokenProvider: React.FC<{ children: ReactNode; designTokens: Array<{ [p: string]: any }>; theme: ThemeType }> = ({ children, designTokens = [], ...props }) => {
     const [colors, setColors] = useState<ColorProps>();
     const [textStyles, setTextStyles] = useState<TypoProps>();
     const [boxShadows, setBoxShadows] = useState<BoxShadowProps>();
@@ -496,7 +498,7 @@ const RootStack = (props: Props) => {
     }, [props.pid]);
 
     return (
-        <DesignTokenProvider designTokens={designTokens}>
+        <DesignTokenProvider designTokens={designTokens} theme={props.theme ?? "auto"}>
             <FSnackbar />
             <WDialog />
             {loadedResources && props.children}
