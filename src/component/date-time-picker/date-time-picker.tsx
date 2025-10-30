@@ -342,9 +342,9 @@ const PopupDateTimePicker = forwardRef(({ value, endValue, repeatValue, onApply,
     }, [repeatData])
 
     return <>
-        <View style={[{ position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, height: 56 }]}>
+        {pickerType !== "date" && <View style={[{ position: "relative", flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, height: 56 }]}>
             <View style={{ position: "absolute", alignItems: "center", left: 0, right: 0, top: "50%", transform: [{ translateY: "-50%" }] }}>
-                <Text style={textStyles?.['heading-7']}>Select date</Text>
+                <Text style={textStyles?.['heading-7']}>{t("select")} {t("date").toLowerCase()}</Text>
             </View>
             <Winicon src='outline/user interface/e-remove' size={20}
                 onPress={() => {
@@ -364,7 +364,7 @@ const PopupDateTimePicker = forwardRef(({ value, endValue, repeatValue, onApply,
                     onPress={() => { setIsRepeat(!isRepeat) }}
                 />}
             </View>}
-        </View>
+        </View>}
         <ScrollView style={{ maxHeight: windowSize.height - 56 - 64 - 60 }}>
             <WCalendar
                 min={min}
@@ -494,7 +494,13 @@ const PopupDateTimePicker = forwardRef(({ value, endValue, repeatValue, onApply,
             />
         </ScrollView>
         {onApply && <View style={[styles.footerActions, { backgroundColor: colors?.["neutral-background-color-absolute"], borderTopColor: colors?.["neutral-border-color-main"] }]}>
-            <WButton
+            {pickerType === "date" ? <WButton
+                label={t("close")}
+                style={[WButtonVariant.size40, textStyles!["label-3"], { flex: 1, backgroundColor: colors?.["neutral-background-color-main"] }]}
+                onPress={() => {
+                    hideBottomSheet(ref as any)
+                }}
+            /> : <WButton
                 label={t("reset")}
                 style={[WButtonVariant.size40, textStyles!["label-3"], { flex: 1, backgroundColor: colors?.["neutral-background-color-main"] }]}
                 onPress={() => {
@@ -505,7 +511,7 @@ const PopupDateTimePicker = forwardRef(({ value, endValue, repeatValue, onApply,
                     initStartValue()
                     initEndValue()
                 }}
-            />
+            />}
             <WButton
                 label={t("apply")}
                 disabled={!methods.watch("date-start") || (!methods.watch("date-end") && (pickerType.includes("range") || pickerType === "auto"))}
