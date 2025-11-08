@@ -1,5 +1,5 @@
 import React, { forwardRef, RefObject, useImperativeHandle, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Modal, Pressable, Animated, PanResponder, DimensionValue, TouchableWithoutFeedback, ViewStyle, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, Modal, Pressable, Animated, PanResponder, DimensionValue, TouchableWithoutFeedback, ViewStyle, useWindowDimensions, KeyboardAvoidingView, Platform } from 'react-native';
 import { useDesignTokens } from '../../module/WiniProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -53,35 +53,37 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
     // Thêm statusBarTranslucent để ngăn modal cha nhận sự kiện khi modal con hiển thị
     return <Modal transparent visible={isVisible} animationType="slide" statusBarTranslucent={true} >
       <TouchableWithoutFeedback style={{ flex: 1 }}>
-        <Container onDismiss={btmSheetState.enableDismiss ? onDismiss : undefined}>
-          <View
-            style={[
-              styles.container,
-              { backgroundColor: colors?.['neutral-background-color-absolute'] },
-            ]}
-            pointerEvents="box-none"
-          >
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'ios' ? 35 : 0} style={{ flex: 1 }}>
+          <Container onDismiss={btmSheetState.enableDismiss ? onDismiss : undefined}>
             <View
-              style={{
-                width: 56,
-                marginTop: 8,
-                height: 6,
-                borderRadius: 10,
-                backgroundColor: colors?.['neutral-background-color-bolder'],
-              }}
-            />
-            <Pressable style={[{ width: '100%' }, btmSheetState.style]}>
-              {!!btmSheetState.title?.length && (
-                <View style={[styles.header, { borderBottomColor: colors?.['neutral-border-color-main'], justifyContent: (btmSheetState.prefixAction && btmSheetState.suffixAction) ? "space-between" : btmSheetState.suffixAction ? "flex-end" : "flex-start" }]}>
-                  <Text style={[textStyles?.['heading-7'], styles.title]}>{btmSheetState.title}</Text>
-                  {btmSheetState.prefixAction}
-                  {btmSheetState.suffixAction}
-                </View>
-              )}
-              {btmSheetState.children}
-            </Pressable>
-          </View>
-        </Container>
+              style={[
+                styles.container,
+                { backgroundColor: colors?.['neutral-background-color-absolute'] },
+              ]}
+              pointerEvents="box-none"
+            >
+              <View
+                style={{
+                  width: 56,
+                  marginTop: 8,
+                  height: 6,
+                  borderRadius: 10,
+                  backgroundColor: colors?.['neutral-background-color-bolder'],
+                }}
+              />
+              <Pressable style={[{ width: '100%' }, btmSheetState.style]}>
+                {!!btmSheetState.title?.length && (
+                  <View style={[styles.header, { borderBottomColor: colors?.['neutral-border-color-main'], justifyContent: (btmSheetState.prefixAction && btmSheetState.suffixAction) ? "space-between" : btmSheetState.suffixAction ? "flex-end" : "flex-start" }]}>
+                    <Text style={[textStyles?.['heading-7'], styles.title]}>{btmSheetState.title}</Text>
+                    {btmSheetState.prefixAction}
+                    {btmSheetState.suffixAction}
+                  </View>
+                )}
+                {btmSheetState.children}
+              </Pressable>
+            </View>
+          </Container>
+        </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </Modal>
   }
