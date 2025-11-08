@@ -52,8 +52,8 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
   const returnModal = () => {
     // Thêm statusBarTranslucent để ngăn modal cha nhận sự kiện khi modal con hiển thị
     return <Modal transparent visible={isVisible} animationType="slide" statusBarTranslucent={true} >
-      <TouchableWithoutFeedback style={{ flex: 1 }}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'ios' ? 35 : 0} style={{ flex: 1 }}>
+      <KeyboardAvoidingView behavior={'padding'} keyboardVerticalOffset={Platform.OS === 'ios' ? 35 : 0} style={{ flex: 1 }}>
+        <TouchableWithoutFeedback style={{ flex: 1 }}>
           <Container onDismiss={btmSheetState.enableDismiss ? onDismiss : undefined}>
             <View
               style={[
@@ -83,8 +83,8 @@ export const WBottomSheet = forwardRef<BottomSheetRef, any>((_, ref) => {
               </Pressable>
             </View>
           </Container>
-        </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </Modal>
   }
 
