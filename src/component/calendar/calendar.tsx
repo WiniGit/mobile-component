@@ -67,7 +67,7 @@ const stateValue = (minDate: Date, maxDate: Date, value?: Date | { sTime: Date, 
         selectMonth: defaultMonth,
         selectYear: defaultYear,
     }
-}
+} 
 
 export const WCalendar = forwardRef<any, CalendarProps>((props, ref) => {
     const { textStyles, colors } = useDesignTokens()

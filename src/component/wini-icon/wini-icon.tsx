@@ -2586,6 +2586,7 @@ type WiniIconName = "color/accessibility/accessibility-lift" |
     "fill/development/apps" |
     "fill/development/arrow-tool" |
     "fill/development/artboard" |
+    "fill/development/baseline" |
     "fill/development/binary-code" |
     "fill/development/blend" |
     "fill/development/block" |
@@ -2665,6 +2666,7 @@ type WiniIconName = "color/accessibility/accessibility-lift" |
     "fill/development/function" |
     "fill/development/geometry" |
     "fill/development/git-commit" |
+    "fill/development/google-play" |
     "fill/development/gradient" |
     "fill/development/grain-effect" |
     "fill/development/graphics-tablet" |
@@ -2776,11 +2778,15 @@ type WiniIconName = "color/accessibility/accessibility-lift" |
     "fill/development/size-small" |
     "fill/development/slice" |
     "fill/development/slider" |
+    "fill/development/space-around" |
+    "fill/development/space-between" |
     "fill/development/space-divider" |
+    "fill/development/space-evenly" |
     "fill/development/sparks" |
     "fill/development/spray-can" |
     "fill/development/stack" |
     "fill/development/stamp" |
+    "fill/development/stretch" |
     "fill/development/style" |
     "fill/development/tablet-mobile" |
     "fill/development/texture" |
@@ -9807,4 +9813,3 @@ type WiniIconName = "color/accessibility/accessibility-lift" |
     "fill/sound/volume-up" |
     "fill/sound/volume-xmark" |
     "fill/sound/waveform-lines"
-

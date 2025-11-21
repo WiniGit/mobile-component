@@ -263,7 +263,14 @@ const PopupDateTimePicker = forwardRef(({ value, endValue, repeatValue, onApply,
     }
 
     useEffect(() => {
-        if (value && inputStartRef.current) initStartValue()
+        switch (pickerType) {
+            case "date":
+                if (value) methods.setValue('date-start', value)
+                break;
+            default:
+                if (value && inputStartRef.current) initStartValue()
+                break;
+        }
     }, [value, inputStartRef])
 
     useEffect(() => {
