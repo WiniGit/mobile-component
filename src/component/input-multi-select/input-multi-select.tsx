@@ -249,7 +249,7 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
                                     }}
                                 >{optionItem?.name}</Text>
                                 <Winicon
-                                    src={'outline/user interface/e-remove'}
+                                    src={'outline/user-interface/e-remove'}
                                     size={12}
                                     onPress={optionItem?.disabled ? undefined : ev => onClickItem(ev, item)}
                                 />
@@ -281,7 +281,7 @@ export const WSelectMultiple = forwardRef<SelectMultipleRef, SelectMultipleProps
                 </View>}
                 {props.suffix ||
                     (props.showClearValueButton && value.length ? (
-                        <Winicon src={'outline/user interface/c-remove'} size={14} onPress={clearValue} />
+                        <Winicon src={'outline/user-interface/c-remove'} size={14} onPress={clearValue} />
                     ) : (
                         <Winicon src={`fill/arrows/down-arrow`} size={12} />
                     ))}
@@ -354,7 +354,7 @@ const OptionDropList = forwardRef<any, OptionDropListProps>((props, ref) => {
                     {props.optionListTitle && <Text style={textStyles?.['heading-7']}>{props.optionListTitle}</Text>}
                     <Text style={textStyles?.[`subtitle-${props.optionListTitle ? "4" : "3"}`]}>{t("itemsSelected", { count: selected.length })}</Text>
                 </View>
-                <Winicon src='outline/user interface/e-remove' size={20}
+                <Winicon src='outline/user-interface/e-remove' size={20}
                     onPress={() => {
                         hideBottomSheet(ref as any)
                     }} />

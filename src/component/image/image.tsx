@@ -31,11 +31,11 @@ export const WImage = ({ src, style = {}, crossOrigin, ...props }: WImageProps) 
     }
   }, [src])
 
-  return !!src?.length ? <>
+  return (!!src?.length && !svgError) ? <>
     <Pressable pointerEvents="none" style={[{ overflow: "hidden" }, ...(Array.isArray(style) ? style : [style])]} onPress={props.onPress} onLayout={props.onLayout}>
       {(src.endsWith("svg") || isError) ?
         <SvgUri
-          uri={svgError ? "https://cdn.jsdelivr.net/gh/WiniGit/icon-library@latest/outline/development/image-2.svg" : src}
+          uri={src}
           style={isLoading ? { position: 'absolute', opacity: 0 } : { width: "100%", height: "100%", aspectRatio: (style as any).aspectRatio }}
           width={props.width}
           height={props.height}
@@ -58,5 +58,12 @@ export const WImage = ({ src, style = {}, crossOrigin, ...props }: WImageProps) 
         </SkeletonPlaceholder>
       )}
     </Pressable>
-  </> : <SvgUri uri={"https://cdn.jsdelivr.net/gh/WiniGit/icon-library@latest/outline/development/image-2.svg"} style={style} />
+  </> : <Image
+    source={{ uri: "https://cdn.ebig.co/icon-library/image-placeholder.png" }}
+    resizeMode={props.resizeMode}
+    style={isLoading ? { position: 'absolute', opacity: 0 } : { width: "100%", height: "100%", aspectRatio: (style as any).aspectRatio }}
+    width={props.width as any}
+    height={props.height as any}
+    crossOrigin={crossOrigin}
+  />
 };

@@ -11,18 +11,21 @@ export class ConfigData {
     static onInvalidToken = () => {
         Util.clearStorage()
     };
+    static regexGuid = /^[0-9a-fA-F]{32}$/;
+    static ebigCdn = "https://cdn.ebig.co"
     static globalHeaders: () => Promise<{ [k: string]: any }> = async () => {
         return { 'Content-Type': 'application/json' }
     }
 }
 
 export const imgFileTypes = [".png", ".svg", ".jpg", "jpeg", ".webp", ".gif"]
+const maxFileSize = 200 * 1024 * 1024
 
 export class BaseDA {
     static post = async (url: string, options?: { headers?: { [k: string]: any }, body?: any }) => {
         try {
             let _headers: { [k: string]: any } = url.startsWith(ConfigData.url) ? (await ConfigData.globalHeaders()) : { 'Content-Type': 'application/json' }
-            if (!_headers) _headers = { 'Content-Type': 'application/json' }
+            if (!_headers) _headers = { 'Content-Type': 'application/json', 'platform': 'mobile' }
             if (options?.headers) _headers = { ..._headers, ...options.headers }
             const response = await axios.post(url, options?.body, { headers: _headers })
             if (response.status === 200 || response.status === 201) {
@@ -47,10 +50,8 @@ export class BaseDA {
 
     static postFile = async (url: string, options?: { headers?: { [k: string]: any }, body?: FormData }) => {
         try {
-            if (options?.headers) {
-                options.headers["Content-Type"] = "multipart/form-data"
-            }
-            const response = await axios.post(url, options?.body, { headers: options?.headers ?? { "Content-Type": "multipart/form-data" } })
+            const _headers = { ...options?.headers, "Content-Type": "multipart/form-data", 'platform': 'mobile' }
+            const response = await axios.post(url, options?.body, { headers: _headers })
             if (response.status === 200 || response.status === 201) {
                 return response.data
             } else if (response.status === 204) {
@@ -74,8 +75,7 @@ export class BaseDA {
     static get = async (url: string, options?: { headers?: { [k: string]: any } }) => {
         try {
             let _headers: { [k: string]: any } = url.startsWith(ConfigData.url) ? (await ConfigData.globalHeaders()) : { 'Content-Type': 'application/json' }
-            if (!_headers) _headers = { 'Content-Type': 'application/json' }
-            if (options?.headers) _headers = { ..._headers, ...options.headers }
+            _headers = { ...options?.headers, ..._headers, 'Content-Type': 'application/json', 'platform': 'mobile' }
             const response = await axios.get(url, { headers: _headers })
             if (response.status === 200 || response.status === 201) {
                 return response.data
@@ -97,35 +97,85 @@ export class BaseDA {
         }
     }
 
-    static uploadFiles = async (listFile: Array<{ uri: string; type: string; name: string }>) => {
-        listFile = [...listFile];
-        // const headersObj: any = await getHeaders()
+    static uploadFiles = async (listFile: { uri: string; type: string; name: string }[] | { id: string; file: { uri: string; type: string; name: string } }[]) => {
+        listFile = [...listFile] as any
+        const files = listFile.map((e: any) => e.id && e.file ? e.file : e).filter(Boolean);
+        const ids = listFile.map((e: any) => e.id && e.file ? e.id : null).filter(Boolean);
+
         const headersObj: any = { pid: ConfigData.pid }
-        const formData = new FormData();
-        listFile.forEach(e => {
-            formData.append("files", e);
-        })
-        const response = await BaseDA.postFile(ConfigData.url + 'file/uploadfiles', {
-            headers: headersObj,
-            body: formData,
-        })
+        // Remove Content-Type - browser will set it with boundary for multipart
+
+        const listRequest: Array<{ files: File[], ids: string[] }> = [{ files: [], ids: [] }]
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const id = ids[i] || null;
+
+            if (file.size > maxFileSize) {
+                showSnackbar({ message: 'File size must be not more than 200MB', status: ComponentStatus.ERROR })
+                return null
+            } else {
+                const tmp = listRequest[listRequest.length - 1];
+                const totalSize = [...tmp.files, file].map(f => f.size).reduce((a, b) => a + b, 0);
+
+                // Check if need to create new batch
+                if (tmp.files.length >= 12 || totalSize > maxFileSize) {
+                    listRequest.push({ files: [file], ids: id ? [id] : [] })
+                } else {
+                    tmp.files.push(file);
+                    if (id) tmp.ids.push(id);
+                }
+            }
+        }
+
+        const response = await Promise.all(listRequest.map(rq => {
+            const formData = new FormData();
+            rq.files.forEach(e => {
+                formData.append("files", e);
+            })
+            // Add IDs if provided
+            if (rq.ids.length > 0) {
+                formData.append("ids", rq.ids.join(","));
+            }
+            return BaseDA.postFile(ConfigData.url + 'file/uploadfiles', {
+                headers: headersObj,
+                body: formData,
+            })
+        }))
         return response;
     }
 
     static getFilesInfor = async (ids: Array<string>) => {
-        const headersObj: any = {}
         const response = await BaseDA.post(ConfigData.url + 'file/getFilesInfor', {
-            headers: headersObj,
-            body: { ids: ids },
+            headers: { pid: ConfigData.pid, 'Content-Type': 'application/json' },
+            body: { ids },
         })
         return response
     }
 
     static updateFilesInfor = async (data: Array<{ [p: string]: any }>) => {
-        const headersObj: any = {}
         const response = await BaseDA.post(ConfigData.url + 'file/editFileInfor', {
+            headers: { pid: ConfigData.pid, 'Content-Type': 'application/json', 'platform': 'mobile' },
+            body: { data },
+        })
+        return response
+    }
+
+    static deleteFiles = async (ids: Array<string>, headers?: { [k: string]: any }) => {
+        const headersObj: any = { ...headers, "Content-Type": "application/json", pid: ConfigData.pid, 'platform': 'mobile' }
+        const response = await BaseDA.post(ConfigData.url + 'file/deleteFiles', {
             headers: headersObj,
-            body: { data: data },
+            body: { ids },
+        })
+        return response
+    }
+
+    static duplicateFiles = async (ids: Array<string>, headers?: { [k: string]: any }) => {
+        const headersObj: any = { ...headers, "Content-Type": "application/json", pid: ConfigData.pid, 'platform': 'mobile' }
+
+        const response = await BaseDA.post(ConfigData.url + 'file/duplicateFiles', {
+            headers: headersObj,
+            body: { ids },
         })
         return response
     }

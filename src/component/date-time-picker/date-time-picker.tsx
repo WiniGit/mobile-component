@@ -174,7 +174,7 @@ export const WDateTimePicker = ({ style = initStyle, pickerType = "auto", helper
             onPress={props.disabled ? undefined : showCalendar}
             onLayout={props.onLayout}
         >
-            {props.prefix ?? <Winicon src="outline/user interface/calendar-date-2" size={14} />}
+            {props.prefix ?? <Winicon src="outline/user-interface/calendar-date-2" size={14} />}
             {txtValue}
             {props.suffix}
             {props.helperText?.length ? (
@@ -353,13 +353,13 @@ const PopupDateTimePicker = forwardRef(({ value, endValue, repeatValue, onApply,
             <View style={{ position: "absolute", alignItems: "center", left: 0, right: 0, top: "50%", transform: [{ translateY: "-50%" }] }}>
                 <Text style={textStyles?.['heading-7']}>{t("select")} {t("date").toLowerCase()}</Text>
             </View>
-            <Winicon src='outline/user interface/e-remove' size={20}
+            <Winicon src='outline/user-interface/e-remove' size={20}
                 onPress={() => {
                     hideBottomSheet(ref as any)
                 }} />
             {pickerType === "auto" && <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
                 <Winicon
-                    src='outline/user interface/time-alarm'
+                    src='outline/user-interface/time-alarm'
                     size={14}
                     style={{ padding: 7, borderRadius: 16, backgroundColor: selectTime ? colors?.["neutral-background-color-main"] : undefined }}
                     onPress={() => { setSelectTime(!selectTime) }}
