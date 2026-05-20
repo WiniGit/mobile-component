@@ -202,8 +202,7 @@ export class AccountController {
             body: body
         })
         if (res.code === 200 && !resolve) {
-            const setStorageList = Object.keys(res.data).map(key => ({ key: key, value: res.data[key] }))
-            setStorageList.push({ key: "timeRefresh", value: Date.now() / 1000 + 9 * 60 })
+            const setStorageList = [{ key: "accessToken", value: res.accessToken }, { key: "refreshToken", value: res.refreshToken }, { key: "timeRefresh", value: Date.now() / 1000 + 9 * 60 }]
             await Util.setStorage(setStorageList)
         }
         return res
