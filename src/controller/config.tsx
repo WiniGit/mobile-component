@@ -21,6 +21,12 @@ export class ConfigData {
 export const imgFileTypes = [".png", ".svg", ".jpg", "jpeg", ".webp", ".gif"]
 const maxFileSize = 200 * 1024 * 1024
 
+export const getValidLink = (link: string) => {
+    if (link.startsWith("http")) return link
+    if (ConfigData.regexGuid.test(link)) return ConfigData.imgUrlId + link
+    else return ConfigData.fileUrl + link
+}
+
 export class BaseDA {
     static post = async (url: string, options?: { headers?: { [k: string]: any }, body?: any }) => {
         try {

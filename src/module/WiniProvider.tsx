@@ -5,7 +5,7 @@ import React, {
     useEffect,
     useState,
 } from "react";
-import { BaseDA, ConfigData } from "../controller/config";
+import { BaseDA, ConfigData, getValidLink } from "../controller/config";
 import { TableController, WiniController } from "../controller/setting";
 import { DesignTokenType } from "./da";
 import { Util } from "../controller/utils";
@@ -463,20 +463,21 @@ const RootStack = (props: Props) => {
                 if (res.code === 200 && res.data.length) setDesignTokens(res.data);
             });
             const projectController = new WiniController("Project");
-            projectController.getByIds([props.pid]).then((res) => {
-                if (res.code === 200 && res.data[0]) {
+            projectController.getById(props.pid).then((res) => {
+                if (res.code === 200 && res.data) {
                     if (props.onProjectLoaded) {
-                        props.onProjectLoaded(res.data[0]);
-                        ConfigData.fileUrl = res.data[0].FileDomain;
+                        props.onProjectLoaded(res.data);
+                        ConfigData.fileUrl = res.data.FileDomain;
                     }
                 }
             });
             const languageController = new DataController("Language");
             languageController.getAll().then(async (res) => {
                 if (res.code === 200 && res.data.length) {
-                    const languages = await Promise.all(
-                        res.data.map((e: any) => BaseDA.get(ConfigData.imgUrlId + e.Json))
-                    );
+                    const languages = await Promise.all(res.data.filter((e: any) => !!e.Json?.length).map((e: any) => BaseDA.get(getValidLink(e.Json), { headers: { "Cache-Control": "no-cache" } })))
+                    languages.forEach((lngData, i) => {
+                        if (lngData) i18n.addResourceBundle(res.data[i].Lng, "translation", lngData, true, true)
+                    })
                     languages.forEach((lngData, i) => {
                         if (lngData) {
                             i18n.addResourceBundle(

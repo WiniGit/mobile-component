@@ -18,16 +18,24 @@ export class DataController {
     }
 
     async getProperties() {
-        const res = await BaseDA.get(ConfigData.url + `setting/getProperties?name=${this.module}`, {
-            headers: {
-                pid: ConfigData.pid,
-                module: 'column'
-            }
+        const res = await BaseDA.get(ConfigData.url + `data/getProperties?name=${this.module}`, {
+            headers: { pid: ConfigData.pid }
         })
         return res
     }
 
-    async aggregateList(options: { page?: number, size?: number, searchRaw?: string, filter?: string, sortby?: Array<{ prop: string, direction?: "ASC" | "DESC" }>, returns?: Array<string> } | undefined) {
+    async buildIndex(properties: { [p: string]: string }) {
+        const res = await BaseDA.post(ConfigData.url + 'data/buildIndex', {
+            headers: {
+                pid: ConfigData.pid,
+                module: this.module
+            },
+            body: { properties }
+        })
+        return res
+    }
+
+    async aggregateList(options: { page?: number, size?: number, searchRaw?: string, filter?: string, sortby?: Array<{ prop: string, direction?: "ASC" | "DESC" }>, returns?: Array<string>, exact?: boolean }) {
         const res = await BaseDA.post(ConfigData.url + 'data/aggregateList', {
             headers: {
                 pid: ConfigData.pid,
@@ -38,18 +46,7 @@ export class DataController {
         return res
     }
 
-    async filterByEmptyKey(options: { page?: number, size?: number, searchRaw?: string, key: string, notEmpty?: boolean, sortby?: Array<{ prop: string, direction?: "ASC" | "DESC" }> } | undefined) {
-        const res = await BaseDA.post(ConfigData.url + 'data/filterByEmptyKey', {
-            headers: {
-                pid: ConfigData.pid,
-                module: this.module,
-            },
-            body: options
-        })
-        return res
-    }
-
-    async patternList(options: { page?: number, size?: number, searchRaw?: string, filter?: string, sortby?: Array<{ prop: string, direction?: "ASC" | "DESC" }>, pattern?: { returns: Array<string>, [p: string]: Array<string> | { searchRaw?: string, reducers: string } } } | undefined) {
+    async patternList(options: { page?: number, size?: number, searchRaw?: string, filter?: string, sortby?: Array<{ prop: string, direction?: "ASC" | "DESC" }>, exact?: boolean, pattern?: { returns: Array<string>, [p: string]: Array<string> | { searchRaw?: string, reducers: string } } }) {
         const res = await BaseDA.post(ConfigData.url + 'data/patternList', {
             headers: {
                 pid: ConfigData.pid,
@@ -71,9 +68,8 @@ export class DataController {
         return res
     }
 
-    async getListSimple(options: { page?: number, size?: number, query?: string, returns?: Array<string>, sortby?: { BY: string, DIRECTION?: "ASC" | "DESC" } } | undefined) {
-        const body = { ...options, searchRaw: options?.query?.length ? options?.query : "*" }
-        delete body.query
+    async getListSimple({ query = "*", ...options }: { page?: number, size?: number, query?: string, returns?: Array<string>, sortby?: { BY: string, DIRECTION?: "ASC" | "DESC" }, exact?: boolean }) {
+        const body = { ...options, searchRaw: query }
         const res = await BaseDA.post(ConfigData.url + 'data/getListSimple', {
             headers: {
                 pid: ConfigData.pid,
@@ -85,7 +81,7 @@ export class DataController {
     }
 
     async getById(id: string) {
-        const res = await BaseDA.post(ConfigData.url + `data/getById?id=${id}`, {
+        const res = await BaseDA.get(ConfigData.url + `data/getById?id=${id}`, {
             headers: {
                 pid: ConfigData.pid,
                 module: this.module,
@@ -100,29 +96,29 @@ export class DataController {
                 pid: ConfigData.pid,
                 module: this.module,
             },
-            body: { ids: ids }
+            body: { ids }
         })
         return res
     }
 
-    async add(data: Array<{ [p: string]: any }>) {
+    async add(data: Array<{ [p: string]: any }>, type?: string) {
         const res = await BaseDA.post(ConfigData.url + 'data/action?action=add', {
             headers: {
                 pid: ConfigData.pid,
                 module: this.module
             },
-            body: { data: data }
+            body: { data, type }
         })
         return res
     }
 
-    async edit(data: Array<{ [p: string]: any }>) {
+    async edit(data: Array<{ [p: string]: any }>, type?: string) {
         const res = await BaseDA.post(ConfigData.url + 'data/action?action=edit', {
             headers: {
                 pid: ConfigData.pid,
                 module: this.module
             },
-            body: { data: data }
+            body: { data, type }
         })
         return res
     }
@@ -133,7 +129,7 @@ export class DataController {
                 pid: ConfigData.pid,
                 module: this.module
             },
-            body: { ids: ids }
+            body: { ids }
         })
         return res
     }
@@ -144,14 +140,14 @@ export class DataController {
                 pid: ConfigData.pid,
                 module: this.module
             },
-            body: { ids: ids }
+            body: { ids }
         })
         return res
     }
 
     async checkotp(idToken: string) {
         const res = await BaseDA.post(ConfigData.url + 'data/checkotp', {
-            body: { idToken: idToken }
+            body: { idToken }
         })
         return res
     }
